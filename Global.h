@@ -2,7 +2,6 @@
 
 class Global {
 public:
-	
 	HINSTANCE hInst;
 
 	// Main Window

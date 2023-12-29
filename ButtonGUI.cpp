@@ -100,26 +100,13 @@ void ButtonGUI::Paint(HWND &hWnd, int &drawButton, HBITMAP &hButtonImg, int xBmp
 		BitBlt(hdc, xBmpPos, yBmpPos, bitmap01.bmWidth, bitmap01.bmHeight, BtnGUI.hdcWndScreenshot, rc.left + xBmpPos, rc.top + yBmpPos, SRCCOPY);
 
 		HDC hdcMem01 = CreateCompatibleDC(hdc);
-
-		HGDIOBJ oldBitmap01 = SelectObject(hdcMem01, hButtonImg);
-
-		BLENDFUNCTION bf = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
-		AlphaBlend(hdc, xBmpPos, yBmpPos, bitmap01.bmWidth, bitmap01.bmHeight, hdcMem01, 0, 0, bitmap01.bmWidth, bitmap01.bmHeight, bf);
-
-		SelectObject(hdcMem01, oldBitmap01);
+		gr7::PaintTransparentBitmap(hdc, xBmpPos, yBmpPos, hButtonImg, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 		DeleteDC(hdcMem01);
+
 		EndPaint(hWnd, &ps);
 		if (drawText == TRUE) {
 			HDC hdc = ::GetDC(hWnd);
-			SetBkMode(hdc, TRANSPARENT);
-			SetTextColor(hdc, RGB(0, 0, 0));
-			HFONT hFont, hTmp;
-			int nHeight = -MulDiv(9, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-			hFont = CreateFontW(nHeight, 0, 0, 0, FW_LIGHT, 0, 0, 0, 0, 0, 0, 2, 0, L"Segoe UI");
-			hTmp = (HFONT)SelectObject(hdc, hFont);
-			size_t size = wcslen(text);
-			int convertsize = static_cast<int>(size);
-			TextOutW(hdc, (rc.right - rc.left)/2 - 12, (rc.bottom - rc.top) / 2 - 7, text, convertsize);
+			gr7::PaintText(hdc, (rc.right - rc.left) / 2 - 12, (rc.bottom - rc.top) / 2 - 7, L"Segoe UI", RGB(0, 0, 0), text, 9, 1);
 			ReleaseDC(hWnd, hdc);
 
 			::UpdateWindow(hWnd);

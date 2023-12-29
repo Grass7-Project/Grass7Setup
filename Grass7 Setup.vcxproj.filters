@@ -45,10 +45,10 @@
     <ClInclude Include="ProgressBar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InstallGrass7.h">
+    <ClInclude Include="ButtonGUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ButtonGUI.h">
+    <ClInclude Include="InstallCode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -65,10 +65,10 @@
     <ClCompile Include="ProgressBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InstallGrass7.cpp">
+    <ClCompile Include="ButtonGUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ButtonGUI.cpp">
+    <ClCompile Include="InstallCode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -124,6 +124,9 @@
       <Filter>Resource Files\Bitmaps</Filter>
     </Image>
     <Image Include="res\Bitmaps\NormalButton4.bmp">
+      <Filter>Resource Files\Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Bitmaps\BottomPanel.bmp">
       <Filter>Resource Files\Bitmaps</Filter>
     </Image>
   </ItemGroup>

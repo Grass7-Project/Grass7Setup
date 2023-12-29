@@ -2,7 +2,7 @@
 #include "GUI.h"
 #include "Global.h"
 #include "ProgressBar.h"
-#include "InstallGrass7.h"
+#include "InstallCode.h"
 #include "ButtonGUI.h"
 #include <gdiplus.h>
 
@@ -138,6 +138,40 @@ void GUI::RestartSoon()
 	SendMessageW(GlobalObjects.hWndMainWindow, WM_CLOSE, (WPARAM)(INT)0, 0);
 }
 
+void GUI::DialogPaintCode()
+{
+	if (GlobalObjects.Page == 1) {
+		// Draw Logo Text
+		HDC hdc = ::GetDC(GlobalObjects.hWndSetupWindow);
+		gr7::PaintTransparentBitmap(hdc, 0, (428 / 2) - 72, GUIObj.hBanner, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+		ReleaseDC(GlobalObjects.hWndSetupWindow, hdc);
+	}
+	// License Page
+	if (GlobalObjects.Page == 2) {
+		// Draw Dialog Title Text
+		HDC hdc = ::GetDC(GlobalObjects.hWndSetupWindow);
+		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_EULA_TITLE), 12, 1);
+		ReleaseDC(GlobalObjects.hWndSetupWindow, hdc);
+
+		::UpdateWindow(GlobalObjects.hWndSetupWindow);
+	}
+	// Changelog Page
+	if (GlobalObjects.Page == 3) {
+		// Draw Dialog Title Text
+		HDC hdc = ::GetDC(GlobalObjects.hWndSetupWindow);
+		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_CHANGELOG_TITLE), 12, 1);
+		ReleaseDC(GlobalObjects.hWndSetupWindow, hdc);
+
+		::UpdateWindow(GlobalObjects.hWndSetupWindow);
+	}
+
+	HDC hdc = ::GetDC(GlobalObjects.hWndSetupWindow);
+	gr7::PaintTransparentBitmap(hdc, 0, 382, GUIObj.hBottomPanel, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+	ReleaseDC(GlobalObjects.hWndSetupWindow, hdc);
+
+	::SendMessageW(GlobalObjects.hNormalBtn, BTN_UPDATE, (WPARAM)(INT)0, 0);
+}
+
 // Main Window Window Procedure
 LRESULT CALLBACK GUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -151,6 +185,7 @@ LRESULT CALLBACK GUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 			GUIObj.hFakeWindow = static_cast<HBITMAP>(LoadImageW(GlobalObjects.hInst, MAKEINTRESOURCE(IDB_FAKEWND_BMP), IMAGE_BITMAP, 0, 0, 0));
 			GUIObj.hBanner = static_cast<HBITMAP>(LoadImageW(GlobalObjects.hInst, MAKEINTRESOURCE(IDB_BANNER_BMP), IMAGE_BITMAP, 0, 0, 0));
 			GUIObj.hSmallLogo = static_cast<HBITMAP>(LoadImageW(GlobalObjects.hInst, MAKEINTRESOURCE(IDB_SMALLLOGO_BMP), IMAGE_BITMAP, 0, 0, 0));
+			GUIObj.hBottomPanel = static_cast<HBITMAP>(LoadImageW(GlobalObjects.hInst, MAKEINTRESOURCE(IDB_BOTTOM_PANEL_BMP), IMAGE_BITMAP, 0, 0, 0));
 		}
 		break;
 		case WM_CLOSE:
@@ -181,7 +216,6 @@ LRESULT CALLBACK GUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 			HDC             hdc;
 			BITMAP          BkgBitmap;
 			BITMAP          WndBitmap;
-			BITMAP          SmallLogoBitmap;
 			int				horizontal;
 			int				vertical;
 			{
@@ -198,39 +232,17 @@ LRESULT CALLBACK GUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 
 				// Draw Fake Window
 				HDC hdcWndMem = CreateCompatibleDC(hdc);
-				HGDIOBJ oldWndBitmap = (HBITMAP)SelectObject(hdcWndMem, GUIObj.hFakeWindow);
 				GetObjectW(GUIObj.hFakeWindow, sizeof(WndBitmap), &WndBitmap);
-				BLENDFUNCTION bf = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
 				int xPos = (horizontal - WndBitmap.bmWidth) / 2;
 				int yPos = (vertical - WndBitmap.bmHeight) / 2;
-				HDC hdcMem02 = CreateCompatibleDC(hdc);
-				AlphaBlend(hdc, xPos, yPos, WndBitmap.bmWidth, WndBitmap.bmHeight, hdcWndMem, 0, 0, WndBitmap.bmWidth, WndBitmap.bmHeight, bf);
-				SelectObject(hdcWndMem, oldWndBitmap);
-
+				gr7::PaintTransparentBitmap(hdc, xPos, yPos, GUIObj.hFakeWindow, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 				
 				// Draw Small Logo
-				HDC hdcSmallLogoMem = CreateCompatibleDC(hdc);
-				HGDIOBJ oldSmallLogoBitmap = (HBITMAP)SelectObject(hdcSmallLogoMem, GUIObj.hSmallLogo);
-				GetObjectW(GUIObj.hSmallLogo, sizeof(SmallLogoBitmap), &SmallLogoBitmap);
-				BLENDFUNCTION bf1 = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
-				HDC hdcMem03 = CreateCompatibleDC(hdc);
-				AlphaBlend(hdc, xPos + 56, yPos + 26, SmallLogoBitmap.bmWidth, SmallLogoBitmap.bmHeight, hdcSmallLogoMem, 0, 0, SmallLogoBitmap.bmWidth, SmallLogoBitmap.bmHeight, bf1);
-				SelectObject(hdcSmallLogoMem, oldSmallLogoBitmap);
-
+				gr7::PaintTransparentBitmap(hdc, xPos + 56, yPos + 26, GUIObj.hSmallLogo, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 				
 				// Draw Title Text
-				wchar_t *text = gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_TITLEBAR);
-				SetBkMode(hdc, TRANSPARENT);
-				SetTextColor(hdc, RGB(0, 0, 0));
-				HFONT hFont, hTmp;
-				int nHeight = -MulDiv(9, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-				hFont = CreateFontW(nHeight, 0, 0, 0, FW_LIGHT, 0, 0, 0, 0, 0, 0, 2, 0, L"Segoe UI");
-				hTmp = (HFONT)SelectObject(hdc, hFont);
-				size_t size = wcslen(text);
-				int convertsize = static_cast<int>(size);
-				TextOutW(hdc, xPos + 56 + 24, yPos + 26, text, convertsize);
+				gr7::PaintText(hdc, xPos + 56 + 24, yPos + 26, L"Segoe UI", RGB(0, 0, 0), gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_TITLEBAR), 9, 1);
 
-				DeleteDC(hdcSmallLogoMem);
 				DeleteDC(hdcWndMem);
 				DeleteDC(hdcBkgMem);
 				EndPaint(hWnd, &ps);
@@ -320,17 +332,10 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 						::SendMessageW(GlobalObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
 					}
 
-					// Draw Logo Text
-					BITMAP BannerBitmap;
-					HDC hdc = ::GetDC(GlobalObjects.hWndSetupWindow);
-					HDC hdcBannerMem = CreateCompatibleDC(hdc);
-					HGDIOBJ oldBannerBitmap = (HBITMAP)SelectObject(hdcBannerMem, GUIObj.hBanner);
-					GetObjectW(GUIObj.hBanner, sizeof(BannerBitmap), &BannerBitmap);
-					BLENDFUNCTION bf = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
-					AlphaBlend(hdc, 0, (428 / 2) - 72, BannerBitmap.bmWidth, BannerBitmap.bmHeight, hdcBannerMem, 0, 0, BannerBitmap.bmWidth, BannerBitmap.bmHeight, bf);
-					SelectObject(hdcBannerMem, oldBannerBitmap);
-					DeleteDC(hdcBannerMem);
-					ReleaseDC(GlobalObjects.hWndSetupWindow, hdc);
+					if (GlobalObjects.hWndRichEditCtrl != NULL)
+					{
+						DestroyWindow(GlobalObjects.hWndRichEditCtrl);
+					}
 				}
 
 				// License Page
@@ -342,6 +347,7 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 
 					::SendMessageW(GlobalObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 
+					// Show license
 					wchar_t file[MAX_PATH];
 					wcsncpy_s(file, GlobalObjects.installSources, sizeof(file));
 					wcsncat_s(file, L"\\license.rtf", sizeof(file));
@@ -354,6 +360,10 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 
 				// Changelog Page
 				if (GlobalObjects.Page == 3) {
+					if (GlobalObjects.hWndRichEditCtrl != NULL)
+					{
+						DestroyWindow(GlobalObjects.hWndRichEditCtrl);
+					}
 					if (GlobalObjects.BackButtonDisabled == TRUE) {
 						::SendMessageW(GlobalObjects.hBackBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
 					}
@@ -368,19 +378,20 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 					gr7::FillRichEditFromFile(GlobalObjects.hWndRichEditCtrl, file, SF_RTF);
 
 					memset(file, 0, sizeof(file));
-					::SendMessageW(GlobalObjects.hNormalBtn, BTN_UPDATE, (WPARAM)(INT)0, 0);
 				}
 
 				// Install Options Page
 				if (GlobalObjects.Page == 4) {
+					if (GlobalObjects.hWndRichEditCtrl != NULL)
+					{
+						DestroyWindow(GlobalObjects.hWndRichEditCtrl);
+					}
 					GlobalObjects.hWndDialogWindow = CreateDialogW(GlobalObjects.hInst, MAKEINTRESOURCE(IDD_PAGE4), GlobalObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
-					::SendMessageW(GlobalObjects.hNormalBtn, BTN_UPDATE, (WPARAM)(INT)0, 0);
 				}
 
 				// Partition Page
 				if (GlobalObjects.Page == 5) {
 					GlobalObjects.hWndDialogWindow = CreateDialogW(GlobalObjects.hInst, MAKEINTRESOURCE(IDD_PAGE5), GlobalObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
-					::SendMessageW(GlobalObjects.hNormalBtn, BTN_UPDATE, (WPARAM)(INT)0, 0);
 				}
 
 				// Installing Page
@@ -398,7 +409,7 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 					GUIObj.doNotClose = 1;
 					EnableMenuItem(GetSystemMenu(GlobalObjects.hWndSetupWindow, 0), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 					::SendMessageW(GlobalObjects.hWndSetupWindow, SETUPWND_CREATE_PROG_TX, (WPARAM)(INT)0, 0);
-					InstallGrass7();
+					Install::InstallMain();
 				}
 
 				// Restarting Page
@@ -412,6 +423,9 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 				// We show the window and update it to see our dialog page
 				::ShowWindow(GlobalObjects.hWndDialogWindow, 1);
 				::UpdateWindow(GlobalObjects.hWndDialogWindow);
+
+				//Activate custom paint code for some dialogs
+				GUI::DialogPaintCode();
 			}
 			break;
 

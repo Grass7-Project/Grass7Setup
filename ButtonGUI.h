@@ -2,7 +2,6 @@
 
 class ButtonGUI{
 public:
-
 	static void				InitButtonBitmaps();
 	static void				InitBackBtn();
 	static void				InitCloseBtn();
@@ -14,7 +13,6 @@ public:
 	static LRESULT CALLBACK	NormalButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 
 private:
-
 	HBITMAP hBackBtnImg1;
 	HBITMAP hBackBtnImg2;
 	HBITMAP hBackBtnImg3;
@@ -41,5 +39,4 @@ private:
 	int drawBackButton, drawCloseButton, drawNormalButton;
 
 	BOOLEAN bButtonTracking, bButtonHover, cButtonTracking, cButtonHover, nButtonTracking, nButtonHover;
-
 };

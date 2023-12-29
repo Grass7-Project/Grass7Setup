@@ -2,7 +2,6 @@
 
 class GUI{
 public:
-
 	static BOOL	InitInstance();
 	static ATOM	RegisterClasses();
 
@@ -12,13 +11,13 @@ public:
 
 	static void	GetDesktopResolution(int& horizontal, int& vertical);
 	static void RestartSoon();
+	static void DialogPaintCode();
 
 private:
-
 	HBITMAP hBackground;
 	HBITMAP hFakeWindow;
 	HBITMAP hBanner;
 	HBITMAP hSmallLogo;
+	HBITMAP hBottomPanel;
 	int doNotClose;
-
 };
