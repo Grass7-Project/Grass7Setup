@@ -13,30 +13,34 @@ public:
 	static LRESULT CALLBACK	NormalButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 
 private:
-	HBITMAP hBackBtnImg1;
-	HBITMAP hBackBtnImg2;
-	HBITMAP hBackBtnImg3;
-	HBITMAP hBackBtnImg4;
-
-	HBITMAP hCloseBtnImg1;
-	HBITMAP hCloseBtnImg2;
-	HBITMAP hCloseBtnImg3;
-	HBITMAP hCloseBtnImg4;
-
-	HBITMAP hNormalBtnImg1;
-	HBITMAP hNormalBtnImg2;
-	HBITMAP hNormalBtnImg3;
-	HBITMAP hNormalBtnImg4;
-
-	HBITMAP hBackBtnTmpImg;
-	HBITMAP hCloseBtnTmpImg;
-	HBITMAP hNormalBtnTmpImg;
+	HBITMAP hBackBtnImg1, // Back Button Bitmaps
+		hBackBtnImg2,
+		hBackBtnImg3,
+		hBackBtnImg4,
+		hCloseBtnImg1, // Close Button Bitmaps
+		hCloseBtnImg2,
+		hCloseBtnImg3,
+		hCloseBtnImg4,
+		hNormalBtnImg1, // Normal Button Bitmaps
+		hNormalBtnImg2,
+		hNormalBtnImg3,
+		hNormalBtnImg4,
+		hBackBtnTmpImg, // Back Button Temporary Bitmap
+		hCloseBtnTmpImg, // Close Button Temporary Bitmap
+		hNormalBtnTmpImg; // Normal Button Temporary Bitmap
 
 	HBITMAP hbmpWndScreenshot;
-	HDC hdcWndScreenshot;
-	HDC hdcMainWnd;
+	HDC hdcWndScreenshot,
+		hdcMainWnd;
 
-	int drawBackButton, drawCloseButton, drawNormalButton;
+	int drawBackButton,
+		drawCloseButton,
+		drawNormalButton;
 
-	BOOLEAN bButtonTracking, bButtonHover, cButtonTracking, cButtonHover, nButtonTracking, nButtonHover;
+	BOOLEAN bButtonTracking,
+		bButtonHover,
+		cButtonTracking,
+		cButtonHover,
+		nButtonTracking,
+		nButtonHover;
 };

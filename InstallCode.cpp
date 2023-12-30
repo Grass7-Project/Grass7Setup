@@ -15,9 +15,9 @@ extract_progress(enum wimlib_progress_msg msg,
 	switch (msg)
 	{
 	case WIMLIB_PROGRESS_MSG_EXTRACT_STREAMS:
-		GlobalObjects.ExpandingFilesPercentage = (INT)TO_PERCENT(info->extract.completed_bytes, info->extract.total_bytes);
-		::SendMessageW(GlobalObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
-		ProgressBar::updateProgressText(63, 143, GlobalObjects.ExpandingFilesPercentage, gr7::LoadStringToW(GlobalObjects.hInst, IDS_EXPANDING_FILES));
+		ProgressTextPercentageObjects.ExpandingFilesPercentage = (INT)TO_PERCENT(info->extract.completed_bytes, info->extract.total_bytes);
+		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+		ProgressBar::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText);
 		break;
 	default:
 		break;
@@ -29,7 +29,7 @@ int Install::ApplyImage()
 	int ret;
 	WIMStruct *wim = NULL;
 
-	ret = wimlib_open_wim(GlobalObjects.srcImage, 0, &wim);
+	ret = wimlib_open_wim(ImageInstallObjects.srcImage, 0, &wim);
 
 	if (ret != 0)
 	{
@@ -39,7 +39,7 @@ int Install::ApplyImage()
 
 	wimlib_register_progress_function(wim, extract_progress, NULL);
 
-	ret = wimlib_extract_image(wim, GlobalObjects.ImageIndex, GlobalObjects.destDrive, 0);
+	ret = wimlib_extract_image(wim, ImageInstallObjects.ImageIndex, ImageInstallObjects.destDrive, 0);
 
 	wimlib_free(wim);
 
@@ -55,64 +55,57 @@ int Install::ApplyImage()
 
 void InstallMain()
 {
-	GlobalObjects.CopyingFilesPercentage = 0;
-	GlobalObjects.ExpandingFilesPercentage = 0;
-	GlobalObjects.InstallingFeaturesPercentage = 0;
-	GlobalObjects.InstallingUpdatesPercentage = 0;
-	GlobalObjects.InstallingPercentage = 0;
-	ProgressBar::updateProgressText(63, 123, GlobalObjects.CopyingFilesPercentage, gr7::LoadStringToW(GlobalObjects.hInst, IDS_COPYING_FILES));
-	ProgressBar::updateProgressText(63, 143, GlobalObjects.ExpandingFilesPercentage, gr7::LoadStringToW(GlobalObjects.hInst, IDS_EXPANDING_FILES));
-	ProgressBar::updateProgressText(63, 163, GlobalObjects.InstallingFeaturesPercentage, gr7::LoadStringToW(GlobalObjects.hInst, IDS_INSTALLING_FEATURES));
-	ProgressBar::updateProgressText(63, 183, GlobalObjects.InstallingUpdatesPercentage, gr7::LoadStringToW(GlobalObjects.hInst, IDS_INSTALLING_UPDATES));
+	// Create progress text
+	ProgressBar::createProgressText();
 
 	// Copying files
 	Sleep(5000);
-	GlobalObjects.CopyingFilesPercentage = 100;
-	GlobalObjects.InstallingPercentage = GlobalObjects.InstallingPercentage + 25;
-	::SendMessageW(GlobalObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
-	ProgressBar::updateProgressText(63, 123, GlobalObjects.CopyingFilesPercentage, gr7::LoadStringToW(GlobalObjects.hInst, IDS_COPYING_FILES));
+	ProgressTextPercentageObjects.CopyingFilesPercentage = 100;
+	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
+	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+	ProgressBar::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText);
 
 	// Expanding files
 	int err = Install::ApplyImage();
 	if (err != 0) {
 
 	}
-	GlobalObjects.ExpandingFilesPercentage = 100;
-	GlobalObjects.InstallingPercentage = GlobalObjects.InstallingPercentage + 25;
-	::SendMessageW(GlobalObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
-	ProgressBar::updateProgressText(63, 143, GlobalObjects.ExpandingFilesPercentage, gr7::LoadStringToW(GlobalObjects.hInst, IDS_EXPANDING_FILES));
+	ProgressTextPercentageObjects.ExpandingFilesPercentage = 100;
+	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
+	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+	ProgressBar::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText);
 
 	// Installing Features
 	Sleep(5000);
-	GlobalObjects.InstallingFeaturesPercentage = 100;
-	GlobalObjects.InstallingPercentage = GlobalObjects.InstallingPercentage + 25;
-	::SendMessageW(GlobalObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
-	ProgressBar::updateProgressText(63, 163, GlobalObjects.InstallingFeaturesPercentage, gr7::LoadStringToW(GlobalObjects.hInst, IDS_INSTALLING_FEATURES));
+	ProgressTextPercentageObjects.InstallingFeaturesPercentage = 100;
+	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
+	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+	ProgressBar::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText);
 
 	// Installing Updates
 	Sleep(5000);
-	GlobalObjects.InstallingUpdatesPercentage = 100;
-	GlobalObjects.InstallingPercentage = GlobalObjects.InstallingPercentage + 25;
-	::SendMessageW(GlobalObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
-	ProgressBar::updateProgressText(63, 183, GlobalObjects.InstallingUpdatesPercentage, gr7::LoadStringToW(GlobalObjects.hInst, IDS_INSTALLING_UPDATES));
+	ProgressTextPercentageObjects.InstallingUpdatesPercentage = 100;
+	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
+	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+	ProgressBar::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText);
 
 	// Finished
 	Sleep(2000);
-	GlobalObjects.InstallingPercentage = 100;
-	::SendMessageW(GlobalObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
-	::SendMessageW(GlobalObjects.hWndSetupWindow, SETUPWND_INSTALL_FINISH, (WPARAM)(INT)0, 0);
+	ProgressBarObjects.InstallingPercentage = 100;
+	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+	::SendMessageW(MainObjects.hWndSetupWindow, SETUPWND_INSTALL_FINISH, (WPARAM)(INT)0, 0);
 }
 
 // Caller install function
 void Install::InstallMain()
 {
 	wchar_t srcImage[MAX_PATH];
-	wcsncpy_s(srcImage, GlobalObjects.installSources, sizeof(srcImage));
+	wcsncpy_s(srcImage, ImageInstallObjects.installSources, sizeof(srcImage));
 	wcsncat_s(srcImage, L"\\install.wim", sizeof(srcImage));
 
-	GlobalObjects.srcImage = srcImage;
-	GlobalObjects.destDrive = L"C:\\Users\\Genki\\Desktop\\apply";
-	GlobalObjects.ImageIndex = 1;
+	ImageInstallObjects.srcImage = srcImage;
+	ImageInstallObjects.destDrive = L"C:\\Users\\Genki\\Desktop\\apply";
+	ImageInstallObjects.ImageIndex = 1;
 	std::thread InstallCode(InstallMain);
 	InstallCode.detach();
 }

@@ -10,7 +10,7 @@ void ProgressBar::createProgressBar()
 
 	GUI::GetDesktopResolution(hoz, ver);
 
-	GlobalObjects.hProgressCtrlInstalling = ::CreateWindowExW(
+	ProgressBarObjects.hProgressCtrlInstalling = ::CreateWindowExW(
 		0,
 		PROGRESS_CLASS,
 		L"",
@@ -19,12 +19,12 @@ void ProgressBar::createProgressBar()
 		ver - 66,
 		hoz - 210,
 		11,
-		GlobalObjects.hWndMainWindow,
+		MainObjects.hWndMainWindow,
 		(HMENU)ID_SMOOTHPROGRESSCTRL,
-		GlobalObjects.hInst,
+		MainObjects.hInst,
 		NULL);
 
-	GlobalObjects.hProgressCtrlCollectingInfo = ::CreateWindowExW(
+	ProgressBarObjects.hProgressCtrlCollectingInfo = ::CreateWindowExW(
 		0,
 		PROGRESS_CLASS,
 		L"",
@@ -33,51 +33,51 @@ void ProgressBar::createProgressBar()
 		ver - 66,
 		208,
 		11,
-		GlobalObjects.hWndMainWindow,
+		MainObjects.hWndMainWindow,
 		(HMENU)ID_SMOOTHPROGRESSCTRL,
-		GlobalObjects.hInst,
+		MainObjects.hInst,
 		NULL);
 
-	::SendMessageW(GlobalObjects.hProgressCtrlCollectingInfo, PBM_SETPOS, (WPARAM)(INT)0, 0);
-	SetWindowTheme(GlobalObjects.hProgressCtrlCollectingInfo, _T(""), _T(""));
-	::SendMessageW(GlobalObjects.hProgressCtrlCollectingInfo, PBM_SETBARCOLOR, 0, 0x0033cc99);
-	::SendMessageW(GlobalObjects.hProgressCtrlCollectingInfo, PBM_SETBKCOLOR, 0, 0x00b1937a);
+	::SendMessageW(ProgressBarObjects.hProgressCtrlCollectingInfo, PBM_SETPOS, (WPARAM)(INT)0, 0);
+	SetWindowTheme(ProgressBarObjects.hProgressCtrlCollectingInfo, _T(""), _T(""));
+	::SendMessageW(ProgressBarObjects.hProgressCtrlCollectingInfo, PBM_SETBARCOLOR, 0, 0x0033cc99);
+	::SendMessageW(ProgressBarObjects.hProgressCtrlCollectingInfo, PBM_SETBKCOLOR, 0, 0x00b1937a);
 
-	::SendMessageW(GlobalObjects.hProgressCtrlInstalling, PBM_SETPOS, (WPARAM)(INT)0, 0);
-	SetWindowTheme(GlobalObjects.hProgressCtrlInstalling, _T(""), _T(""));
-	::SendMessageW(GlobalObjects.hProgressCtrlInstalling, PBM_SETBARCOLOR, 0, 0x0033cc99);
-	::SendMessageW(GlobalObjects.hProgressCtrlInstalling, PBM_SETBKCOLOR, 0, 0x00b1937a);
+	::SendMessageW(ProgressBarObjects.hProgressCtrlInstalling, PBM_SETPOS, (WPARAM)(INT)0, 0);
+	SetWindowTheme(ProgressBarObjects.hProgressCtrlInstalling, _T(""), _T(""));
+	::SendMessageW(ProgressBarObjects.hProgressCtrlInstalling, PBM_SETBARCOLOR, 0, 0x0033cc99);
+	::SendMessageW(ProgressBarObjects.hProgressCtrlInstalling, PBM_SETBKCOLOR, 0, 0x00b1937a);
 
-	GlobalObjects.CollectingInfoPercentage = 0;
-	GlobalObjects.InstallingPercentage = 0;
-	::SendMessageW(GlobalObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+	ProgressBarObjects.CollectingInfoPercentage = 0;
+	ProgressBarObjects.InstallingPercentage = 0;
+	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
 
-	ProgressBar::paintTextBelowProgressBar(GlobalObjects.hWndMainWindow, 37, ver - 42, gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_PROGBAR_TEXT1), 9);
-	ProgressBar::paintTextBelowProgressBar(GlobalObjects.hWndMainWindow, 228, ver - 42, gr7::LoadStringToW(GetModuleHandleW(NULL), IDS_PROGBAR_TEXT2), 9);
-	ProgressBar::paintTextBelowProgressBar(GlobalObjects.hWndMainWindow, 11, ver - 47, L"1", 25);
-	ProgressBar::paintTextBelowProgressBar(GlobalObjects.hWndMainWindow, 201, ver - 47, L"2", 25);
+	ProgressBar::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 37, ver - 42, AppResStringsObjects.ProgressBarText1, 9);
+	ProgressBar::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 228, ver - 42, AppResStringsObjects.ProgressBarText2, 9);
+	ProgressBar::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 11, ver - 47, L"1", 25);
+	ProgressBar::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 201, ver - 47, L"2", 25);
 }
 
 void ProgressBar::updateProgressBar()
 {
-	::SendMessageW(GlobalObjects.hProgressCtrlCollectingInfo, PBM_SETPOS, (WPARAM)(INT)GlobalObjects.CollectingInfoPercentage, 0);
-	::SendMessageW(GlobalObjects.hProgressCtrlInstalling, PBM_SETPOS, (WPARAM)(INT)GlobalObjects.InstallingPercentage, 0);
-	::UpdateWindow(GlobalObjects.hWndMainWindow);
+	::SendMessageW(ProgressBarObjects.hProgressCtrlCollectingInfo, PBM_SETPOS, (WPARAM)(INT)ProgressBarObjects.CollectingInfoPercentage, 0);
+	::SendMessageW(ProgressBarObjects.hProgressCtrlInstalling, PBM_SETPOS, (WPARAM)(INT)ProgressBarObjects.InstallingPercentage, 0);
+	::UpdateWindow(MainObjects.hWndMainWindow);
 }
 
 void ProgressBar::createProgressText()
 {
 	// Init the percentage values
-	GlobalObjects.CopyingFilesPercentage = 0;
-	GlobalObjects.ExpandingFilesPercentage = 0;
-	GlobalObjects.InstallingFeaturesPercentage = 0;
-	GlobalObjects.InstallingUpdatesPercentage = 0;
+	ProgressTextPercentageObjects.CopyingFilesPercentage = 0;
+	ProgressTextPercentageObjects.ExpandingFilesPercentage = 0;
+	ProgressTextPercentageObjects.InstallingFeaturesPercentage = 0;
+	ProgressTextPercentageObjects.InstallingUpdatesPercentage = 0;
 
 	// Create the text
-	updateProgressText(63, 123, GlobalObjects.CopyingFilesPercentage, gr7::LoadStringToW(GlobalObjects.hInst, IDS_COPYING_FILES));
-	updateProgressText(63, 143, GlobalObjects.ExpandingFilesPercentage, gr7::LoadStringToW(GlobalObjects.hInst, IDS_EXPANDING_FILES));
-	updateProgressText(63, 163, GlobalObjects.InstallingFeaturesPercentage, gr7::LoadStringToW(GlobalObjects.hInst, IDS_INSTALLING_FEATURES));
-	updateProgressText(63, 183, GlobalObjects.InstallingUpdatesPercentage, gr7::LoadStringToW(GlobalObjects.hInst, IDS_INSTALLING_UPDATES));
+	ProgressBar::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText);
+	ProgressBar::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText);
+	ProgressBar::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText);
+	ProgressBar::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText);
 }
 
 void ProgressBar::updateProgressText(int x, int y, int &ProgressPercantage, wchar_t *Text)
@@ -91,16 +91,16 @@ void ProgressBar::updateProgressText(int x, int y, int &ProgressPercantage, wcha
 	wcsncat_s(ProgressText, Text, 24);
 	wcsncat_s(ProgressText, percentage, 256);
 
-	HDC hdc = ::GetDC(GlobalObjects.hWndSetupWindow);
+	HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
 	HFONT hFont, hTmp;
 	hFont = CreateFontW(18, 0, 0, 0, FW_LIGHT, 0, 0, 0, 0, 0, 0, 2, 0, L"Segoe UI");
 	hTmp = (HFONT)SelectObject(hdc, hFont);
 	size_t size = wcslen(ProgressText);
 	int convertsize = static_cast<int>(size);
 	TextOutW(hdc, x, y, ProgressText, convertsize);
-	ReleaseDC(GlobalObjects.hWndSetupWindow, hdc);
+	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
-	::UpdateWindow(GlobalObjects.hWndSetupWindow);
+	::UpdateWindow(MainObjects.hWndSetupWindow);
 }
 
 void ProgressBar::paintTextBelowProgressBar(HWND hWnd, int x, int y, wchar_t *Text, int FontSize)

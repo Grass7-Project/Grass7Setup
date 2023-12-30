@@ -4,6 +4,4 @@ class Install {
 public:
 	static int ApplyImage();
 	static void InstallMain();
-private:
-
 };

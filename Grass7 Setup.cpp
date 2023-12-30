@@ -5,7 +5,13 @@
 #include "ProgressBar.h"
 #include <iostream>
 
-Global GlobalObjects;
+GlobalMain MainObjects;
+GlobalButtons ButtonObjects;
+GlobalRichEditControl RichEditControlObjects;
+GlobalProgressBar ProgressBarObjects;
+GlobalProgressTextPercentage ProgressTextPercentageObjects;
+GlobalAppResStrings AppResStringsObjects;
+GlobalImageInstall ImageInstallObjects;
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -31,21 +37,23 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		}
 	}
 
-	GlobalObjects.hInst = hInstance;
+	MainObjects.hInst = hInstance;
+
+	GUI::LoadStrings();
 
 	WCHAR installSourcesp[MAX_PATH];
 	GetModuleFileNameW(NULL, installSourcesp, MAX_PATH);
 	PathRemoveFileSpecW(installSourcesp);
-	GlobalObjects.installSources = installSourcesp;
+	ImageInstallObjects.installSources = installSourcesp;
 
-	LoadStringW(GlobalObjects.hInst, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+	LoadStringW(MainObjects.hInst, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	GUI::RegisterClasses();
 
 	if (!GUI::InitInstance()) {
 		return FALSE;
 	}
 
-	hAccelTable = LoadAcceleratorsW(GlobalObjects.hInst, L"MainWindow");
+	hAccelTable = LoadAcceleratorsW(MainObjects.hInst, L"MainWindow");
 
 	while (GetMessageW(&msg, NULL, 0, 0)) {
 		if (!TranslateAcceleratorW(msg.hwnd, hAccelTable, &msg)) {

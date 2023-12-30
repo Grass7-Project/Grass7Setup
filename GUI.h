@@ -10,14 +10,15 @@ public:
 	static		LRESULT CALLBACK	WndProcDialogWnd(HWND, UINT, WPARAM, LPARAM);
 
 	static void	GetDesktopResolution(int& horizontal, int& vertical);
+	static void LoadStrings();
 	static void RestartSoon();
 	static void DialogPaintCode();
 
 private:
-	HBITMAP hBackground;
-	HBITMAP hFakeWindow;
-	HBITMAP hBanner;
-	HBITMAP hSmallLogo;
-	HBITMAP hBottomPanel;
+	HBITMAP hBackground,
+		hFakeWindow,
+		hBanner,
+		hSmallLogo,
+		hBottomPanel;
 	int doNotClose;
 };
