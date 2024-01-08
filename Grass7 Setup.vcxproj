@@ -71,35 +71,39 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)gr7api\include;C:\Program Files\Windows AIK\Tools\PETools\wimlib\devel;</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(SolutionDir)gr7api\$(Platform)\$(Configuration)\;</LibraryPath>
-    <ExtensionsToDeleteOnClean>$(SolutionDir)$(Platform)\$(Configuration)\libwim-15.dll;*.cdf;*.cache;*.obj;*.ilk;*.ipdb;*.iobj;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi</ExtensionsToDeleteOnClean>
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)depends\gr7api\include;$(SolutionDir)depends\wimlib\$(Platform)\devel;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(SolutionDir)depends\gr7api\$(Platform)\$(Configuration)\;$(SolutionDir)depends\wimlib\$(Platform)\devel;</LibraryPath>
+    <ExtensionsToDeleteOnClean>$(SolutionDir)Build\$(Platform)\$(Configuration)\libwim-15.dll;*.cdf;*.cache;*.obj;*.ilk;*.ipdb;*.iobj;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi</ExtensionsToDeleteOnClean>
     <TargetName>gr7setup</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)gr7api\include;C:\Program Files\Windows AIK\Tools\PETools\wimlib\devel;</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(SolutionDir)gr7api\$(Platform)\$(Configuration)\;C:\Program Files\Windows AIK\Tools\PETools\wimlib\devel;</LibraryPath>
-    <ExtensionsToDeleteOnClean>$(SolutionDir)$(Platform)\$(Configuration)\libwim-15.dll;*.cdf;*.cache;*.obj;*.ilk;*.ipdb;*.iobj;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi</ExtensionsToDeleteOnClean>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)depends\gr7api\include;$(SolutionDir)depends\wimlib\$(Platform)\devel;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(SolutionDir)depends\gr7api\$(Platform)\$(Configuration)\;$(SolutionDir)depends\wimlib\$(Platform)\devel;</LibraryPath>
+    <ExtensionsToDeleteOnClean>$(SolutionDir)Build\$(Platform)\$(Configuration)\libwim-15.dll;*.cdf;*.cache;*.obj;*.ilk;*.ipdb;*.iobj;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi</ExtensionsToDeleteOnClean>
     <TargetName>gr7setup</TargetName>
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)gr7api\include;C:\Program Files\Windows AIK\Tools\PETools\wimlib\devel;</IncludePath>
-    <ExtensionsToDeleteOnClean>$(SolutionDir)$(Platform)\$(Configuration)\libwim-15.dll;*.cdf;*.cache;*.obj;*.ilk;*.ipdb;*.iobj;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi</ExtensionsToDeleteOnClean>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(SolutionDir)gr7api\$(Platform)\$(Configuration)\;</LibraryPath>
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)depends\gr7api\include;$(SolutionDir)depends\wimlib\$(Platform)\devel;</IncludePath>
+    <ExtensionsToDeleteOnClean>$(SolutionDir)Build\$(Platform)\$(Configuration)\libwim-15.dll;*.cdf;*.cache;*.obj;*.ilk;*.ipdb;*.iobj;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi</ExtensionsToDeleteOnClean>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(SolutionDir)depends\gr7api\$(Platform)\$(Configuration)\;$(SolutionDir)depends\wimlib\$(Platform)\devel;</LibraryPath>
     <TargetName>gr7setup</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)gr7api\include;C:\Program Files\Windows AIK\Tools\PETools\wimlib\devel;</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(SolutionDir)gr7api\$(Platform)\$(Configuration)\;C:\Program Files\Windows AIK\Tools\PETools\wimlib\devel;</LibraryPath>
-    <ExtensionsToDeleteOnClean>$(SolutionDir)$(Platform)\$(Configuration)\libwim-15.dll;*.cdf;*.cache;*.obj;*.ilk;*.ipdb;*.iobj;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi</ExtensionsToDeleteOnClean>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)depends\gr7api\include;$(SolutionDir)depends\wimlib\$(Platform)\devel;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(SolutionDir)depends\gr7api\$(Platform)\$(Configuration)\;$(SolutionDir)depends\wimlib\$(Platform)\devel;</LibraryPath>
+    <ExtensionsToDeleteOnClean>$(SolutionDir)Build\$(Platform)\$(Configuration)\libwim-15.dll;*.cdf;*.cache;*.obj;*.ilk;*.ipdb;*.iobj;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi</ExtensionsToDeleteOnClean>
     <TargetName>gr7setup</TargetName>
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -116,10 +120,10 @@
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;comctl32.lib;Msimg32.lib;gdiplus.lib;gr7api.lib;uxtheme.lib;libwim.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "C:\Program Files\Windows AIK\Tools\PETools\wimlib\libwim-15.dll" "$(SolutionDir)$(Platform)\$(Configuration)\" /Y
-xcopy "C:\Program Files\Windows AIK\Tools\PETools\wimlib\libwim-15.dll" "$(SolutionDir)ISO\sources\" /Y
-xcopy "$(SolutionDir)$(Platform)\$(Configuration)\gr7setup.exe" "$(SolutionDir)ISO\sources\" /Y
-xcopy "$(SolutionDir)$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionDir)ISO\sources\" /Y</Command>
+      <Command>xcopy "$(SolutionDir)depends\wimlib\$(Platform)\libwim-15.dll" "$(SolutionDir)Build\$(Platform)\$(Configuration)\" /Y
+xcopy "$(SolutionDir)depends\wimlib\$(Platform)\libwim-15.dll" "$(SolutionDir)ISO\sources\" /Y
+xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7setup.exe" "$(SolutionDir)ISO\sources\" /Y
+xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionDir)ISO\sources\" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -137,10 +141,10 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionDir)ISO
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;comctl32.lib;Msimg32.lib;gdiplus.lib;gr7api.lib;uxtheme.lib;libwim.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "C:\Program Files\Windows AIK\Tools\PETools\wimlib\libwim-15.dll" "$(SolutionDir)$(Platform)\$(Configuration)\" /Y
-xcopy "C:\Program Files\Windows AIK\Tools\PETools\wimlib\libwim-15.dll" "$(SolutionDir)ISO\sources\" /Y
-xcopy "$(SolutionDir)$(Platform)\$(Configuration)\gr7setup.exe" "$(SolutionDir)ISO\sources\" /Y
-xcopy "$(SolutionDir)$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionDir)ISO\sources\" /Y</Command>
+      <Command>xcopy "$(SolutionDir)depends\wimlib\$(Platform)\libwim-15.dll" "$(SolutionDir)Build\$(Platform)\$(Configuration)\" /Y
+xcopy "$(SolutionDir)depends\wimlib\$(Platform)\libwim-15.dll" "$(SolutionDir)ISO\sources\" /Y
+xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7setup.exe" "$(SolutionDir)ISO\sources\" /Y
+xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionDir)ISO\sources\" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -162,10 +166,10 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionDir)ISO
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;comctl32.lib;Msimg32.lib;gdiplus.lib;gr7api.lib;uxtheme.lib;libwim.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "C:\Program Files\Windows AIK\Tools\PETools\wimlib\libwim-15.dll" "$(SolutionDir)$(Platform)\$(Configuration)\" /Y
-xcopy "C:\Program Files\Windows AIK\Tools\PETools\wimlib\libwim-15.dll" "$(SolutionDir)ISO\sources\" /Y
-xcopy "$(SolutionDir)$(Platform)\$(Configuration)\gr7setup.exe" "$(SolutionDir)ISO\sources\" /Y
-xcopy "$(SolutionDir)$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionDir)ISO\sources\" /Y</Command>
+      <Command>xcopy "$(SolutionDir)depends\wimlib\$(Platform)\libwim-15.dll" "$(SolutionDir)Build\$(Platform)\$(Configuration)\" /Y
+xcopy "$(SolutionDir)depends\wimlib\$(Platform)\libwim-15.dll" "$(SolutionDir)ISO\sources\" /Y
+xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7setup.exe" "$(SolutionDir)ISO\sources\" /Y
+xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionDir)ISO\sources\" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -187,10 +191,10 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionDir)ISO
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;comctl32.lib;Msimg32.lib;gdiplus.lib;gr7api.lib;uxtheme.lib;libwim.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "C:\Program Files\Windows AIK\Tools\PETools\wimlib\libwim-15.dll" "$(SolutionDir)$(Platform)\$(Configuration)\" /Y
-xcopy "C:\Program Files\Windows AIK\Tools\PETools\wimlib\libwim-15.dll" "$(SolutionDir)ISO\sources\" /Y
-xcopy "$(SolutionDir)$(Platform)\$(Configuration)\gr7setup.exe" "$(SolutionDir)ISO\sources\" /Y
-xcopy "$(SolutionDir)$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionDir)ISO\sources\" /Y</Command>
+      <Command>xcopy "$(SolutionDir)depends\wimlib\$(Platform)\libwim-15.dll" "$(SolutionDir)Build\$(Platform)\$(Configuration)\" /Y
+xcopy "$(SolutionDir)depends\wimlib\$(Platform)\libwim-15.dll" "$(SolutionDir)ISO\sources\" /Y
+xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7setup.exe" "$(SolutionDir)ISO\sources\" /Y
+xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionDir)ISO\sources\" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
