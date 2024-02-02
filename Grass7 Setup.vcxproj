@@ -201,21 +201,25 @@ xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionD
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BootSetup.h" />
     <ClInclude Include="ButtonGUI.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="Grass7 Setup.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="InstallCode.h" />
+    <ClInclude Include="PartitionCode.h" />
     <ClInclude Include="ProgressBar.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BootSetup.cpp" />
     <ClCompile Include="ButtonGUI.cpp" />
     <ClCompile Include="Grass7 Setup.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="InstallCode.cpp" />
+    <ClCompile Include="PartitionCode.cpp" />
     <ClCompile Include="ProgressBar.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

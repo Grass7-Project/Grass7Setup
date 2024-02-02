@@ -3,6 +3,7 @@
 #include "Global.h"
 #include "ProgressBar.h"
 #include "GUI.h"
+#include "BootSetup.h"
 #include <wimlib.h>
 
 #define TO_PERCENT(numerator, denominator) \
@@ -29,7 +30,7 @@ int Install::ApplyImage()
 	int ret;
 	WIMStruct *wim = NULL;
 
-	ret = wimlib_open_wim(ImageInstallObjects.srcImage, 0, &wim);
+	ret = wimlib_open_wim(ImageInstallObjects.ImagePath, 0, &wim);
 
 	if (ret != 0)
 	{
@@ -53,10 +54,19 @@ int Install::ApplyImage()
 	return 0;
 }
 
-void InstallMain()
+void InstallerThread()
 {
-	// Create progress text
-	ProgressBar::createProgressText();
+#ifdef _DEBUG
+	ImageInstallObjects.destDrive = L"C:\\Users\\Genki\\Desktop\\gr7\\Deploy";
+#else
+	ImageInstallObjects.destDrive = L"W:\\";
+#endif
+
+	wchar_t srcImage1[MAX_PATH];
+	wcsncpy_s(srcImage1, ImageInstallObjects.installSources, sizeof(srcImage1));
+	wcsncat_s(srcImage1, L"\\install.wim", sizeof(srcImage1));
+	ImageInstallObjects.ImagePath = srcImage1;
+	ImageInstallObjects.ImageIndex = 1;
 
 	// Copying files
 	Sleep(5000);
@@ -93,19 +103,17 @@ void InstallMain()
 	Sleep(2000);
 	ProgressBarObjects.InstallingPercentage = 100;
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+
+	// Make system able to boot
+	BootSetup::SetupSystemBoot();
+
+	// Message the Setup Window that installation is finished
 	::SendMessageW(MainObjects.hWndSetupWindow, SETUPWND_INSTALL_FINISH, (WPARAM)(INT)0, 0);
 }
 
 // Caller install function
 void Install::InstallMain()
 {
-	wchar_t srcImage[MAX_PATH];
-	wcsncpy_s(srcImage, ImageInstallObjects.installSources, sizeof(srcImage));
-	wcsncat_s(srcImage, L"\\install.wim", sizeof(srcImage));
-
-	ImageInstallObjects.srcImage = srcImage;
-	ImageInstallObjects.destDrive = L"C:\\Users\\Genki\\Desktop\\apply";
-	ImageInstallObjects.ImageIndex = 1;
-	std::thread InstallCode(InstallMain);
+	std::thread InstallCode(InstallerThread);
 	InstallCode.detach();
 }

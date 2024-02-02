@@ -12,12 +12,14 @@ public:
 	int Page;
 };
 
-// Buttons, what the f*ck can i explain?
+// Buttons
 class GlobalButtons {
 public:
 	HWND hBackBtn,
 		hCloseBtn,
-		hNormalBtn;
+		hNormalBtn,
+		hAutoPartitionBtn,
+		hManualPartitionBtn;
 	int BackButtonDisabled,
 		CloseButtonDisabled,
 		NormalButtonDisabled,
@@ -62,6 +64,7 @@ public:
 	wchar_t *InstallButtonText;
 	wchar_t *EulaTitleText;
 	wchar_t *ChangelogTitleText;
+	wchar_t *PartitionTitleText;
 	wchar_t *OptionSelectionText;
 	wchar_t *CollectingInfoText;
 	wchar_t *InstallingText;
@@ -69,13 +72,15 @@ public:
 	wchar_t *ExpandingFilesText;
 	wchar_t *InstallingFeaturesText;
 	wchar_t *InstallingUpdatesText;
+	wchar_t *InstallingTitleText;
+	wchar_t *RestartingTitleText;
 };
 
 // Image installation vairiables
 class GlobalImageInstall {
 public:
 	int ImageIndex;
-	wchar_t *srcImage;
+	wchar_t *ImagePath;
 	wchar_t *destDrive;
 	wchar_t *installSources;
 };

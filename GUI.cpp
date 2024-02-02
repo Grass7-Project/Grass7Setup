@@ -4,6 +4,8 @@
 #include "ProgressBar.h"
 #include "InstallCode.h"
 #include "ButtonGUI.h"
+#include "PartitionCode.h"
+#include <Uxtheme.h>
 #include <gdiplus.h>
 
 GUI GUIObj;
@@ -11,7 +13,7 @@ GUI GUIObj;
 // Main GUI Code
 BOOL GUI::InitInstance()
 {
-	MainObjects.hWndMainWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_WELCOMEPAGE), 0, (DLGPROC)GUI::WndProc);
+	MainObjects.hWndMainWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PARENTPAGE), 0, (DLGPROC)GUI::WndProc);
 
 	EnableMenuItem(GetSystemMenu(MainObjects.hWndMainWindow, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
@@ -77,13 +79,15 @@ void GUI::LoadStrings()
 	AppResStringsObjects.InstallButtonText = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLBTN);
 	AppResStringsObjects.EulaTitleText= gr7::LoadStringToW(MainObjects.hInst, IDS_EULA_TITLE);
 	AppResStringsObjects.ChangelogTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_CHANGELOG_TITLE);
+	AppResStringsObjects.PartitionTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_PARTITION_TITLE);
 	AppResStringsObjects.OptionSelectionText = gr7::LoadStringToW(MainObjects.hInst, IDS_OPT_SEL_TEXT);
 	AppResStringsObjects.CollectingInfoText = gr7::LoadStringToW(MainObjects.hInst, IDS_COLLECTING_INFO);
-	AppResStringsObjects.InstallingText = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLING_TEXT);
 	AppResStringsObjects.CopyingFilesText = gr7::LoadStringToW(MainObjects.hInst, IDS_COPYING_FILES);
 	AppResStringsObjects.ExpandingFilesText = gr7::LoadStringToW(MainObjects.hInst, IDS_EXPANDING_FILES);
 	AppResStringsObjects.InstallingFeaturesText = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLING_FEATURES);
 	AppResStringsObjects.InstallingUpdatesText = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLING_UPDATES);
+	AppResStringsObjects.InstallingTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLING_TITLE);
+	AppResStringsObjects.RestartingTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_RESTARTING_TITLE);
 }
 
 // Window Classes are registered over here
@@ -161,6 +165,7 @@ void GUI::RestartSoon()
 
 void GUI::DialogPaintCode()
 {
+	// Welcome Page
 	if (MainObjects.Page == 1) {
 		// Draw Logo Text
 		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
@@ -181,6 +186,44 @@ void GUI::DialogPaintCode()
 		// Draw Dialog Title Text
 		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
 		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.ChangelogTitleText, 12, 1);
+		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
+
+		::UpdateWindow(MainObjects.hWndSetupWindow);
+	}
+	// Partition Page
+	if (MainObjects.Page == 4) {
+		// Draw Dialog Title Text
+		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
+		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.PartitionTitleText, 12, 1);
+		int nHeightFont = -MulDiv(9, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
+
+		::UpdateWindow(MainObjects.hWndSetupWindow);
+
+		HFONT hBtnFont = CreateFontW(nHeightFont, 0, 0, 0, FW_LIGHT, 0, 0, 0, 0, 0, 0, 2, 0, L"Segoe UI");
+
+		ButtonObjects.hAutoPartitionBtn = CreateWindowW(L"BUTTON", L"Automatic Partitioning", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 18, 338, 140, 26, MainObjects.hWndDialogWindow, (HMENU)IDAUTOMATICPART, MainObjects.hInst, NULL);
+		ButtonObjects.hManualPartitionBtn = CreateWindowW(L"BUTTON", L"Manual Partitioning", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 175, 338, 123, 26, MainObjects.hWndDialogWindow, (HMENU)IDMANUALPART, MainObjects.hInst, NULL);
+		SendMessage(ButtonObjects.hAutoPartitionBtn, WM_SETFONT, (LPARAM)hBtnFont, TRUE);
+		SendMessage(ButtonObjects.hManualPartitionBtn, WM_SETFONT, (LPARAM)hBtnFont, TRUE);
+		SetWindowTheme(ButtonObjects.hAutoPartitionBtn, L"", L"");
+		SetWindowTheme(ButtonObjects.hManualPartitionBtn, L"", L"");
+	}
+	// Installing Page
+	if (MainObjects.Page == 5) {
+		// Draw Dialog Title Text
+		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
+		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.InstallingTitleText, 12, 1);
+		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
+		ProgressBar::createProgressText();
+
+		::UpdateWindow(MainObjects.hWndSetupWindow);
+	}
+	// Restarting Page
+	if (MainObjects.Page == 6) {
+		// Draw Dialog Title Text
+		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
+		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.RestartingTitleText, 12, 1);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
 		::UpdateWindow(MainObjects.hWndSetupWindow);
@@ -347,7 +390,7 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 
 				// Welcome Page
 				if (MainObjects.Page == 1) {
-					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PAGE1), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
+					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_WELCOMEPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
 					::SendMessageW(ButtonObjects.hBackBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 					if (ButtonObjects.NormalButtonState == 3) {
 						::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
@@ -364,7 +407,7 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 					if (ButtonObjects.BackButtonDisabled == FALSE) {
 						::SendMessageW(ButtonObjects.hBackBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 					}
-					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PAGE2), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
+					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_LICENSEPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
 
 					::SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 
@@ -381,6 +424,16 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 
 				// Changelog Page
 				if (MainObjects.Page == 3) {
+					if (ButtonObjects.hAutoPartitionBtn != NULL) {
+						DestroyWindow(ButtonObjects.hAutoPartitionBtn);
+					}
+					if (ButtonObjects.hManualPartitionBtn != NULL) {
+						DestroyWindow(ButtonObjects.hManualPartitionBtn);
+					}
+					if (ButtonObjects.NormalButtonState == 3) {
+						::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+					}
+
 					if (RichEditControlObjects.hWndRichEditCtrl != NULL)
 					{
 						DestroyWindow(RichEditControlObjects.hWndRichEditCtrl);
@@ -389,7 +442,7 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 						::SendMessageW(ButtonObjects.hBackBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
 					}
 
-					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PAGE3), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
+					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_CHANGELOGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
 
 					wchar_t file[MAX_PATH];
 					wcsncpy_s(file, ImageInstallObjects.installSources, sizeof(file));
@@ -401,27 +454,25 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 					memset(file, 0, sizeof(file));
 				}
 
-				// Install Options Page
-				if (MainObjects.Page == 4) {
-					if (RichEditControlObjects.hWndRichEditCtrl != NULL)
-					{
-						DestroyWindow(RichEditControlObjects.hWndRichEditCtrl);
-					}
-					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PAGE4), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
-				}
-
 				// Partition Page
-				if (MainObjects.Page == 5) {
-					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PAGE5), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
+				if (MainObjects.Page == 4) {
+					::SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PARTITIONPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
 				}
 
 				// Installing Page
-				if (MainObjects.Page == 6) {
+				if (MainObjects.Page == 5) {
+					if (ButtonObjects.hAutoPartitionBtn != NULL) {
+						DestroyWindow(ButtonObjects.hAutoPartitionBtn);
+					}
+					if (ButtonObjects.hManualPartitionBtn != NULL) {
+						DestroyWindow(ButtonObjects.hManualPartitionBtn);
+					}
 					::SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 					::SendMessageW(ButtonObjects.hBackBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 					::SendMessageW(ButtonObjects.hCloseBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 					::ShowWindow(ButtonObjects.hNormalBtn, 0);
-					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PAGE6), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
+					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_INSTALLINGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
 					ProgressBarObjects.CollectingInfoPercentage = 100;
 					ProgressBar::updateProgressBar();
 
@@ -429,14 +480,13 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 					::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
 					GUIObj.doNotClose = 1;
 					EnableMenuItem(GetSystemMenu(MainObjects.hWndSetupWindow, 0), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-					::SendMessageW(MainObjects.hWndSetupWindow, SETUPWND_CREATE_PROG_TX, (WPARAM)(INT)0, 0);
 					Install::InstallMain();
 				}
 
 				// Restarting Page
-				if (MainObjects.Page == 7) {
+				if (MainObjects.Page == 6) {
 					::SendMessageW(ButtonObjects.hCloseBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
-					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PAGE7), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
+					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_RESTARTINGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
 					std::thread Restart(GUI::RestartSoon);
 					Restart.detach();
 				}
@@ -445,20 +495,12 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 				::ShowWindow(MainObjects.hWndDialogWindow, 1);
 				::UpdateWindow(MainObjects.hWndDialogWindow);
 
-				//Activate custom paint code for some dialogs
+				//Activate custom paint code for dialogs
 				GUI::DialogPaintCode();
 			}
 			break;
 
-		// Call the function responsible for creating the install progress text on the installing page
-		case SETUPWND_CREATE_PROG_TX:
-			ProgressBar::createProgressText();
-			break;
-
-		case SETUPWND_UPDATE_PROG_TX:
-			break;
-
-		// This code runs after install was successfuly finished
+		// Installation finished
 		case SETUPWND_INSTALL_FINISH:
 		{
 			GUIObj.doNotClose = 0;
@@ -514,6 +556,20 @@ LRESULT CALLBACK GUI::WndProcDialogWnd(HWND hWnd, UINT message, WPARAM wParam, L
 					::SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 				}
 				break;
+
+			case IDAUTOMATICPART:
+			{
+				PartitionCode::AutomaticPartitioning();
+				::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+			}
+			break;
+
+			case IDMANUALPART:
+			{
+				PartitionCode::ManualPartitioning();
+				::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+			}
+			break;
 
 			default:
 				return DefWindowProcW(hWnd, message, wParam, lParam);

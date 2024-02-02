@@ -51,6 +51,12 @@
     <ClInclude Include="InstallCode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PartitionCode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BootSetup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -69,6 +75,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InstallCode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PartitionCode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BootSetup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

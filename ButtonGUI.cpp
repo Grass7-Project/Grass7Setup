@@ -350,7 +350,7 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 	break;
 	case BTN_UPDATE:
 	{
-		if (MainObjects.Page == 5) {
+		if (MainObjects.Page == 4) {
 			ButtonObjects.InstallButtonText = TRUE;
 		} else {
 			ButtonObjects.InstallButtonText = FALSE;
