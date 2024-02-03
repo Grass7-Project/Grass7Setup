@@ -24,6 +24,10 @@ public:
 		CloseButtonDisabled,
 		NormalButtonDisabled,
 		NormalButtonState,
+		AutoPartButtonDisabled,
+		AutoPartButtonState,
+		ManualPartButtonDisabled,
+		ManualPartButtonState,
 		InstallButtonText;
 };
 
@@ -65,7 +69,7 @@ public:
 	wchar_t *EulaTitleText;
 	wchar_t *ChangelogTitleText;
 	wchar_t *PartitionTitleText;
-	wchar_t *OptionSelectionText;
+	wchar_t *InstallOptionTitleText;
 	wchar_t *CollectingInfoText;
 	wchar_t *InstallingText;
 	wchar_t *CopyingFilesText;
@@ -74,6 +78,8 @@ public:
 	wchar_t *InstallingUpdatesText;
 	wchar_t *InstallingTitleText;
 	wchar_t *RestartingTitleText;
+	wchar_t *AutoPartButtonText;
+	wchar_t *ManualPartButtonText;
 };
 
 // Image installation vairiables

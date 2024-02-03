@@ -6,11 +6,15 @@ public:
 	static void				InitBackBtn();
 	static void				InitCloseBtn();
 	static void				InitNormalBtn();
-	static void				Paint(HWND &hWnd, int &drawButton, HBITMAP &hButtonImg, int xBmpPos, int yBmpPos, int drawText, wchar_t *text);
+	static void				InitAutoPartitionButton();
+	static void				InitManualPartitionButton();
+	static void				Paint(HWND &hWnd, int &drawButton, HBITMAP &hButtonImg, int xBmpPos, int yBmpPos, int drawText, wchar_t *text, int customTextXY, int textX, int textY);
 	static void				ChangeBitmapState(HWND &hWnd, int &ButtonDisabled, int &drawButton, HBITMAP &hButtonTmpImg, HBITMAP &hButtonImg, int setState);
 	static LRESULT CALLBACK	BackButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 	static LRESULT CALLBACK	CloseButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 	static LRESULT CALLBACK	NormalButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
+	static LRESULT CALLBACK	AutoPartButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
+	static LRESULT CALLBACK	ManualPartButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 
 private:
 	HBITMAP hBackBtnImg1, // Back Button Bitmaps
@@ -25,9 +29,19 @@ private:
 		hNormalBtnImg2,
 		hNormalBtnImg3,
 		hNormalBtnImg4,
+		hAutoPartBtnImg1, // Automatic Partitioning Button Bitmaps
+		hAutoPartBtnImg2,
+		hAutoPartBtnImg3,
+		hAutoPartBtnImg4,
+		hManualPartBtnImg1, // Manual Partitioning Button Bitmaps
+		hManualPartBtnImg2,
+		hManualPartBtnImg3,
+		hManualPartBtnImg4,
 		hBackBtnTmpImg, // Back Button Temporary Bitmap
 		hCloseBtnTmpImg, // Close Button Temporary Bitmap
-		hNormalBtnTmpImg; // Normal Button Temporary Bitmap
+		hNormalBtnTmpImg, // Normal Button Temporary Bitmap
+		hAutoPartBtnTmpImg, // Automatic Partitioning Button Temporary Bitmap
+		hManualPartBtnTmpImg; // Manual Partitioning Button Temporary Bitmap
 
 	HBITMAP hbmpWndScreenshot;
 	HDC hdcWndScreenshot,
@@ -35,12 +49,18 @@ private:
 
 	int drawBackButton,
 		drawCloseButton,
-		drawNormalButton;
+		drawNormalButton,
+		drawAutoPartButton,
+		drawManualPartButton;
 
-	BOOLEAN bButtonTracking,
-		bButtonHover,
-		cButtonTracking,
-		cButtonHover,
-		nButtonTracking,
-		nButtonHover;
+	BOOLEAN BackButtonTracking,
+		BackButtonHover,
+		CloseButtonTracking,
+		CloseButtonHover,
+		NormalButtonTracking,
+		NormalButtonHover,
+		AutoPartButtonTracking,
+		AutoPartButtonHover,
+		ManualPartButtonTracking,
+		ManualPartButtonHover;
 };

@@ -198,9 +198,6 @@ xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionD
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="BootSetup.h" />
     <ClInclude Include="ButtonGUI.h" />
     <ClInclude Include="Global.h" />
@@ -232,6 +229,10 @@ xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionD
     <ResourceCompile Include="Grass7 Setup.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\Bitmaps\AutoPartButton1.bmp" />
+    <Image Include="res\Bitmaps\AutoPartButton2.bmp" />
+    <Image Include="res\Bitmaps\AutoPartButton3.bmp" />
+    <Image Include="res\Bitmaps\AutoPartButton4.bmp" />
     <Image Include="res\Bitmaps\BackButton1.bmp" />
     <Image Include="res\Bitmaps\BackButton2.bmp" />
     <Image Include="res\Bitmaps\BackButton3.bmp" />
@@ -244,11 +245,19 @@ xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionD
     <Image Include="res\Bitmaps\CloseButton4.bmp" />
     <Image Include="res\Bitmaps\FakeWindow.bmp" />
     <Image Include="res\Bitmaps\LogoText.bmp" />
+    <Image Include="res\Bitmaps\ManualPartButton1.bmp" />
+    <Image Include="res\Bitmaps\ManualPartButton2.bmp" />
+    <Image Include="res\Bitmaps\ManualPartButton3.bmp" />
+    <Image Include="res\Bitmaps\ManualPartButton4.bmp" />
     <Image Include="res\Bitmaps\NormalButton1.bmp" />
     <Image Include="res\Bitmaps\NormalButton2.bmp" />
     <Image Include="res\Bitmaps\NormalButton3.bmp" />
     <Image Include="res\Bitmaps\NormalButton4.bmp" />
     <Image Include="res\Icons\Setup.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LICENSE" />
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

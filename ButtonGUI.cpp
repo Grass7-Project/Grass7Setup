@@ -2,6 +2,7 @@
 #include "ButtonGUI.h"
 #include "Global.h"
 #include "GUI.h"
+#include "PartitionCode.h"
 
 ButtonGUI BtnGUI;
 
@@ -49,6 +50,26 @@ void ButtonGUI::InitNormalBtn()
 	SetWindowSubclass(ButtonObjects.hNormalBtn, &ButtonGUI::NormalButtonProc, ID_NORMALBTN, 0);
 }
 
+// Initialize Automatic Partitioning Button
+void ButtonGUI::InitAutoPartitionButton()
+{
+	ButtonObjects.AutoPartButtonDisabled = FALSE;
+	BtnGUI.drawAutoPartButton = TRUE;
+
+	ButtonObjects.hAutoPartitionBtn = CreateWindowExW(NULL, L"BUTTON", NULL, BS_OWNERDRAW | WS_CHILD | WS_VISIBLE, 18, 338, 140, 26, MainObjects.hWndSetupWindow, (HMENU)ID_AUTOMATICPARTBTN, MainObjects.hInst, 0);
+	SetWindowSubclass(ButtonObjects.hAutoPartitionBtn, &ButtonGUI::AutoPartButtonProc, ID_AUTOMATICPARTBTN, 0);
+}
+// Initialize Manual Partitioning Button
+void ButtonGUI::InitManualPartitionButton()
+{
+	ButtonObjects.ManualPartButtonDisabled = FALSE;
+	BtnGUI.drawManualPartButton = TRUE;
+
+	ButtonObjects.hManualPartitionBtn = CreateWindowExW(NULL, L"BUTTON", NULL, BS_OWNERDRAW | WS_CHILD | WS_VISIBLE, 175, 338, 123, 26, MainObjects.hWndSetupWindow, (HMENU)ID_MANUALPARTBTN, MainObjects.hInst, 0);
+	SetWindowSubclass(ButtonObjects.hManualPartitionBtn, &ButtonGUI::ManualPartButtonProc, ID_MANUALPARTBTN, 0);
+}
+
+
 // Initialize Button Bitmaps
 void ButtonGUI::InitButtonBitmaps()
 {
@@ -56,21 +77,29 @@ void ButtonGUI::InitButtonBitmaps()
 	BtnGUI.hBackBtnImg1 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_BACK_BTN1_BMP), IMAGE_BITMAP, 0, 0, 0));
 	BtnGUI.hCloseBtnImg1 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_CLOSE_BTN1_BMP), IMAGE_BITMAP, 0, 0, 0));
 	BtnGUI.hNormalBtnImg1 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_NORMAL_BTN1_BMP), IMAGE_BITMAP, 0, 0, 0));
+	BtnGUI.hAutoPartBtnImg1 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_AUTOPART_BTN1_BMP), IMAGE_BITMAP, 0, 0, 0));
+	BtnGUI.hManualPartBtnImg1 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_MANUALPART_BTN1_BMP), IMAGE_BITMAP, 0, 0, 0));
 
 	// Pressed Button States
 	BtnGUI.hBackBtnImg2 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_BACK_BTN2_BMP), IMAGE_BITMAP, 0, 0, 0));
 	BtnGUI.hCloseBtnImg2 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_CLOSE_BTN2_BMP), IMAGE_BITMAP, 0, 0, 0));
 	BtnGUI.hNormalBtnImg2 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_NORMAL_BTN2_BMP), IMAGE_BITMAP, 0, 0, 0));
+	BtnGUI.hAutoPartBtnImg2 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_AUTOPART_BTN2_BMP), IMAGE_BITMAP, 0, 0, 0));
+	BtnGUI.hManualPartBtnImg2 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_MANUALPART_BTN2_BMP), IMAGE_BITMAP, 0, 0, 0));
 
 	// Disabled Button States
 	BtnGUI.hBackBtnImg3 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_BACK_BTN3_BMP), IMAGE_BITMAP, 0, 0, 0));
 	BtnGUI.hCloseBtnImg3 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_CLOSE_BTN3_BMP), IMAGE_BITMAP, 0, 0, 0));
 	BtnGUI.hNormalBtnImg3 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_NORMAL_BTN3_BMP), IMAGE_BITMAP, 0, 0, 0));
+	BtnGUI.hAutoPartBtnImg3 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_AUTOPART_BTN3_BMP), IMAGE_BITMAP, 0, 0, 0));
+	BtnGUI.hManualPartBtnImg3 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_MANUALPART_BTN3_BMP), IMAGE_BITMAP, 0, 0, 0));
 
 	// Hover Button States
 	BtnGUI.hBackBtnImg4 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_BACK_BTN4_BMP), IMAGE_BITMAP, 0, 0, 0));
 	BtnGUI.hCloseBtnImg4 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_CLOSE_BTN4_BMP), IMAGE_BITMAP, 0, 0, 0));
 	BtnGUI.hNormalBtnImg4 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_NORMAL_BTN4_BMP), IMAGE_BITMAP, 0, 0, 0));
+	BtnGUI.hAutoPartBtnImg4 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_AUTOPART_BTN4_BMP), IMAGE_BITMAP, 0, 0, 0));
+	BtnGUI.hManualPartBtnImg4 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_MANUALPART_BTN4_BMP), IMAGE_BITMAP, 0, 0, 0));
 
 	int height;
 	int width;
@@ -83,9 +112,11 @@ void ButtonGUI::InitButtonBitmaps()
 	BtnGUI.hBackBtnTmpImg = BtnGUI.hBackBtnImg1;
 	BtnGUI.hCloseBtnTmpImg = BtnGUI.hCloseBtnImg1;
 	BtnGUI.hNormalBtnTmpImg = BtnGUI.hNormalBtnImg1;
+	BtnGUI.hAutoPartBtnTmpImg = BtnGUI.hAutoPartBtnImg1;
+	BtnGUI.hManualPartBtnTmpImg = BtnGUI.hManualPartBtnImg1;
 }
 
-void ButtonGUI::Paint(HWND &hWnd, int &drawButton, HBITMAP &hButtonImg, int xBmpPos = 0, int yBmpPos = 0, int drawText = FALSE, wchar_t *text = L"")
+void ButtonGUI::Paint(HWND &hWnd, int &drawButton, HBITMAP &hButtonImg, int xBmpPos = 0, int yBmpPos = 0, int drawText = FALSE, wchar_t *text = L"", int customTextXY = FALSE, int textX = 0, int textY = 0)
 {
 	if (drawButton == TRUE) {
 		InvalidateRect(hWnd, 0, TRUE);
@@ -106,7 +137,12 @@ void ButtonGUI::Paint(HWND &hWnd, int &drawButton, HBITMAP &hButtonImg, int xBmp
 		EndPaint(hWnd, &ps);
 		if (drawText == TRUE) {
 			HDC hdc = ::GetDC(hWnd);
-			gr7::PaintText(hdc, (rc.right - rc.left) / 2 - 12, (rc.bottom - rc.top) / 2 - 7, L"Segoe UI", RGB(0, 0, 0), text, 9, 1);
+			if (customTextXY == 0) {
+				gr7::PaintText(hdc, (rc.right - rc.left) / 2 - 12, (rc.bottom - rc.top) / 2 - 7, L"Segoe UI", RGB(0, 0, 0), text, 9, 1);
+			}
+			if (customTextXY == 1) {
+				gr7::PaintText(hdc, textX, textY, L"Segoe UI", RGB(0, 0, 0), text, 9, 1);
+			}
 			ReleaseDC(hWnd, hdc);
 
 			::UpdateWindow(hWnd);
@@ -155,20 +191,20 @@ LRESULT CALLBACK ButtonGUI::BackButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 		break;
 		case WM_MOUSEMOVE:
 		{
-			if (!BtnGUI.bButtonTracking) {
+			if (!BtnGUI.BackButtonTracking) {
 				TRACKMOUSEEVENT Tme;
 				Tme.cbSize = sizeof(Tme);
 				Tme.hwndTrack = hWnd;
 				Tme.dwFlags = TME_LEAVE | TME_HOVER;
 				Tme.dwHoverTime = 1;
 				if(_TrackMouseEvent(&Tme))
-					BtnGUI.bButtonTracking = TRUE;
+					BtnGUI.BackButtonTracking = TRUE;
 			}
 			break;
 		}
 		case WM_MOUSEHOVER:
 		{
-			BtnGUI.bButtonHover = TRUE;
+			BtnGUI.BackButtonHover = TRUE;
 			if (!ButtonObjects.BackButtonDisabled) {
 				ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.BackButtonDisabled, BtnGUI.drawBackButton, BtnGUI.hBackBtnTmpImg, BtnGUI.hBackBtnImg4);
 			}
@@ -176,7 +212,7 @@ LRESULT CALLBACK ButtonGUI::BackButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 		break;
 		case WM_MOUSELEAVE:
 		{
-			BtnGUI.bButtonTracking = BtnGUI.bButtonHover = FALSE;
+			BtnGUI.BackButtonTracking = BtnGUI.BackButtonHover = FALSE;
 			if (!ButtonObjects.BackButtonDisabled) {
 				ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.BackButtonDisabled, BtnGUI.drawBackButton, BtnGUI.hBackBtnTmpImg, BtnGUI.hBackBtnImg1);
 			}
@@ -227,20 +263,20 @@ LRESULT CALLBACK ButtonGUI::CloseButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 	break;
 	case WM_MOUSEMOVE:
 	{
-		if (!BtnGUI.cButtonTracking) {
+		if (!BtnGUI.CloseButtonTracking) {
 			TRACKMOUSEEVENT Tme;
 			Tme.cbSize = sizeof(Tme);
 			Tme.hwndTrack = hWnd;
 			Tme.dwFlags = TME_LEAVE | TME_HOVER;
 			Tme.dwHoverTime = 1;
 			if (_TrackMouseEvent(&Tme))
-				BtnGUI.cButtonTracking = TRUE;
+				BtnGUI.CloseButtonTracking = TRUE;
 		}
 		break;
 	}
 	case WM_MOUSEHOVER:
 	{
-		BtnGUI.cButtonHover = TRUE;
+		BtnGUI.CloseButtonHover = TRUE;
 		if (!ButtonObjects.CloseButtonDisabled) {
 			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.drawCloseButton, BtnGUI.hCloseBtnTmpImg, BtnGUI.hCloseBtnImg4);
 		}
@@ -248,7 +284,7 @@ LRESULT CALLBACK ButtonGUI::CloseButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 	break;
 	case WM_MOUSELEAVE:
 	{
-		BtnGUI.cButtonTracking = BtnGUI.cButtonHover = FALSE;
+		BtnGUI.CloseButtonTracking = BtnGUI.CloseButtonHover = FALSE;
 		if (!ButtonObjects.CloseButtonDisabled) {
 			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.drawCloseButton, BtnGUI.hCloseBtnTmpImg, BtnGUI.hCloseBtnImg1);
 		}
@@ -308,20 +344,20 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 	break;
 	case WM_MOUSEMOVE:
 	{
-		if (!BtnGUI.nButtonTracking) {
+		if (!BtnGUI.NormalButtonTracking) {
 			TRACKMOUSEEVENT Tme;
 			Tme.cbSize = sizeof(Tme);
 			Tme.hwndTrack = hWnd;
 			Tme.dwFlags = TME_LEAVE | TME_HOVER;
 			Tme.dwHoverTime = 1;
 			if (_TrackMouseEvent(&Tme))
-				BtnGUI.nButtonTracking = TRUE;
+				BtnGUI.NormalButtonTracking = TRUE;
 		}
 		break;
 	}
 	case WM_MOUSEHOVER:
 	{
-		BtnGUI.nButtonHover = TRUE;
+		BtnGUI.NormalButtonHover = TRUE;
 		if (ButtonObjects.NormalButtonState != 3) {
 			ButtonObjects.NormalButtonState = 4;
 			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, BtnGUI.hNormalBtnImg4);
@@ -330,7 +366,7 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 	break;
 	case WM_MOUSELEAVE:
 	{
-		BtnGUI.nButtonTracking = BtnGUI.nButtonHover = FALSE;
+		BtnGUI.NormalButtonTracking = BtnGUI.NormalButtonHover = FALSE;
 		if (ButtonObjects.NormalButtonState != 3) {
 			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, BtnGUI.hNormalBtnImg1);
 		}
@@ -371,6 +407,192 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 	break;
 	case WM_NCDESTROY:
 		RemoveWindowSubclass(ButtonObjects.hNormalBtn, &NormalButtonProc, 1);
+		break;
+	}
+	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
+
+// Automatic Partitioning Button Procedure
+LRESULT CALLBACK ButtonGUI::AutoPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+{
+	switch (uMsg)
+	{
+	case WM_PAINT:
+	{
+		ButtonGUI::Paint(hWnd, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.AutoPartButtonText, TRUE, 9, 5);
+	}
+	break;
+	case WM_LBUTTONDOWN:
+	{
+		if (ButtonObjects.AutoPartButtonState != 3) {
+			ButtonObjects.AutoPartButtonState = 2;
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BtnGUI.hAutoPartBtnImg2);
+		}
+	}
+	break;
+	case WM_LBUTTONUP:
+	{
+		if (ButtonObjects.AutoPartButtonState != 3) {
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BtnGUI.hAutoPartBtnImg1);
+
+			PartitionCode::AutomaticPartitioning();
+			::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+		}
+	}
+	break;
+	case WM_MOUSEMOVE:
+	{
+		if (!BtnGUI.AutoPartButtonTracking) {
+			TRACKMOUSEEVENT Tme;
+			Tme.cbSize = sizeof(Tme);
+			Tme.hwndTrack = hWnd;
+			Tme.dwFlags = TME_LEAVE | TME_HOVER;
+			Tme.dwHoverTime = 1;
+			if (_TrackMouseEvent(&Tme))
+				BtnGUI.AutoPartButtonTracking = TRUE;
+		}
+		break;
+	}
+	case WM_MOUSEHOVER:
+	{
+		BtnGUI.AutoPartButtonHover = TRUE;
+		if (ButtonObjects.AutoPartButtonState != 3) {
+			ButtonObjects.AutoPartButtonState = 4;
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BtnGUI.hAutoPartBtnImg4);
+		}
+	}
+	break;
+	case WM_MOUSELEAVE:
+	{
+		BtnGUI.AutoPartButtonTracking = BtnGUI.AutoPartButtonHover = FALSE;
+		if (ButtonObjects.AutoPartButtonState != 3) {
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BtnGUI.hAutoPartBtnImg1);
+		}
+	}
+	break;
+	case BTN_DISABLE:
+	{
+		ButtonObjects.AutoPartButtonState = 3;
+		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BtnGUI.hAutoPartBtnImg3, TRUE);
+	}
+	break;
+	case BTN_ENABLE:
+	{
+		ButtonObjects.AutoPartButtonState = 1;
+		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BtnGUI.hAutoPartBtnImg1, FALSE);
+	}
+	break;
+	case BTN_UPDATE:
+	{
+		if (ButtonObjects.AutoPartButtonState == 1) {
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BtnGUI.hAutoPartBtnImg1, FALSE);
+		}
+		if (ButtonObjects.AutoPartButtonState == 2) {
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BtnGUI.hAutoPartBtnImg4, FALSE);
+		}
+		if (ButtonObjects.AutoPartButtonState == 3) {
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BtnGUI.hAutoPartBtnImg3, TRUE);
+		}
+		if (ButtonObjects.AutoPartButtonState == 4) {
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BtnGUI.hAutoPartBtnImg4);
+		}
+	}
+	break;
+	case WM_NCDESTROY:
+		RemoveWindowSubclass(ButtonObjects.hAutoPartitionBtn, &AutoPartButtonProc, 1);
+		break;
+	}
+	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
+
+// Manual Partitioning Button Procedure
+LRESULT CALLBACK ButtonGUI::ManualPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+{
+	switch (uMsg)
+	{
+	case WM_PAINT:
+	{
+		ButtonGUI::Paint(hWnd, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.ManualPartButtonText, TRUE, 9, 5);
+	}
+	break;
+	case WM_LBUTTONDOWN:
+	{
+		if (ButtonObjects.ManualPartButtonState != 3) {
+			ButtonObjects.ManualPartButtonState = 2;
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BtnGUI.hManualPartBtnImg2);
+		}
+	}
+	break;
+	case WM_LBUTTONUP:
+	{
+		if (ButtonObjects.ManualPartButtonState != 3) {
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BtnGUI.hManualPartBtnImg1);
+
+			PartitionCode::ManualPartitioning();
+			::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+		}
+	}
+	break;
+	case WM_MOUSEMOVE:
+	{
+		if (!BtnGUI.ManualPartButtonTracking) {
+			TRACKMOUSEEVENT Tme;
+			Tme.cbSize = sizeof(Tme);
+			Tme.hwndTrack = hWnd;
+			Tme.dwFlags = TME_LEAVE | TME_HOVER;
+			Tme.dwHoverTime = 1;
+			if (_TrackMouseEvent(&Tme))
+				BtnGUI.ManualPartButtonTracking = TRUE;
+		}
+		break;
+	}
+	case WM_MOUSEHOVER:
+	{
+		BtnGUI.ManualPartButtonHover = TRUE;
+		if (ButtonObjects.ManualPartButtonState != 3) {
+			ButtonObjects.ManualPartButtonState = 4;
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BtnGUI.hManualPartBtnImg4);
+		}
+	}
+	break;
+	case WM_MOUSELEAVE:
+	{
+		BtnGUI.ManualPartButtonTracking = BtnGUI.ManualPartButtonHover = FALSE;
+		if (ButtonObjects.ManualPartButtonState != 3) {
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BtnGUI.hManualPartBtnImg1);
+		}
+	}
+	break;
+	case BTN_DISABLE:
+	{
+		ButtonObjects.ManualPartButtonState = 3;
+		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BtnGUI.hManualPartBtnImg3, TRUE);
+	}
+	break;
+	case BTN_ENABLE:
+	{
+		ButtonObjects.ManualPartButtonState = 1;
+		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BtnGUI.hManualPartBtnImg1, FALSE);
+	}
+	break;
+	case BTN_UPDATE:
+	{
+		if (ButtonObjects.ManualPartButtonState == 1) {
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BtnGUI.hManualPartBtnImg1, FALSE);
+		}
+		if (ButtonObjects.ManualPartButtonState == 2) {
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BtnGUI.hManualPartBtnImg4, FALSE);
+		}
+		if (ButtonObjects.ManualPartButtonState == 3) {
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BtnGUI.hManualPartBtnImg3, TRUE);
+		}
+		if (ButtonObjects.ManualPartButtonState == 4) {
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BtnGUI.hManualPartBtnImg4);
+		}
+	}
+	break;
+	case WM_NCDESTROY:
+		RemoveWindowSubclass(ButtonObjects.hManualPartitionBtn, &ManualPartButtonProc, 1);
 		break;
 	}
 	return DefSubclassProc(hWnd, uMsg, wParam, lParam);

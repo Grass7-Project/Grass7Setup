@@ -21,9 +21,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -141,5 +138,33 @@
     <Image Include="res\Bitmaps\BottomPanel.bmp">
       <Filter>Resource Files\Bitmaps</Filter>
     </Image>
+    <Image Include="res\Bitmaps\ManualPartButton1.bmp">
+      <Filter>Resource Files\Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Bitmaps\ManualPartButton2.bmp">
+      <Filter>Resource Files\Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Bitmaps\ManualPartButton3.bmp">
+      <Filter>Resource Files\Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Bitmaps\ManualPartButton4.bmp">
+      <Filter>Resource Files\Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Bitmaps\AutoPartButton1.bmp">
+      <Filter>Resource Files\Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Bitmaps\AutoPartButton2.bmp">
+      <Filter>Resource Files\Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Bitmaps\AutoPartButton3.bmp">
+      <Filter>Resource Files\Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Bitmaps\AutoPartButton4.bmp">
+      <Filter>Resource Files\Bitmaps</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="LICENSE" />
   </ItemGroup>
 </Project>
