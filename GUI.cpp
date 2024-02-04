@@ -45,7 +45,7 @@ BOOL GUI::InitInstance()
 	RichEditControlObjects.RichEditCtrlX = xPos - 3;
 	RichEditControlObjects.RichEditCtrlY = yPos + 14;
 
-	SetWindowPos(MainObjects.hWndSetupWindow, 0, xPos - 3, yPos + 14, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+	SetWindowPos(MainObjects.hWndSetupWindow, 0, xPos - 3, yPos + 14 - 33, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 	SetWindowLongW(MainObjects.hWndSetupWindow, GWL_STYLE, GetWindowLongW(MainObjects.hWndSetupWindow, GWL_STYLE)&~WS_SIZEBOX);
 
 	// Show the Setup Window
@@ -311,13 +311,13 @@ LRESULT CALLBACK GUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 				GetObjectW(GUIObj.hFakeWindow, sizeof(WndBitmap), &WndBitmap);
 				int xPos = (horizontal - WndBitmap.bmWidth) / 2;
 				int yPos = (vertical - WndBitmap.bmHeight) / 2;
-				gr7::PaintTransparentBitmap(hdc, xPos, yPos, GUIObj.hFakeWindow, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+				gr7::PaintTransparentBitmap(hdc, xPos, yPos - 33, GUIObj.hFakeWindow, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 				
 				// Draw Small Logo
-				gr7::PaintTransparentBitmap(hdc, xPos + 56, yPos + 26, GUIObj.hSmallLogo, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+				gr7::PaintTransparentBitmap(hdc, xPos + 56, yPos + 26 - 33, GUIObj.hSmallLogo, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 				
 				// Draw Title Text
-				gr7::PaintText(hdc, xPos + 56 + 24, yPos + 26, L"Segoe UI", RGB(0, 0, 0), AppResStringsObjects.TitleBarText, 9, 1);
+				gr7::PaintText(hdc, xPos + 56 + 24, yPos + 26 - 33, L"Segoe UI", RGB(0, 0, 0), AppResStringsObjects.TitleBarText, 9, 1);
 
 				DeleteDC(hdcWndMem);
 				DeleteDC(hdcBkgMem);

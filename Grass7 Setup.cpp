@@ -37,6 +37,21 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		}
 	}
 
+#ifdef _DEBUG
+	
+#else
+	DWORD dwValue;
+	DWORD dwSize = sizeof(dwValue);
+	RegGetValueW(HKEY_LOCAL_MACHINE, L"SYSTEM\\Setup", L"SystemSetupInProgress", RRF_RT_DWORD, NULL, (LPBYTE)&dwValue, &dwSize);
+
+	if (dwValue == 0) {
+		MessageBoxW(NULL,
+			L"Setup is required to be run in WinPE",
+			szTitle, MB_ICONERROR | MB_OK);
+		return 0;
+	}
+#endif
+
 	MainObjects.hInst = hInstance;
 
 	GUI::LoadStrings();
