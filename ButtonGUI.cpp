@@ -21,7 +21,7 @@ void ButtonGUI::InitBackBtn()
 
 	BitBlt(BtnGUI.hdcWndScreenshot, 0, 0, width, height, BtnGUI.hdcMainWnd, 0, 0, SRCCOPY);
 
-	ButtonObjects.hBackBtn = CreateWindowExW(NULL,L"BUTTON", NULL, BS_OWNERDRAW | WS_CHILD | WS_VISIBLE, rc.left - 1, rc.top - 35, 31, 31, MainObjects.hWndMainWindow, (HMENU)ID_BACKBTN, MainObjects.hInst, 0);
+	ButtonObjects.hBackBtn = CreateWindowExW(NULL,L"BUTTON", NULL, BS_OWNERDRAW | WS_CHILD | WS_VISIBLE, rc.left - 1, rc.top - 36, 31, 31, MainObjects.hWndMainWindow, (HMENU)ID_BACKBTN, MainObjects.hInst, 0);
 
 	SetWindowSubclass(ButtonObjects.hBackBtn, &ButtonGUI::BackButtonProc, ID_BACKBTN, 0);
 }

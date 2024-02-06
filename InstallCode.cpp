@@ -56,20 +56,8 @@ int Install::ApplyImage()
 
 void InstallerThread()
 {
-#ifdef _DEBUG
-	ImageInstallObjects.destDrive = L"C:\\Users\\Genki\\Desktop\\gr7\\Deploy";
-#else
-	ImageInstallObjects.destDrive = L"W:\\";
-#endif
-
-	wchar_t srcImage1[MAX_PATH];
-	wcsncpy_s(srcImage1, ImageInstallObjects.installSources, sizeof(srcImage1));
-	wcsncat_s(srcImage1, L"\\install.wim", sizeof(srcImage1));
-	ImageInstallObjects.ImagePath = srcImage1;
-	ImageInstallObjects.ImageIndex = 1;
-
 	// Copying files
-	Sleep(5000);
+	Sleep(3000);
 	ProgressTextPercentageObjects.CopyingFilesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
@@ -78,7 +66,10 @@ void InstallerThread()
 	// Expanding files
 	int err = Install::ApplyImage();
 	if (err != 0) {
-
+		MessageBoxW(NULL,
+			AppResStringsObjects.ApplyInstallImageErrorText,
+			AppResStringsObjects.AppTitleText, MB_ICONERROR | MB_OK);
+		exit(0);
 	}
 	ProgressTextPercentageObjects.ExpandingFilesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
@@ -86,14 +77,14 @@ void InstallerThread()
 	ProgressBar::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText);
 
 	// Installing Features
-	Sleep(5000);
+	Sleep(3000);
 	ProgressTextPercentageObjects.InstallingFeaturesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
 	ProgressBar::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText);
 
 	// Installing Updates
-	Sleep(5000);
+	Sleep(3000);
 	ProgressTextPercentageObjects.InstallingUpdatesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);

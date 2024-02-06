@@ -26,12 +26,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	VersionInfo.dwOSVersionInfoSize	= sizeof(OSVERSIONINFO);
 
+	MainObjects.hInst = hInstance;
+	GUI::LoadStrings();
+
     #pragma warning(suppress : 4996)
 	if (GetVersionExW(&VersionInfo) != 0) {
 		if (VersionInfo.dwMajorVersion < WINDOWS_XP_MAJORVERSION) {
 			MessageBoxW(NULL,
-				L"Setup needs at least Windows XP or above to run properly.",
-				szTitle,MB_ICONERROR | MB_OK);
+				AppResStringsObjects.CompatibilityErrorText,
+				AppResStringsObjects.AppTitleText,MB_ICONERROR | MB_OK);
 
 			return 0;
 		}
@@ -46,22 +49,46 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	if (dwValue == 0) {
 		MessageBoxW(NULL,
-			L"Setup is required to be run in WinPE",
-			szTitle, MB_ICONERROR | MB_OK);
+			AppResStringsObjects.RunInWinPERequiredErrorText,
+			AppResStringsObjects.AppTitleText, MB_ICONERROR | MB_OK);
 		return 0;
 	}
 #endif
-
-	MainObjects.hInst = hInstance;
-
-	GUI::LoadStrings();
 
 	WCHAR installSourcesp[MAX_PATH];
 	GetModuleFileNameW(NULL, installSourcesp, MAX_PATH);
 	PathRemoveFileSpecW(installSourcesp);
 	ImageInstallObjects.installSources = installSourcesp;
 
-	LoadStringW(MainObjects.hInst, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+	wchar_t srcImageESD[MAX_PATH];
+	wcsncpy_s(srcImageESD, ImageInstallObjects.installSources, sizeof(srcImageESD));
+	wcsncat_s(srcImageESD, L"\\install.esd", sizeof(srcImageESD));
+
+	wchar_t srcImageWIM[MAX_PATH];
+	wcsncpy_s(srcImageWIM, ImageInstallObjects.installSources, sizeof(srcImageWIM));
+	wcsncat_s(srcImageWIM, L"\\install.wim", sizeof(srcImageWIM));
+
+	if (gr7::fileExists(srcImageESD) == TRUE) {
+		ImageInstallObjects.ImagePath = srcImageESD;
+	}
+	if (gr7::fileExists(srcImageWIM) == TRUE) {
+		ImageInstallObjects.ImagePath = srcImageWIM;
+	}
+	if (gr7::fileExists(srcImageESD) + gr7::fileExists(srcImageWIM) == FALSE) {
+		MessageBoxW(NULL,
+			AppResStringsObjects.NoInstallImageFoundErrorText,
+			AppResStringsObjects.AppTitleText, MB_ICONERROR | MB_OK);
+		return 0;
+	}
+
+	ImageInstallObjects.ImageIndex = 1;
+
+#ifdef _DEBUG
+	ImageInstallObjects.destDrive = L"C:\\Users\\Genki\\Desktop\\gr7\\Deploy";
+#else
+	ImageInstallObjects.destDrive = L"W:\\";
+#endif
+
 	GUI::RegisterClasses();
 
 	if (!GUI::InitInstance()) {

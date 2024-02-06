@@ -80,6 +80,10 @@ public:
 	wchar_t *RestartingTitleText;
 	wchar_t *AutoPartButtonText;
 	wchar_t *ManualPartButtonText;
+	wchar_t *CompatibilityErrorText;
+	wchar_t *RunInWinPERequiredErrorText;
+	wchar_t *NoInstallImageFoundErrorText;
+	wchar_t *ApplyInstallImageErrorText;
 };
 
 // Image installation vairiables

@@ -100,6 +100,12 @@ void GUI::LoadStrings()
 	AppResStringsObjects.ExpandingFilesText = gr7::LoadStringToW(MainObjects.hInst, IDS_EXPANDING_FILES);
 	AppResStringsObjects.InstallingFeaturesText = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLING_FEATURES);
 	AppResStringsObjects.InstallingUpdatesText = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLING_UPDATES);
+
+	// Error strings
+	AppResStringsObjects.CompatibilityErrorText = gr7::LoadStringToW(MainObjects.hInst, IDS_COMPATIBILITY_ERR);
+	AppResStringsObjects.RunInWinPERequiredErrorText = gr7::LoadStringToW(MainObjects.hInst, IDS_WINPE_REQUIRED_ERR);
+	AppResStringsObjects.NoInstallImageFoundErrorText = gr7::LoadStringToW(MainObjects.hInst, IDS_NO_INSTALL_IMG_ERR);
+	AppResStringsObjects.ApplyInstallImageErrorText = gr7::LoadStringToW(MainObjects.hInst, IDS_IMG_APPLY_ERR);
 }
 
 // Window Classes are registered over here
@@ -317,7 +323,7 @@ LRESULT CALLBACK GUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 				gr7::PaintTransparentBitmap(hdc, xPos + 56, yPos + 26 - 33, GUIObj.hSmallLogo, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 				
 				// Draw Title Text
-				gr7::PaintText(hdc, xPos + 56 + 24, yPos + 26 - 33, L"Segoe UI", RGB(0, 0, 0), AppResStringsObjects.TitleBarText, 9, 1);
+				gr7::PaintText(hdc, xPos + 56 + 23, yPos + 26 - 33, L"Segoe UI", RGB(0, 0, 0), AppResStringsObjects.TitleBarText, 9, 1);
 
 				DeleteDC(hdcWndMem);
 				DeleteDC(hdcBkgMem);

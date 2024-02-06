@@ -16,21 +16,33 @@ int BootSetup::GetSystemFirmwareType()
 			return 2; // UEFI
 		}
 	}
-	return 0;
+	return 0; // ERROR
 }
 
 void BootSetup::SetupSystemBoot()
 {
-	int FirmwareType = BootSetup::GetSystemFirmwareType();
-	wchar_t SetBootCMD[MAX_PATH];
-	wcsncpy_s(SetBootCMD, ImageInstallObjects.installSources, sizeof(SetBootCMD));
-	wcsncat_s(SetBootCMD, L"\\BootFiles.bat", sizeof(SetBootCMD));
-	if (FirmwareType == 1) {
-		wcsncat_s(SetBootCMD, L" BIOS ", sizeof(SetBootCMD));
-	}
-	if (FirmwareType == 2) {
-		wcsncat_s(SetBootCMD, L" UEFI ", sizeof(SetBootCMD));
-	}
-	wcsncat_s(SetBootCMD, ImageInstallObjects.destDrive, sizeof(SetBootCMD));
-	ShellExecuteW(NULL, NULL, L"cmd", SetBootCMD, NULL, SW_SHOW);
+	wchar_t WindowsFolder[MAX_PATH];
+
+	wcsncpy_s(WindowsFolder, ImageInstallObjects.destDrive, sizeof(WindowsFolder));
+	wcsncat_s(WindowsFolder, L"\Windows", sizeof(WindowsFolder));
+
+	SHELLEXECUTEINFO ShExecInfo;
+	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+	ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+	ShExecInfo.hwnd = NULL;
+	ShExecInfo.lpVerb = L"open";
+	ShExecInfo.lpFile = L"bcdboot";
+	ShExecInfo.lpParameters = WindowsFolder;
+	ShExecInfo.lpDirectory = ImageInstallObjects.installSources;
+
+#ifdef _DEBUG
+	ShExecInfo.nShow = SW_SHOW;
+#else
+	ShExecInfo.nShow = SW_HIDE;
+#endif
+
+	ShExecInfo.hInstApp = NULL;
+	ShellExecuteExW(&ShExecInfo);
+	WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
+	CloseHandle(ShExecInfo.hProcess);
 }

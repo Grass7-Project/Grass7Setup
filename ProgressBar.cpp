@@ -54,8 +54,8 @@ void ProgressBar::createProgressBar()
 
 	ProgressBar::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 37, ver - 42, AppResStringsObjects.ProgressBarText1, 9);
 	ProgressBar::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 228, ver - 42, AppResStringsObjects.ProgressBarText2, 9);
-	ProgressBar::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 11, ver - 47, L"1", 25);
-	ProgressBar::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 201, ver - 47, L"2", 25);
+	ProgressBar::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 9, ver - 47, L"1", 25);
+	ProgressBar::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 200, ver - 47, L"2", 25);
 }
 
 void ProgressBar::updateProgressBar()
