@@ -2,7 +2,6 @@
 #include "Grass7 Setup.h"
 #include "GUI.h"
 #include "Global.h"
-#include "ProgressBar.h"
 #include <iostream>
 
 GlobalMain MainObjects;

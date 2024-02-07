@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "ProgressBar.h"
+#include "ProgressGUI.h"
 #include "GUI.h"
 #include "Global.h"
 #include <Uxtheme.h>
 
-void ProgressBar::createProgressBar()
+void ProgressGUI::createProgressBar()
 {
 	int hoz, ver;
 
@@ -52,20 +52,20 @@ void ProgressBar::createProgressBar()
 	ProgressBarObjects.InstallingPercentage = 0;
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
 
-	ProgressBar::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 37, ver - 42, AppResStringsObjects.ProgressBarText1, 9);
-	ProgressBar::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 228, ver - 42, AppResStringsObjects.ProgressBarText2, 9);
-	ProgressBar::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 9, ver - 47, L"1", 25);
-	ProgressBar::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 200, ver - 47, L"2", 25);
+	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 37, ver - 42, AppResStringsObjects.ProgressBarText1, 9);
+	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 228, ver - 42, AppResStringsObjects.ProgressBarText2, 9);
+	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 9, ver - 47, L"1", 25);
+	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 200, ver - 47, L"2", 25);
 }
 
-void ProgressBar::updateProgressBar()
+void ProgressGUI::updateProgressBar()
 {
 	::SendMessageW(ProgressBarObjects.hProgressCtrlCollectingInfo, PBM_SETPOS, (WPARAM)(INT)ProgressBarObjects.CollectingInfoPercentage, 0);
 	::SendMessageW(ProgressBarObjects.hProgressCtrlInstalling, PBM_SETPOS, (WPARAM)(INT)ProgressBarObjects.InstallingPercentage, 0);
 	::UpdateWindow(MainObjects.hWndMainWindow);
 }
 
-void ProgressBar::createProgressText()
+void ProgressGUI::createProgressText()
 {
 	// Init the percentage values
 	ProgressTextPercentageObjects.CopyingFilesPercentage = 0;
@@ -74,13 +74,13 @@ void ProgressBar::createProgressText()
 	ProgressTextPercentageObjects.InstallingUpdatesPercentage = 0;
 
 	// Create the text
-	ProgressBar::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText);
-	ProgressBar::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText);
-	ProgressBar::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText);
-	ProgressBar::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText);
+	ProgressGUI::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText);
+	ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText);
+	ProgressGUI::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText);
+	ProgressGUI::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText);
 }
 
-void ProgressBar::updateProgressText(int x, int y, int &ProgressPercantage, wchar_t *Text)
+void ProgressGUI::updateProgressText(int x, int y, int &ProgressPercantage, wchar_t *Text)
 {
 	TCHAR percentage[5] = { 0 };
 	TCHAR ProgressText[30] = { 0 };
@@ -92,18 +92,15 @@ void ProgressBar::updateProgressText(int x, int y, int &ProgressPercantage, wcha
 	wcsncat_s(ProgressText, percentage, 256);
 
 	HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-	HFONT hFont, hTmp;
-	hFont = CreateFontW(18, 0, 0, 0, FW_LIGHT, 0, 0, 0, 0, 0, 0, 2, 0, L"Segoe UI");
-	hTmp = (HFONT)SelectObject(hdc, hFont);
-	size_t size = wcslen(ProgressText);
-	int convertsize = static_cast<int>(size);
-	TextOutW(hdc, x, y, ProgressText, convertsize);
+
+	gr7::PaintText(hdc, x, y, L"Segoe UI", RGB(0, 0, 0), ProgressText, 9, 1);
+
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
 	::UpdateWindow(MainObjects.hWndSetupWindow);
 }
 
-void ProgressBar::paintTextBelowProgressBar(HWND hWnd, int x, int y, wchar_t *Text, int FontSize)
+void ProgressGUI::paintTextBelowProgressBar(HWND hWnd, int x, int y, wchar_t *Text, int FontSize)
 {
 	TCHAR ProgressText[30] = { 0 };
 	wcsncat_s(ProgressText, Text, wcslen(Text));

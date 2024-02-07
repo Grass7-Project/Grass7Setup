@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GUI.h"
 #include "Global.h"
-#include "ProgressBar.h"
+#include "ProgressGUI.h"
 #include "InstallCode.h"
 #include "ButtonGUI.h"
 #include "PartitionCode.h"
@@ -217,15 +217,6 @@ void GUI::DialogPaintCode()
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
 		::UpdateWindow(MainObjects.hWndSetupWindow);
-
-		/*HFONT hBtnFont = CreateFontW(nHeightFont, 0, 0, 0, FW_LIGHT, 0, 0, 0, 0, 0, 0, 2, 0, L"Segoe UI");
-
-		ButtonObjects.hAutoPartitionBtn = CreateWindowW(L"BUTTON", AppResStringsObjects.AutoPartButtonText, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 18, 338, 140, 26, MainObjects.hWndDialogWindow, (HMENU)IDAUTOMATICPART, MainObjects.hInst, NULL);
-		ButtonObjects.hManualPartitionBtn = CreateWindowW(L"BUTTON", AppResStringsObjects.ManualPartButtonText, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 175, 338, 123, 26, MainObjects.hWndDialogWindow, (HMENU)IDMANUALPART, MainObjects.hInst, NULL);
-		SendMessage(ButtonObjects.hAutoPartitionBtn, WM_SETFONT, (LPARAM)hBtnFont, TRUE);
-		SendMessage(ButtonObjects.hManualPartitionBtn, WM_SETFONT, (LPARAM)hBtnFont, TRUE);
-		SetWindowTheme(ButtonObjects.hAutoPartitionBtn, L"", L"");
-		SetWindowTheme(ButtonObjects.hManualPartitionBtn, L"", L""); */
 	}
 	// Installing Page
 	if (MainObjects.Page == 5) {
@@ -233,7 +224,7 @@ void GUI::DialogPaintCode()
 		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
 		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.InstallingTitleText, 12, 1);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
-		ProgressBar::createProgressText();
+		ProgressGUI::createProgressText();
 
 		::UpdateWindow(MainObjects.hWndSetupWindow);
 	}
@@ -333,12 +324,12 @@ LRESULT CALLBACK GUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 
 		// Calls the function to create the progress bar
 		case MAINWND_CREATE_PROG_BAR:
-			ProgressBar::createProgressBar();
+			ProgressGUI::createProgressBar();
 			break;
 
 		// Calls the function to update the progress bar
 		case MAINWND_UPDATE_PROG_BAR:
-			ProgressBar::updateProgressBar();
+			ProgressGUI::updateProgressBar();
 			break;
 
 		// Makes text color to be transparent on the main window
@@ -498,10 +489,11 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 					::SendMessageW(ButtonObjects.hBackBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 					::SendMessageW(ButtonObjects.hCloseBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 					::ShowWindow(ButtonObjects.hNormalBtn, FALSE);
+					::ShowWindow(ButtonObjects.hBackBtn, FALSE);
 
 					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_INSTALLINGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
 					ProgressBarObjects.CollectingInfoPercentage = 100;
-					ProgressBar::updateProgressBar();
+					ProgressGUI::updateProgressBar();
 
 					ProgressBarObjects.CollectingInfoPercentage = ProgressBarObjects.CollectingInfoPercentage + 1;
 					::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);

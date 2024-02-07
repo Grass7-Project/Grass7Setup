@@ -1,6 +1,6 @@
 #pragma once
 
-class ProgressBar {
+class ProgressGUI {
 public:
 	static void createProgressBar();
 	static void updateProgressBar();

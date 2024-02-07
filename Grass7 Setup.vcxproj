@@ -205,7 +205,7 @@ xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionD
     <ClInclude Include="GUI.h" />
     <ClInclude Include="InstallCode.h" />
     <ClInclude Include="PartitionCode.h" />
-    <ClInclude Include="ProgressBar.h" />
+    <ClInclude Include="ProgressGUI.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -217,7 +217,7 @@ xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionD
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="InstallCode.cpp" />
     <ClCompile Include="PartitionCode.cpp" />
-    <ClCompile Include="ProgressBar.cpp" />
+    <ClCompile Include="ProgressGUI.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

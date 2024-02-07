@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "InstallCode.h"
 #include "Global.h"
-#include "ProgressBar.h"
+#include "ProgressGUI.h"
 #include "GUI.h"
 #include "BootSetup.h"
 #include <wimlib.h>
@@ -18,7 +18,7 @@ extract_progress(enum wimlib_progress_msg msg,
 	case WIMLIB_PROGRESS_MSG_EXTRACT_STREAMS:
 		ProgressTextPercentageObjects.ExpandingFilesPercentage = (INT)TO_PERCENT(info->extract.completed_bytes, info->extract.total_bytes);
 		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
-		ProgressBar::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText);
+		ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText);
 		break;
 	default:
 		break;
@@ -56,6 +56,8 @@ int Install::ApplyImage()
 
 void InstallerThread()
 {
+	/*
+
 	// Copying files
 	Sleep(3000);
 	ProgressTextPercentageObjects.CopyingFilesPercentage = 100;
@@ -100,6 +102,8 @@ void InstallerThread()
 
 	// Message the Setup Window that installation is finished
 	::SendMessageW(MainObjects.hWndSetupWindow, SETUPWND_INSTALL_FINISH, (WPARAM)(INT)0, 0);
+
+	*/
 }
 
 // Caller install function
