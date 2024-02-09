@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "Grass7 Setup.h"
-#include "GUI.h"
+#include "MainGUI.h"
 #include "Global.h"
+#include "ResourceLoader.h"
 #include <iostream>
 
 GlobalMain MainObjects;
@@ -11,6 +12,7 @@ GlobalProgressBar ProgressBarObjects;
 GlobalProgressTextPercentage ProgressTextPercentageObjects;
 GlobalAppResStrings AppResStringsObjects;
 GlobalImageInstall ImageInstallObjects;
+GlobalBitmaps BitmapObjects;
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -26,7 +28,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	VersionInfo.dwOSVersionInfoSize	= sizeof(OSVERSIONINFO);
 
 	MainObjects.hInst = hInstance;
-	GUI::LoadStrings();
+	ResourceLoader::LoadStrings();
 
     #pragma warning(suppress : 4996)
 	if (GetVersionExW(&VersionInfo) != 0) {
@@ -40,7 +42,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	}
 
 #ifdef _DEBUG
-	
 #else
 	DWORD dwValue;
 	DWORD dwSize = sizeof(dwValue);
@@ -88,9 +89,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	ImageInstallObjects.destDrive = L"W:\\";
 #endif
 
-	GUI::RegisterClasses();
+	MainGUI::RegisterClasses();
 
-	if (!GUI::InitInstance()) {
+	if (!MainGUI::InitInstance()) {
 		return FALSE;
 	}
 

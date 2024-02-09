@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ProgressGUI.h"
-#include "GUI.h"
+#include "MainGUI.h"
 #include "Global.h"
 #include <Uxtheme.h>
 
@@ -8,7 +8,7 @@ void ProgressGUI::createProgressBar()
 {
 	int hoz, ver;
 
-	GUI::GetDesktopResolution(hoz, ver);
+	gr7::GetDesktopResolution(hoz, ver);
 
 	ProgressBarObjects.hProgressCtrlInstalling = ::CreateWindowExW(
 		0,
@@ -93,7 +93,7 @@ void ProgressGUI::updateProgressText(int x, int y, int &ProgressPercantage, wcha
 
 	HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
 
-	gr7::PaintText(hdc, x, y, L"Segoe UI", RGB(0, 0, 0), ProgressText, 9, 1);
+	gr7::PaintText(hdc, x, y, L"Segoe UI", RGB(0, 0, 0), ProgressText, 9, 1, OPAQUE);
 
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
@@ -107,7 +107,7 @@ void ProgressGUI::paintTextBelowProgressBar(HWND hWnd, int x, int y, wchar_t *Te
 
 	HDC hdc = ::GetDC(hWnd);
 
-	gr7::PaintText(hdc, x, y, L"Segoe UI", RGB(255, 255, 255), Text, FontSize, 1);
+	gr7::PaintText(hdc, x, y, L"Segoe UI", RGB(255, 255, 255), Text, FontSize, 1, TRANSPARENT);
 
 	::UpdateWindow(hWnd);
 }

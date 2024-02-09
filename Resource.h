@@ -39,6 +39,7 @@
 #define IDB_BANNER_BMP			226
 #define IDB_SMALLLOGO_BMP		227
 #define IDB_BOTTOM_PANEL_BMP	228
+#define IDB_CHECKMARK_BMP		229
 
 // Dialogs
 #define IDD_PARENTPAGE			300

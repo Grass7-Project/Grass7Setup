@@ -2,7 +2,7 @@
 #include "InstallCode.h"
 #include "Global.h"
 #include "ProgressGUI.h"
-#include "GUI.h"
+#include "MainGUI.h"
 #include "BootSetup.h"
 #include <wimlib.h>
 
@@ -54,61 +54,88 @@ int Install::ApplyImage()
 	return 0;
 }
 
-void InstallerThread()
+void Install::InstallerThread()
 {
-	/*
-
+	HDC hdc;
 	// Copying files
 	Sleep(3000);
 	ProgressTextPercentageObjects.CopyingFilesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
-	ProgressBar::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText);
+
+	hdc = ::GetDC(MainObjects.hWndSetupWindow);
+	gr7::PaintTransparentBitmap(hdc, 0, 121, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
+
+	ProgressGUI::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText);
+
 
 	// Expanding files
-	int err = Install::ApplyImage();
+	/*int err = Install::ApplyImage();
 	if (err != 0) {
 		MessageBoxW(NULL,
 			AppResStringsObjects.ApplyInstallImageErrorText,
 			AppResStringsObjects.AppTitleText, MB_ICONERROR | MB_OK);
 		exit(0);
-	}
+	}*/
 	ProgressTextPercentageObjects.ExpandingFilesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
-	ProgressBar::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText);
+
+	hdc = ::GetDC(MainObjects.hWndSetupWindow);
+	gr7::PaintTransparentBitmap(hdc, 0, 141, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
+
+	ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText);
 
 	// Installing Features
 	Sleep(3000);
 	ProgressTextPercentageObjects.InstallingFeaturesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
-	ProgressBar::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText);
+
+	hdc = ::GetDC(MainObjects.hWndSetupWindow);
+	gr7::PaintTransparentBitmap(hdc, 0, 159, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
+
+	ProgressGUI::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText);
 
 	// Installing Updates
 	Sleep(3000);
 	ProgressTextPercentageObjects.InstallingUpdatesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
-	ProgressBar::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText);
+
+	hdc = ::GetDC(MainObjects.hWndSetupWindow);
+	gr7::PaintTransparentBitmap(hdc, 0, 179, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
+
+	ProgressGUI::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText);
 
 	// Finished
 	Sleep(2000);
 	ProgressBarObjects.InstallingPercentage = 100;
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
 
+	#ifdef _DEBUG
+	#else
 	// Make system able to boot
 	BootSetup::SetupSystemBoot();
+	#endif
 
 	// Message the Setup Window that installation is finished
 	::SendMessageW(MainObjects.hWndSetupWindow, SETUPWND_INSTALL_FINISH, (WPARAM)(INT)0, 0);
-
-	*/
 }
 
 // Caller install function
 void Install::InstallMain()
 {
-	std::thread InstallCode(InstallerThread);
+	std::thread InstallCode(Install::InstallerThread);
 	InstallCode.detach();
+}
+
+void Install::RestartSoon()
+{
+	Sleep(5000);
+	SendMessageW(MainObjects.hWndMainWindow, WM_CLOSE, (WPARAM)(INT)0, 0);
 }

@@ -1,19 +1,20 @@
 #include "stdafx.h"
-#include "GUI.h"
+#include "MainGUI.h"
 #include "Global.h"
 #include "ProgressGUI.h"
 #include "InstallCode.h"
 #include "ButtonGUI.h"
 #include "PartitionCode.h"
+#include "ResourceLoader.h"
 #include <Uxtheme.h>
 #include <gdiplus.h>
 
-GUI GUIObj;
+MainGUI MainGUIObj;
 
 // Main GUI Code
-BOOL GUI::InitInstance()
+BOOL MainGUI::InitInstance()
 {
-	MainObjects.hWndMainWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PARENTPAGE), 0, (DLGPROC)GUI::WndProc);
+	MainObjects.hWndMainWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PARENTPAGE), 0, (DLGPROC)MainGUI::WndProc);
 
 	EnableMenuItem(GetSystemMenu(MainObjects.hWndMainWindow, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
@@ -49,11 +50,11 @@ BOOL GUI::InitInstance()
 	SetWindowLongW(MainObjects.hWndSetupWindow, GWL_STYLE, GetWindowLongW(MainObjects.hWndSetupWindow, GWL_STYLE)&~WS_SIZEBOX);
 
 	// Show the Setup Window
-	::ShowWindow(MainObjects.hWndSetupWindow, 1);
+	::ShowWindow(MainObjects.hWndSetupWindow, TRUE);
 	::UpdateWindow(MainObjects.hWndSetupWindow);
 
 	// Show the Main Window
-	::ShowWindow(MainObjects.hWndMainWindow, 1);
+	::ShowWindow(MainObjects.hWndMainWindow, TRUE);
 	::UpdateWindow(MainObjects.hWndMainWindow);
 
 	ButtonGUI::InitBackBtn();
@@ -70,53 +71,15 @@ BOOL GUI::InitInstance()
 	return 1;
 }
 
-// Load strings
-void GUI::LoadStrings()
-{
-	// Basic application strings
-	AppResStringsObjects.AppTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_APP_TITLE);
-	AppResStringsObjects.TitleBarText = gr7::LoadStringToW(MainObjects.hInst, IDS_TITLEBAR);
-
-	// Dialog title strings
-	AppResStringsObjects.EulaTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_EULA_TITLE);
-	AppResStringsObjects.ChangelogTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_CHANGELOG_TITLE);
-	AppResStringsObjects.PartitionTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_PARTITION_TITLE);
-	AppResStringsObjects.InstallingTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLING_TITLE);
-	AppResStringsObjects.RestartingTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_RESTARTING_TITLE);
-
-	// Button strings
-	AppResStringsObjects.NextButtonText = gr7::LoadStringToW(MainObjects.hInst, IDS_NEXTBTN);
-	AppResStringsObjects.InstallButtonText = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLBTN);
-	AppResStringsObjects.AutoPartButtonText = gr7::LoadStringToW(MainObjects.hInst, IDS_AUTOPARTBTN);
-	AppResStringsObjects.ManualPartButtonText = gr7::LoadStringToW(MainObjects.hInst, IDS_MANUALPARTBTN);
-
-	// Progress Bar strings
-	AppResStringsObjects.ProgressBarText1 = gr7::LoadStringToW(MainObjects.hInst, IDS_PROGBAR_TEXT1);
-	AppResStringsObjects.ProgressBarText2 = gr7::LoadStringToW(MainObjects.hInst, IDS_PROGBAR_TEXT2);
-
-	// Installation progress strings
-	AppResStringsObjects.CollectingInfoText = gr7::LoadStringToW(MainObjects.hInst, IDS_COLLECTING_INFO);
-	AppResStringsObjects.CopyingFilesText = gr7::LoadStringToW(MainObjects.hInst, IDS_COPYING_FILES);
-	AppResStringsObjects.ExpandingFilesText = gr7::LoadStringToW(MainObjects.hInst, IDS_EXPANDING_FILES);
-	AppResStringsObjects.InstallingFeaturesText = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLING_FEATURES);
-	AppResStringsObjects.InstallingUpdatesText = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLING_UPDATES);
-
-	// Error strings
-	AppResStringsObjects.CompatibilityErrorText = gr7::LoadStringToW(MainObjects.hInst, IDS_COMPATIBILITY_ERR);
-	AppResStringsObjects.RunInWinPERequiredErrorText = gr7::LoadStringToW(MainObjects.hInst, IDS_WINPE_REQUIRED_ERR);
-	AppResStringsObjects.NoInstallImageFoundErrorText = gr7::LoadStringToW(MainObjects.hInst, IDS_NO_INSTALL_IMG_ERR);
-	AppResStringsObjects.ApplyInstallImageErrorText = gr7::LoadStringToW(MainObjects.hInst, IDS_IMG_APPLY_ERR);
-}
-
 // Window Classes are registered over here
-ATOM GUI::RegisterClasses()
+ATOM MainGUI::RegisterClasses()
 {
 	// Main Window
 	WNDCLASSEX wcex;
 
 	wcex.cbSize = sizeof(wcex);
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc = GUI::WndProc;
+	wcex.lpfnWndProc = MainGUI::WndProc;
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = MainObjects.hInst;
@@ -132,7 +95,7 @@ ATOM GUI::RegisterClasses()
 
 	wcex1.cbSize = sizeof(wcex1);
 	wcex1.style = CS_HREDRAW | CS_VREDRAW;
-	wcex1.lpfnWndProc = GUI::WndProcSetupWnd;
+	wcex1.lpfnWndProc = MainGUI::WndProcSetupWnd;
 	wcex1.cbClsExtra = 0;
 	wcex1.cbWndExtra = 0;
 	wcex1.hInstance = MainObjects.hInst;
@@ -148,7 +111,7 @@ ATOM GUI::RegisterClasses()
 
 	wcex2.cbSize = sizeof(wcex2);
 	wcex2.style = CS_HREDRAW | CS_VREDRAW;
-	wcex2.lpfnWndProc = GUI::WndProcDialogWnd;
+	wcex2.lpfnWndProc = MainGUI::WndProcDialogWnd;
 	wcex2.cbClsExtra = 0;
 	wcex2.cbWndExtra = 0;
 	wcex2.hInstance = MainObjects.hInst;
@@ -162,39 +125,20 @@ ATOM GUI::RegisterClasses()
 	return RegisterClassExW(&wcex), RegisterClassExW(&wcex1), RegisterClassExW(&wcex2);
 }
 
-// Code to get the resolution of the screen
-void GUI::GetDesktopResolution(int& horizontal, int& vertical)
-{
-	RECT desktop;
-
-	const HWND hDesktop = GetDesktopWindow();
-
-	GetWindowRect(hDesktop, &desktop);
-
-	horizontal = desktop.right;
-	vertical = desktop.bottom;
-}
-
-void GUI::RestartSoon()
-{
-	Sleep(5000);
-	SendMessageW(MainObjects.hWndMainWindow, WM_CLOSE, (WPARAM)(INT)0, 0);
-}
-
-void GUI::DialogPaintCode()
+void MainGUI::DialogPaintCode()
 {
 	// Welcome Page
 	if (MainObjects.Page == 1) {
 		// Draw Logo Text
 		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		gr7::PaintTransparentBitmap(hdc, 0, (428 / 2) - 72, GUIObj.hBanner, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+		gr7::PaintTransparentBitmap(hdc, 0, (428 / 2) - 72, BitmapObjects.hBanner, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 	}
 	// License Page
 	if (MainObjects.Page == 2) {
 		// Draw Dialog Title Text
 		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.EulaTitleText, 12, 1);
+		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.EulaTitleText, 12, 1, TRANSPARENT);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
 		::UpdateWindow(MainObjects.hWndSetupWindow);
@@ -203,7 +147,7 @@ void GUI::DialogPaintCode()
 	if (MainObjects.Page == 3) {
 		// Draw Dialog Title Text
 		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.ChangelogTitleText, 12, 1);
+		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.ChangelogTitleText, 12, 1, TRANSPARENT);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
 		::UpdateWindow(MainObjects.hWndSetupWindow);
@@ -212,7 +156,7 @@ void GUI::DialogPaintCode()
 	if (MainObjects.Page == 4) {
 		// Draw Dialog Title Text
 		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.PartitionTitleText, 12, 1);
+		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.PartitionTitleText, 12, 1, TRANSPARENT);
 		int nHeightFont = -MulDiv(9, GetDeviceCaps(hdc, LOGPIXELSY), 72);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
@@ -222,7 +166,7 @@ void GUI::DialogPaintCode()
 	if (MainObjects.Page == 5) {
 		// Draw Dialog Title Text
 		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.InstallingTitleText, 12, 1);
+		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.InstallingTitleText, 12, 1, TRANSPARENT);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 		ProgressGUI::createProgressText();
 
@@ -232,21 +176,21 @@ void GUI::DialogPaintCode()
 	if (MainObjects.Page == 6) {
 		// Draw Dialog Title Text
 		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.RestartingTitleText, 12, 1);
+		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.RestartingTitleText, 12, 1, TRANSPARENT);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
 		::UpdateWindow(MainObjects.hWndSetupWindow);
 	}
 
 	HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-	gr7::PaintTransparentBitmap(hdc, 0, 382, GUIObj.hBottomPanel, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+	gr7::PaintTransparentBitmap(hdc, 0, 382, BitmapObjects.hBottomPanel, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
 	::SendMessageW(ButtonObjects.hNormalBtn, BTN_UPDATE, (WPARAM)(INT)0, 0);
 }
 
 // Main Window Window Procedure
-LRESULT CALLBACK GUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK MainGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
 
@@ -254,16 +198,12 @@ LRESULT CALLBACK GUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 	{
 		case WM_INITDIALOG:
 		{
-			GUIObj.hBackground = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_BACKGROUND_BMP), IMAGE_BITMAP, 0, 0, 0));
-			GUIObj.hFakeWindow = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_FAKEWND_BMP), IMAGE_BITMAP, 0, 0, 0));
-			GUIObj.hBanner = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_BANNER_BMP), IMAGE_BITMAP, 0, 0, 0));
-			GUIObj.hSmallLogo = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_SMALLLOGO_BMP), IMAGE_BITMAP, 0, 0, 0));
-			GUIObj.hBottomPanel = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_BOTTOM_PANEL_BMP), IMAGE_BITMAP, 0, 0, 0));
+			ResourceLoader::LoadWindowBitmaps();
 		}
 		break;
 		case WM_CLOSE:
 		{
-			if (GUIObj.doNotClose == TRUE) {
+			if (MainGUIObj.doNotClose == TRUE) {
 				return 0;
 			}
 			DestroyWindow(MainObjects.hWndDialogWindow);
@@ -292,29 +232,29 @@ LRESULT CALLBACK GUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 			int				horizontal;
 			int				vertical;
 			{
-				GUI::GetDesktopResolution(horizontal, vertical);
+				gr7::GetDesktopResolution(horizontal, vertical);
 				hdc = BeginPaint(hWnd, &ps);
 				SetStretchBltMode(hdc, HALFTONE);
 
 				// Draw Background Image
 				HDC hdcBkgMem = CreateCompatibleDC(hdc);
-				HGDIOBJ oldBkgBitmap = (HBITMAP)SelectObject(hdcBkgMem, GUIObj.hBackground);
-				GetObjectW(GUIObj.hBackground, sizeof(BkgBitmap), &BkgBitmap);
+				HGDIOBJ oldBkgBitmap = (HBITMAP)SelectObject(hdcBkgMem, BitmapObjects.hBackground);
+				GetObjectW(BitmapObjects.hBackground, sizeof(BkgBitmap), &BkgBitmap);
 				StretchBlt(hdc, 0, 0, horizontal, vertical, hdcBkgMem, 0, 0, BkgBitmap.bmWidth, BkgBitmap.bmHeight, SRCCOPY);
 				SelectObject(hdcBkgMem, oldBkgBitmap);
 
 				// Draw Fake Window
 				HDC hdcWndMem = CreateCompatibleDC(hdc);
-				GetObjectW(GUIObj.hFakeWindow, sizeof(WndBitmap), &WndBitmap);
+				GetObjectW(BitmapObjects.hFakeWindow, sizeof(WndBitmap), &WndBitmap);
 				int xPos = (horizontal - WndBitmap.bmWidth) / 2;
 				int yPos = (vertical - WndBitmap.bmHeight) / 2;
-				gr7::PaintTransparentBitmap(hdc, xPos, yPos - 33, GUIObj.hFakeWindow, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+				gr7::PaintTransparentBitmap(hdc, xPos, yPos - 33, BitmapObjects.hFakeWindow, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 				
 				// Draw Small Logo
-				gr7::PaintTransparentBitmap(hdc, xPos + 56, yPos + 26 - 33, GUIObj.hSmallLogo, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+				gr7::PaintTransparentBitmap(hdc, xPos + 56, yPos + 26 - 33, BitmapObjects.hSmallLogo, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 				
 				// Draw Title Text
-				gr7::PaintText(hdc, xPos + 56 + 23, yPos + 26 - 33, L"Segoe UI", RGB(0, 0, 0), AppResStringsObjects.TitleBarText, 9, 1);
+				gr7::PaintText(hdc, xPos + 56 + 23, yPos + 26 - 33, L"Segoe UI", RGB(0, 0, 0), AppResStringsObjects.TitleBarText, 9, 1, TRANSPARENT);
 
 				DeleteDC(hdcWndMem);
 				DeleteDC(hdcBkgMem);
@@ -351,7 +291,7 @@ LRESULT CALLBACK GUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 }
 
 // Setup Window Window Procedure
-LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK MainGUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
 
@@ -364,7 +304,7 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 		break;
 		case WM_CLOSE:
 			{
-				if (GUIObj.doNotClose == TRUE) {
+				if (MainGUIObj.doNotClose == TRUE) {
 					return 0;
 				}
 				::DestroyWindow(MainObjects.hWndDialogWindow);
@@ -399,8 +339,8 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 
 				// Welcome Page
 				if (MainObjects.Page == 1) {
-					::SendMessageW(ButtonObjects.hAutoPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
-					::SendMessageW(ButtonObjects.hManualPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+					::SendMessageW(ButtonObjects.hAutoPartitionBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+					::SendMessageW(ButtonObjects.hManualPartitionBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
 					::ShowWindow(ButtonObjects.hAutoPartitionBtn, FALSE);
 					::ShowWindow(ButtonObjects.hManualPartitionBtn, FALSE);
 
@@ -438,8 +378,6 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 
 				// Changelog Page
 				if (MainObjects.Page == 3) {
-					::SendMessageW(ButtonObjects.hAutoPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
-					::SendMessageW(ButtonObjects.hManualPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 					::ShowWindow(ButtonObjects.hAutoPartitionBtn, FALSE);
 					::ShowWindow(ButtonObjects.hManualPartitionBtn, FALSE);
 
@@ -469,24 +407,24 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 
 				// Partition Page
 				if (MainObjects.Page == 4) {
+					#ifdef _DEBUG
+					::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+					::SendMessageW(ButtonObjects.hAutoPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+					::SendMessageW(ButtonObjects.hManualPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+					#else
 					::SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+					#endif
 					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PARTITIONPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
 
-					::SendMessageW(ButtonObjects.hAutoPartitionBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
-					::SendMessageW(ButtonObjects.hManualPartitionBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
 					::ShowWindow(ButtonObjects.hAutoPartitionBtn, TRUE);
 					::ShowWindow(ButtonObjects.hManualPartitionBtn, TRUE);
 				}
 
 				// Installing Page
 				if (MainObjects.Page == 5) {
-					::SendMessageW(ButtonObjects.hAutoPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
-					::SendMessageW(ButtonObjects.hManualPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 					::ShowWindow(ButtonObjects.hAutoPartitionBtn, FALSE);
 					::ShowWindow(ButtonObjects.hManualPartitionBtn, FALSE);
 
-					::SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
-					::SendMessageW(ButtonObjects.hBackBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 					::SendMessageW(ButtonObjects.hCloseBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 					::ShowWindow(ButtonObjects.hNormalBtn, FALSE);
 					::ShowWindow(ButtonObjects.hBackBtn, FALSE);
@@ -497,7 +435,7 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 
 					ProgressBarObjects.CollectingInfoPercentage = ProgressBarObjects.CollectingInfoPercentage + 1;
 					::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
-					GUIObj.doNotClose = 1;
+					MainGUIObj.doNotClose = 1;
 					EnableMenuItem(GetSystemMenu(MainObjects.hWndSetupWindow, 0), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 					Install::InstallMain();
 				}
@@ -506,23 +444,23 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 				if (MainObjects.Page == 6) {
 					::SendMessageW(ButtonObjects.hCloseBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
 					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_RESTARTINGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
-					std::thread Restart(GUI::RestartSoon);
+					std::thread Restart(Install::RestartSoon);
 					Restart.detach();
 				}
 
 				// We show the window and update it to see our dialog page
-				::ShowWindow(MainObjects.hWndDialogWindow, 1);
+				::ShowWindow(MainObjects.hWndDialogWindow, TRUE);
 				::UpdateWindow(MainObjects.hWndDialogWindow);
 
 				//Activate custom paint code for dialogs
-				GUI::DialogPaintCode();
+				MainGUI::DialogPaintCode();
 			}
 			break;
 
 		// Installation finished
 		case SETUPWND_INSTALL_FINISH:
 		{
-			GUIObj.doNotClose = 0;
+			MainGUIObj.doNotClose = 0;
 			MainObjects.Page = 6;
 			EnableMenuItem(GetSystemMenu(MainObjects.hWndSetupWindow, 1), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 			::SendMessageW(MainObjects.hWndSetupWindow, SETUPWND_UPDATE_DIALOG, (WPARAM)(INT)0, 0);
@@ -552,7 +490,7 @@ LRESULT CALLBACK GUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam, LP
 }
 
 // Dialog Window Window Procedure
-LRESULT CALLBACK GUI::WndProcDialogWnd(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK MainGUI::WndProcDialogWnd(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
 

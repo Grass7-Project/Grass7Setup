@@ -33,9 +33,6 @@
     <ClInclude Include="Grass7 Setup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -54,15 +51,18 @@
     <ClInclude Include="ProgressGUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MainGUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Grass7 Setup.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ButtonGUI.cpp">
@@ -78,6 +78,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ProgressGUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainGUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -160,6 +166,9 @@
       <Filter>Resource Files\Bitmaps</Filter>
     </Image>
     <Image Include="res\Bitmaps\AutoPartButton4.bmp">
+      <Filter>Resource Files\Bitmaps</Filter>
+    </Image>
+    <Image Include="res\Bitmaps\Checkmark.bmp">
       <Filter>Resource Files\Bitmaps</Filter>
     </Image>
   </ItemGroup>

@@ -86,13 +86,44 @@ public:
 	wchar_t *ApplyInstallImageErrorText;
 };
 
-// Image installation vairiables
+// Image installation variables
 class GlobalImageInstall {
 public:
 	int ImageIndex;
 	wchar_t *ImagePath;
 	wchar_t *destDrive;
 	wchar_t *installSources;
+};
+
+// Bitmaps
+class GlobalBitmaps {
+public:
+	HBITMAP hBackground,
+		hFakeWindow,
+		hBanner,
+		hSmallLogo,
+		hBottomPanel,
+		hCheckmark,
+		hBackBtnImg1, // Back Button Bitmaps
+		hBackBtnImg2,
+		hBackBtnImg3,
+		hBackBtnImg4,
+		hCloseBtnImg1, // Close Button Bitmaps
+		hCloseBtnImg2,
+		hCloseBtnImg3,
+		hCloseBtnImg4,
+		hNormalBtnImg1, // Normal Button Bitmaps
+		hNormalBtnImg2,
+		hNormalBtnImg3,
+		hNormalBtnImg4,
+		hAutoPartBtnImg1, // Automatic Partitioning Button Bitmaps
+		hAutoPartBtnImg2,
+		hAutoPartBtnImg3,
+		hAutoPartBtnImg4,
+		hManualPartBtnImg1, // Manual Partitioning Button Bitmaps
+		hManualPartBtnImg2,
+		hManualPartBtnImg3,
+		hManualPartBtnImg4;
 };
 
 extern GlobalMain MainObjects;
@@ -102,3 +133,4 @@ extern GlobalProgressBar ProgressBarObjects;
 extern GlobalProgressTextPercentage ProgressTextPercentageObjects;
 extern GlobalAppResStrings AppResStringsObjects;
 extern GlobalImageInstall ImageInstallObjects;
+extern GlobalBitmaps BitmapObjects;

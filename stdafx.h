@@ -25,5 +25,6 @@
 #include <string>
 #include <fstream>
 #include <thread>
+#include <sstream>
 
 #include <Gr7API.h>
