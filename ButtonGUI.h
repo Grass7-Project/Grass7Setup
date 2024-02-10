@@ -8,7 +8,7 @@ public:
 	static void				InitNormalBtn();
 	static void				InitAutoPartitionButton();
 	static void				InitManualPartitionButton();
-	static void				Paint(HWND &hWnd, int &drawButton, HBITMAP &hButtonImg, int xBmpPos, int yBmpPos, int drawText, wchar_t *text, int customTextXY, int textX, int textY);
+	static void				Paint(HWND &hWnd, int &drawButton, HBITMAP &hButtonImg, int xBmpPos, int yBmpPos, int drawText, LPCWSTR text, int customTextXY, int textX, int textY);
 	static void				ChangeBitmapState(HWND &hWnd, int &ButtonDisabled, int &drawButton, HBITMAP &hButtonTmpImg, HBITMAP &hButtonImg, int setState);
 	static LRESULT CALLBACK	BackButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 	static LRESULT CALLBACK	CloseButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
@@ -17,11 +17,12 @@ public:
 	static LRESULT CALLBACK	ManualPartButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 
 private:
-	HBITMAP hBackBtnTmpImg, // Back Button Temporary Bitmap
-		hCloseBtnTmpImg, // Close Button Temporary Bitmap
-		hNormalBtnTmpImg, // Normal Button Temporary Bitmap
-		hAutoPartBtnTmpImg, // Automatic Partitioning Button Temporary Bitmap
-		hManualPartBtnTmpImg; // Manual Partitioning Button Temporary Bitmap
+	// Temporary bitmaps, used for making the buttons look transparent
+	HBITMAP hBackBtnTmpImg,
+		hCloseBtnTmpImg,
+		hNormalBtnTmpImg,
+		hAutoPartBtnTmpImg,
+		hManualPartBtnTmpImg;
 
 	HBITMAP hbmpWndScreenshot;
 	HDC hdcWndScreenshot,

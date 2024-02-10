@@ -52,8 +52,8 @@ void ProgressGUI::createProgressBar()
 	ProgressBarObjects.InstallingPercentage = 0;
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
 
-	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 37, ver - 42, AppResStringsObjects.ProgressBarText1, 9);
-	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 228, ver - 42, AppResStringsObjects.ProgressBarText2, 9);
+	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 37, ver - 42, AppResStringsObjects.ProgressBarText1.c_str(), 9);
+	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 228, ver - 42, AppResStringsObjects.ProgressBarText2.c_str(), 9);
 	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 9, ver - 47, L"1", 25);
 	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 200, ver - 47, L"2", 25);
 }
@@ -74,13 +74,13 @@ void ProgressGUI::createProgressText()
 	ProgressTextPercentageObjects.InstallingUpdatesPercentage = 0;
 
 	// Create the text
-	ProgressGUI::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText);
-	ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText);
-	ProgressGUI::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText);
-	ProgressGUI::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText);
+	ProgressGUI::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText.c_str());
+	ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText.c_str());
+	ProgressGUI::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText.c_str());
+	ProgressGUI::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText.c_str());
 }
 
-void ProgressGUI::updateProgressText(int x, int y, int &ProgressPercantage, wchar_t *Text)
+void ProgressGUI::updateProgressText(int x, int y, int &ProgressPercantage, LPCWSTR Text)
 {
 	TCHAR percentage[5] = { 0 };
 	TCHAR ProgressText[30] = { 0 };
@@ -92,22 +92,37 @@ void ProgressGUI::updateProgressText(int x, int y, int &ProgressPercantage, wcha
 	wcsncat_s(ProgressText, percentage, 256);
 
 	HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
+	PaintTextOptions PaintTextOpt;
+	PaintTextOpt.xPos = x;
+	PaintTextOpt.yPos = y;
+	PaintTextOpt.font = L"Segoe UI";
+	PaintTextOpt.color = RGB(0, 0, 0);
+	PaintTextOpt.text = ProgressText;
+	PaintTextOpt.nSize = 9;
+	PaintTextOpt.BkMode = OPAQUE;
 
-	gr7::PaintText(hdc, x, y, L"Segoe UI", RGB(0, 0, 0), ProgressText, 9, 1, OPAQUE);
+	gr7::PaintText(hdc, PaintTextOpt);
 
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
 	::UpdateWindow(MainObjects.hWndSetupWindow);
 }
 
-void ProgressGUI::paintTextBelowProgressBar(HWND hWnd, int x, int y, wchar_t *Text, int FontSize)
+void ProgressGUI::paintTextBelowProgressBar(HWND hWnd, int x, int y, LPCWSTR Text, int FontSize)
 {
 	TCHAR ProgressText[30] = { 0 };
 	wcsncat_s(ProgressText, Text, wcslen(Text));
 
 	HDC hdc = ::GetDC(hWnd);
+	PaintTextOptions PaintTextOpt;
+	PaintTextOpt.xPos = x;
+	PaintTextOpt.yPos = y;
+	PaintTextOpt.font = L"Segoe UI";
+	PaintTextOpt.color = RGB(255, 255, 255);
+	PaintTextOpt.text = Text;
+	PaintTextOpt.nSize = FontSize;
 
-	gr7::PaintText(hdc, x, y, L"Segoe UI", RGB(255, 255, 255), Text, FontSize, 1, TRANSPARENT);
+	gr7::PaintText(hdc, PaintTextOpt);
 
 	::UpdateWindow(hWnd);
 }

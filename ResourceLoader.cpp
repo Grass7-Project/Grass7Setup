@@ -3,18 +3,26 @@
 #include "MainGUI.h"
 #include "Global.h"
 
-void ResourceLoader::LoadWindowBitmaps()
+void ResourceLoader::LoadBitmaps()
 {
+	// Background
 	BitmapObjects.hBackground = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_BACKGROUND_BMP), IMAGE_BITMAP, 0, 0, 0));
-	BitmapObjects.hFakeWindow = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_FAKEWND_BMP), IMAGE_BITMAP, 0, 0, 0));
-	BitmapObjects.hBanner = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_BANNER_BMP), IMAGE_BITMAP, 0, 0, 0));
-	BitmapObjects.hSmallLogo = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_SMALLLOGO_BMP), IMAGE_BITMAP, 0, 0, 0));
-	BitmapObjects.hBottomPanel = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_BOTTOM_PANEL_BMP), IMAGE_BITMAP, 0, 0, 0));
-	BitmapObjects.hCheckmark = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_CHECKMARK_BMP), IMAGE_BITMAP, 0, 0, 0));
-}
 
-void ResourceLoader::LoadButtonBitmaps()
-{
+	// Setup Window Border
+	BitmapObjects.hFakeWindow = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_FAKEWND_BMP), IMAGE_BITMAP, 0, 0, 0));
+
+	// Banner
+	BitmapObjects.hBanner = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_BANNER_BMP), IMAGE_BITMAP, 0, 0, 0));
+
+	// Logo next to the "Install Grass7" text
+	BitmapObjects.hSmallLogo = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_SMALLLOGO_BMP), IMAGE_BITMAP, 0, 0, 0));
+	
+	// Bottom panel, on top of it is the next/install button
+	BitmapObjects.hBottomPanel = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_BOTTOM_PANEL_BMP), IMAGE_BITMAP, 0, 0, 0));
+
+	// Checkmark
+	BitmapObjects.hCheckmark = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_CHECKMARK_BMP), IMAGE_BITMAP, 0, 0, 0));
+
 	// Normal Button States
 	BitmapObjects.hBackBtnImg1 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_BACK_BTN1_BMP), IMAGE_BITMAP, 0, 0, 0));
 	BitmapObjects.hCloseBtnImg1 = static_cast<HBITMAP>(LoadImageW(MainObjects.hInst, MAKEINTRESOURCE(IDB_CLOSE_BTN1_BMP), IMAGE_BITMAP, 0, 0, 0));

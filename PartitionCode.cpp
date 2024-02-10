@@ -8,14 +8,16 @@
 void PartitionCode::AutomaticPartitioning()
 {
 	int FirmwareType = BootSetup::GetSystemFirmwareType();
-	wchar_t diskpartCMD[MAX_PATH];
-	wcsncpy_s(diskpartCMD, L"/C diskpart /s ", sizeof(diskpartCMD));
-	wcsncat_s(diskpartCMD, ImageInstallObjects.installSources, sizeof(diskpartCMD));
+
+	std::wstring diskpartCMD;
+	diskpartCMD.append(L"/C diskpart /s ");
+	diskpartCMD.append(ImageInstallObjects.installSources);
+
 	if (FirmwareType == 1) {
-		wcsncat_s(diskpartCMD, L"\\BIOS.txt", sizeof(diskpartCMD));
+		diskpartCMD.append(L"\\BIOS.txt");
 	}
 	if (FirmwareType == 2) {
-		wcsncat_s(diskpartCMD, L"\\UEFI.txt", sizeof(diskpartCMD));
+		diskpartCMD.append(L"\\UEFI.txt");
 	}
 
 	SHELLEXECUTEINFO ShExecInfo;
@@ -24,8 +26,8 @@ void PartitionCode::AutomaticPartitioning()
 	ShExecInfo.hwnd = NULL;
 	ShExecInfo.lpVerb = L"open";
 	ShExecInfo.lpFile = L"cmd";
-	ShExecInfo.lpParameters = diskpartCMD;
-	ShExecInfo.lpDirectory = ImageInstallObjects.installSources;
+	ShExecInfo.lpParameters = diskpartCMD.c_str();
+	ShExecInfo.lpDirectory = ImageInstallObjects.installSources.c_str();
 	ShExecInfo.nShow = SW_SHOW;
 
 	ShExecInfo.hInstApp = NULL;

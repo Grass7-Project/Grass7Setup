@@ -2,7 +2,6 @@
 
 class ResourceLoader {
 public:
-	static void LoadWindowBitmaps();
-	static void LoadButtonBitmaps();
+	static void LoadBitmaps();
 	static void LoadStrings();
 };

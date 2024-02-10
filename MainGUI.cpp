@@ -14,17 +14,32 @@ MainGUI MainGUIObj;
 // Main GUI Code
 BOOL MainGUI::InitInstance()
 {
-	MainObjects.hWndMainWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PARENTPAGE), 0, (DLGPROC)MainGUI::WndProc);
+	// Call the function to load the bitmaps
+	ResourceLoader::LoadBitmaps();
+
+	// Note: the main window HAS to be a dialog, it is adjusted to look like a window before being shown
+	// This is because of some code being broken and not working correctly if it was a real window like the setup window
+	// I have no idea why, but since this is based on the old setup project before i built upon this, its gonna stay like that.
+
+	// Create Main Window
+	MainObjects.hWndMainWindow = CreateDialogW(
+		MainObjects.hInst,
+		MAKEINTRESOURCE(IDD_PARENTPAGE),
+		0,
+		(DLGPROC)MainGUI::WndProc);
 
 	EnableMenuItem(GetSystemMenu(MainObjects.hWndMainWindow, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
 	SetWindowLongW(MainObjects.hWndMainWindow, GWL_STYLE, GetWindowLongW(MainObjects.hWndMainWindow, GWL_STYLE) & ~WS_MINIMIZEBOX);
 
+	// Change appearence of the Main Window
 	DWORD dwStyle = GetWindowLongW(MainObjects.hWndMainWindow, GWL_STYLE);
 	DWORD dwRemove = WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 	DWORD dwNewStyle = dwStyle & ~dwRemove;
 	HDC hDC = GetWindowDC(NULL);
 	SetWindowLongW(MainObjects.hWndMainWindow, GWL_STYLE, dwNewStyle);
+
+	// Set position of the main window
 	SetWindowPos(MainObjects.hWndMainWindow, NULL, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 	SetWindowPos(MainObjects.hWndMainWindow, NULL, 0, 0, GetDeviceCaps(hDC, HORZRES), GetDeviceCaps(hDC, VERTRES), SWP_FRAMECHANGED);
 
@@ -32,9 +47,20 @@ BOOL MainGUI::InitInstance()
 		return 0;
 	}
 
-	ButtonObjects.InstallButtonText = FALSE;
+	ButtonObjects.InstallButtonText = FALSE; // Set the install button text to not appear, currently
 
-	MainObjects.hWndSetupWindow = CreateWindowW(L"SetupWindow", AppResStringsObjects.AppTitleText, WS_CHILD | WS_VISIBLE | WS_SYSMENU | DS_FIXEDSYS, CW_USEDEFAULT, CW_USEDEFAULT, 622, 428, MainObjects.hWndMainWindow, NULL, MainObjects.hInst, NULL);
+	// Create Setup Window
+	MainObjects.hWndSetupWindow = CreateWindowW(
+		L"SetupWindow",
+		AppResStringsObjects.AppTitleText.c_str(),
+		WS_CHILD | WS_VISIBLE | WS_SYSMENU | DS_FIXEDSYS, CW_USEDEFAULT,
+		CW_USEDEFAULT,
+		622,
+		428,
+		MainObjects.hWndMainWindow,
+		NULL,
+		MainObjects.hInst,
+		NULL);
 
 	RECT rc;
 
@@ -43,20 +69,21 @@ BOOL MainGUI::InitInstance()
 	int xPos = (GetSystemMetrics(SM_CXSCREEN) - rc.right) / 2;
 	int yPos = (GetSystemMetrics(SM_CYSCREEN) - rc.bottom) / 2;
 
+	// Set position of the rich edit control
 	RichEditControlObjects.RichEditCtrlX = xPos - 3;
 	RichEditControlObjects.RichEditCtrlY = yPos + 14;
 
+	// Set position of the setup window
 	SetWindowPos(MainObjects.hWndSetupWindow, 0, xPos - 3, yPos + 14 - 33, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 	SetWindowLongW(MainObjects.hWndSetupWindow, GWL_STYLE, GetWindowLongW(MainObjects.hWndSetupWindow, GWL_STYLE)&~WS_SIZEBOX);
 
-	// Show the Setup Window
-	::ShowWindow(MainObjects.hWndSetupWindow, TRUE);
-	::UpdateWindow(MainObjects.hWndSetupWindow);
+	::ShowWindow(MainObjects.hWndSetupWindow, TRUE); // Show the Setup Window
+	::UpdateWindow(MainObjects.hWndSetupWindow); // Update the Setup Window to trigger a redraw
 
-	// Show the Main Window
-	::ShowWindow(MainObjects.hWndMainWindow, TRUE);
-	::UpdateWindow(MainObjects.hWndMainWindow);
+	::ShowWindow(MainObjects.hWndMainWindow, TRUE); // Show the Main Window
+	::UpdateWindow(MainObjects.hWndMainWindow); // Update the Main Window to trigger a redraw
 
+	// We init the custom button code
 	ButtonGUI::InitBackBtn();
 	ButtonGUI::InitCloseBtn();
 	ButtonGUI::InitNormalBtn();
@@ -127,6 +154,14 @@ ATOM MainGUI::RegisterClasses()
 
 void MainGUI::DialogPaintCode()
 {
+	// Text painting options
+	PaintTextOptions PaintTextOpt;
+	PaintTextOpt.xPos = 43;
+	PaintTextOpt.yPos = 22;
+	PaintTextOpt.font = L"Segoe UI";
+	PaintTextOpt.color = RGB(0, 105, 51);
+	PaintTextOpt.nSize = 12;
+
 	// Welcome Page
 	if (MainObjects.Page == 1) {
 		// Draw Logo Text
@@ -134,49 +169,59 @@ void MainGUI::DialogPaintCode()
 		gr7::PaintTransparentBitmap(hdc, 0, (428 / 2) - 72, BitmapObjects.hBanner, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 	}
+
 	// License Page
 	if (MainObjects.Page == 2) {
 		// Draw Dialog Title Text
 		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.EulaTitleText, 12, 1, TRANSPARENT);
+		PaintTextOpt.text = AppResStringsObjects.EulaTitleText.c_str();
+		gr7::PaintText(hdc, PaintTextOpt);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
 		::UpdateWindow(MainObjects.hWndSetupWindow);
 	}
+
 	// Changelog Page
 	if (MainObjects.Page == 3) {
 		// Draw Dialog Title Text
 		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.ChangelogTitleText, 12, 1, TRANSPARENT);
+		PaintTextOpt.text = AppResStringsObjects.ChangelogTitleText.c_str();
+		gr7::PaintText(hdc, PaintTextOpt);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
 		::UpdateWindow(MainObjects.hWndSetupWindow);
 	}
+
 	// Partition Page
 	if (MainObjects.Page == 4) {
 		// Draw Dialog Title Text
 		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.PartitionTitleText, 12, 1, TRANSPARENT);
+		PaintTextOpt.text = AppResStringsObjects.PartitionTitleText.c_str();
+		gr7::PaintText(hdc, PaintTextOpt);
 		int nHeightFont = -MulDiv(9, GetDeviceCaps(hdc, LOGPIXELSY), 72);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
 		::UpdateWindow(MainObjects.hWndSetupWindow);
 	}
+
 	// Installing Page
 	if (MainObjects.Page == 5) {
 		// Draw Dialog Title Text
 		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.InstallingTitleText, 12, 1, TRANSPARENT);
+		PaintTextOpt.text = AppResStringsObjects.InstallingTitleText.c_str();
+		gr7::PaintText(hdc, PaintTextOpt);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 		ProgressGUI::createProgressText();
 
 		::UpdateWindow(MainObjects.hWndSetupWindow);
 	}
+
 	// Restarting Page
 	if (MainObjects.Page == 6) {
 		// Draw Dialog Title Text
 		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		gr7::PaintText(hdc, 43, 22, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.RestartingTitleText, 12, 1, TRANSPARENT);
+		PaintTextOpt.text = AppResStringsObjects.RestartingTitleText.c_str();
+		gr7::PaintText(hdc, PaintTextOpt);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
 		::UpdateWindow(MainObjects.hWndSetupWindow);
@@ -196,11 +241,6 @@ LRESULT CALLBACK MainGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
 
 	switch (message)
 	{
-		case WM_INITDIALOG:
-		{
-			ResourceLoader::LoadWindowBitmaps();
-		}
-		break;
 		case WM_CLOSE:
 		{
 			if (MainGUIObj.doNotClose == TRUE) {
@@ -254,7 +294,14 @@ LRESULT CALLBACK MainGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
 				gr7::PaintTransparentBitmap(hdc, xPos + 56, yPos + 26 - 33, BitmapObjects.hSmallLogo, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 				
 				// Draw Title Text
-				gr7::PaintText(hdc, xPos + 56 + 23, yPos + 26 - 33, L"Segoe UI", RGB(0, 0, 0), AppResStringsObjects.TitleBarText, 9, 1, TRANSPARENT);
+				PaintTextOptions PaintTextOpt;
+				PaintTextOpt.xPos = xPos + 56 + 23;
+				PaintTextOpt.yPos = yPos + 26 - 33;
+				PaintTextOpt.font = L"Segoe UI";
+				PaintTextOpt.color = RGB(0, 0, 0);
+				PaintTextOpt.text = AppResStringsObjects.TitleBarText.c_str();
+				PaintTextOpt.nSize = 9;
+				gr7::PaintText(hdc, PaintTextOpt);
 
 				DeleteDC(hdcWndMem);
 				DeleteDC(hdcBkgMem);
@@ -366,14 +413,11 @@ LRESULT CALLBACK MainGUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam
 					::SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 
 					// Show license
-					wchar_t file[MAX_PATH];
-					wcsncpy_s(file, ImageInstallObjects.installSources, sizeof(file));
-					wcsncat_s(file, L"\\license.rtf", sizeof(file));
+					std::wstring file = ImageInstallObjects.installSources;
+					file.append(L"\\license.rtf");
 
 					RichEditControlObjects.hWndRichEditCtrl = gr7::CreateRichEdit(MainObjects.hWndDialogWindow, 42, 62, 543, 272, MainObjects.hInst);
-					gr7::FillRichEditFromFile(RichEditControlObjects.hWndRichEditCtrl, file, SF_RTF);
-
-					memset(file, 0, sizeof(file));
+					gr7::FillRichEditFromFile(RichEditControlObjects.hWndRichEditCtrl, file.c_str() , SF_RTF);
 				}
 
 				// Changelog Page
@@ -395,14 +439,11 @@ LRESULT CALLBACK MainGUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam
 
 					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_CHANGELOGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
 
-					wchar_t file[MAX_PATH];
-					wcsncpy_s(file, ImageInstallObjects.installSources, sizeof(file));
-					wcsncat_s(file, L"\\changelog.rtf", sizeof(file));
+					std::wstring file = ImageInstallObjects.installSources;
+					file.append(L"\\changelog.rtf");
 
 					RichEditControlObjects.hWndRichEditCtrl = gr7::CreateRichEdit(MainObjects.hWndDialogWindow, 42, 62, 543, 272, MainObjects.hInst);
-					gr7::FillRichEditFromFile(RichEditControlObjects.hWndRichEditCtrl, file, SF_RTF);
-
-					memset(file, 0, sizeof(file));
+					gr7::FillRichEditFromFile(RichEditControlObjects.hWndRichEditCtrl, file.c_str(), SF_RTF);
 				}
 
 				// Partition Page

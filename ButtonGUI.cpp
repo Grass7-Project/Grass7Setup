@@ -70,11 +70,9 @@ void ButtonGUI::InitManualPartitionButton()
 	SetWindowSubclass(ButtonObjects.hManualPartitionBtn, &ButtonGUI::ManualPartButtonProc, ID_MANUALPARTBTN, 0);
 }
 
-// Initialize Button Bitmaps
+// Initialize Button Bitmaps for use
 void ButtonGUI::InitButtonBitmaps()
 {
-	ResourceLoader::LoadButtonBitmaps();
-
 	int height;
 	int width;
 	gr7::GetDesktopResolution(width, height);
@@ -90,7 +88,7 @@ void ButtonGUI::InitButtonBitmaps()
 	BtnGUI.hManualPartBtnTmpImg = BitmapObjects.hManualPartBtnImg1;
 }
 
-void ButtonGUI::Paint(HWND &hWnd, int &drawButton, HBITMAP &hButtonImg, int xBmpPos = 0, int yBmpPos = 0, int drawText = FALSE, wchar_t *text = L"", int customTextXY = FALSE, int textX = 0, int textY = 0)
+void ButtonGUI::Paint(HWND &hWnd, int &drawButton, HBITMAP &hButtonImg, int xBmpPos = 0, int yBmpPos = 0, int drawText = FALSE, LPCWSTR text = L"", int customTextXY = FALSE, int textX = 0, int textY = 0)
 {
 	if (drawButton == TRUE) {
 		InvalidateRect(hWnd, 0, TRUE);
@@ -111,11 +109,20 @@ void ButtonGUI::Paint(HWND &hWnd, int &drawButton, HBITMAP &hButtonImg, int xBmp
 		EndPaint(hWnd, &ps);
 		if (drawText == TRUE) {
 			HDC hdc = ::GetDC(hWnd);
+			PaintTextOptions PaintTextOpt;
+			PaintTextOpt.font = L"Segoe UI";
+			PaintTextOpt.color = RGB(0, 0, 0);
+			PaintTextOpt.text = text;
+			PaintTextOpt.nSize = 9;
 			if (customTextXY == 0) {
-				gr7::PaintText(hdc, (rc.right - rc.left) / 2 - 12, (rc.bottom - rc.top) / 2 - 7, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT);
+				PaintTextOpt.xPos = (rc.right - rc.left) / 2 - 12;
+				PaintTextOpt.yPos = (rc.bottom - rc.top) / 2 - 7;
+				gr7::PaintText(hdc, PaintTextOpt);
 			}
 			if (customTextXY == 1) {
-				gr7::PaintText(hdc, textX, textY, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT);
+				PaintTextOpt.xPos = textX;
+				PaintTextOpt.yPos = textY;
+				gr7::PaintText(hdc, PaintTextOpt);
 			}
 			ReleaseDC(hWnd, hdc);
 
@@ -289,10 +296,10 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 	case WM_PAINT:
 	{
 		if (ButtonObjects.InstallButtonText == FALSE) {
-			ButtonGUI::Paint(hWnd, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.NextButtonText);
+			ButtonGUI::Paint(hWnd, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.NextButtonText.c_str());
 		}
 		if (ButtonObjects.InstallButtonText == TRUE) {
-			ButtonGUI::Paint(hWnd, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.InstallButtonText);
+			ButtonGUI::Paint(hWnd, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.InstallButtonText.c_str());
 		}
 	}
 	break;
@@ -393,7 +400,7 @@ LRESULT CALLBACK ButtonGUI::AutoPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	{
 	case WM_PAINT:
 	{
-		ButtonGUI::Paint(hWnd, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.AutoPartButtonText, TRUE, 9, 5);
+		ButtonGUI::Paint(hWnd, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.AutoPartButtonText.c_str(), TRUE, 9, 5);
 	}
 	break;
 	case WM_LBUTTONDOWN:
@@ -486,7 +493,7 @@ LRESULT CALLBACK ButtonGUI::ManualPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wP
 	{
 	case WM_PAINT:
 	{
-		ButtonGUI::Paint(hWnd, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.ManualPartButtonText, TRUE, 9, 5);
+		ButtonGUI::Paint(hWnd, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.ManualPartButtonText.c_str(), TRUE, 9, 5);
 	}
 	break;
 	case WM_LBUTTONDOWN:

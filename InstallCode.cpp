@@ -18,7 +18,7 @@ extract_progress(enum wimlib_progress_msg msg,
 	case WIMLIB_PROGRESS_MSG_EXTRACT_STREAMS:
 		ProgressTextPercentageObjects.ExpandingFilesPercentage = (INT)TO_PERCENT(info->extract.completed_bytes, info->extract.total_bytes);
 		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
-		ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText);
+		ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText.c_str());
 		break;
 	default:
 		break;
@@ -30,7 +30,7 @@ int Install::ApplyImage()
 	int ret;
 	WIMStruct *wim = NULL;
 
-	ret = wimlib_open_wim(ImageInstallObjects.ImagePath, 0, &wim);
+	ret = wimlib_open_wim(ImageInstallObjects.ImagePath.c_str(), 0, &wim);
 
 	if (ret != 0)
 	{
@@ -40,7 +40,7 @@ int Install::ApplyImage()
 
 	wimlib_register_progress_function(wim, extract_progress, NULL);
 
-	ret = wimlib_extract_image(wim, ImageInstallObjects.ImageIndex, ImageInstallObjects.destDrive, 0);
+	ret = wimlib_extract_image(wim, ImageInstallObjects.ImageIndex, ImageInstallObjects.destDrive.c_str(), 0);
 
 	wimlib_free(wim);
 
@@ -67,7 +67,7 @@ void Install::InstallerThread()
 	gr7::PaintTransparentBitmap(hdc, 0, 121, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
-	ProgressGUI::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText);
+	ProgressGUI::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText.c_str());
 
 
 	// Expanding files
@@ -86,7 +86,7 @@ void Install::InstallerThread()
 	gr7::PaintTransparentBitmap(hdc, 0, 141, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
-	ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText);
+	ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText.c_str());
 
 	// Installing Features
 	Sleep(3000);
@@ -98,7 +98,7 @@ void Install::InstallerThread()
 	gr7::PaintTransparentBitmap(hdc, 0, 159, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
-	ProgressGUI::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText);
+	ProgressGUI::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText.c_str());
 
 	// Installing Updates
 	Sleep(3000);
@@ -110,7 +110,7 @@ void Install::InstallerThread()
 	gr7::PaintTransparentBitmap(hdc, 0, 179, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
-	ProgressGUI::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText);
+	ProgressGUI::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText.c_str());
 
 	// Finished
 	Sleep(2000);

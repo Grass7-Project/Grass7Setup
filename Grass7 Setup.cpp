@@ -34,8 +34,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	if (GetVersionExW(&VersionInfo) != 0) {
 		if (VersionInfo.dwMajorVersion < WINDOWS_XP_MAJORVERSION) {
 			MessageBoxW(NULL,
-				AppResStringsObjects.CompatibilityErrorText,
-				AppResStringsObjects.AppTitleText,MB_ICONERROR | MB_OK);
+				AppResStringsObjects.CompatibilityErrorText.c_str(),
+				AppResStringsObjects.AppTitleText.c_str(),MB_ICONERROR | MB_OK);
 
 			return 0;
 		}
@@ -60,24 +60,22 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	PathRemoveFileSpecW(installSourcesp);
 	ImageInstallObjects.installSources = installSourcesp;
 
-	wchar_t srcImageESD[MAX_PATH];
-	wcsncpy_s(srcImageESD, ImageInstallObjects.installSources, sizeof(srcImageESD));
-	wcsncat_s(srcImageESD, L"\\install.esd", sizeof(srcImageESD));
+	std::wstring srcImageESD = ImageInstallObjects.installSources;
+	std::wstring srcImageWIM = ImageInstallObjects.installSources;
 
-	wchar_t srcImageWIM[MAX_PATH];
-	wcsncpy_s(srcImageWIM, ImageInstallObjects.installSources, sizeof(srcImageWIM));
-	wcsncat_s(srcImageWIM, L"\\install.wim", sizeof(srcImageWIM));
+	srcImageESD.append(L"\\install.esd");
+	srcImageWIM.append(L"\\install.wim");
 
-	if (gr7::fileExists(srcImageESD) == TRUE) {
+	if (gr7::fileExists(const_cast<wchar_t*>(srcImageESD.c_str())) == TRUE) {
 		ImageInstallObjects.ImagePath = srcImageESD;
 	}
-	if (gr7::fileExists(srcImageWIM) == TRUE) {
+	if (gr7::fileExists(const_cast<wchar_t*>(srcImageWIM.c_str())) == TRUE) {
 		ImageInstallObjects.ImagePath = srcImageWIM;
 	}
-	if (gr7::fileExists(srcImageESD) + gr7::fileExists(srcImageWIM) == FALSE) {
+	if (gr7::fileExists(const_cast<wchar_t*>(srcImageESD.c_str())) + gr7::fileExists(const_cast<wchar_t*>(srcImageWIM.c_str())) == FALSE) {
 		MessageBoxW(NULL,
-			AppResStringsObjects.NoInstallImageFoundErrorText,
-			AppResStringsObjects.AppTitleText, MB_ICONERROR | MB_OK);
+			AppResStringsObjects.NoInstallImageFoundErrorText.c_str(),
+			AppResStringsObjects.AppTitleText.c_str(), MB_ICONERROR | MB_OK);
 		return 0;
 	}
 

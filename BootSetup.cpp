@@ -8,7 +8,7 @@ int BootSetup::GetSystemFirmwareType()
 {
 	gr7::ModifyPrivilege(SE_SYSTEM_ENVIRONMENT_NAME, TRUE, GetCurrentProcess());
 
-	if (GetFirmwareEnvironmentVariableW(_T(""), _T("{00000000-0000-0000-0000-000000000000}"), NULL, 0) == 0) {
+	if (GetFirmwareEnvironmentVariableW(L"", _T("{00000000-0000-0000-0000-000000000000}"), NULL, 0) == 0) {
 		if (GetLastError() == ERROR_INVALID_FUNCTION) {
 			return 1; // BIOS
 		}
@@ -21,11 +21,10 @@ int BootSetup::GetSystemFirmwareType()
 
 void BootSetup::SetupSystemBoot()
 {
-	wchar_t WindowsFolder[MAX_PATH];
+	std::wstring WindowsFolder = ImageInstallObjects.destDrive;
 
-	wcsncpy_s(WindowsFolder, ImageInstallObjects.destDrive, sizeof(WindowsFolder));
-#pragma warning(suppress : 4129)
-	wcsncat_s(WindowsFolder, L"\Windows", sizeof(WindowsFolder));
+	#pragma warning(suppress : 4129)
+	ImageInstallObjects.destDrive.append(L"\Windows");
 
 	SHELLEXECUTEINFO ShExecInfo;
 	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
@@ -33,8 +32,8 @@ void BootSetup::SetupSystemBoot()
 	ShExecInfo.hwnd = NULL;
 	ShExecInfo.lpVerb = L"open";
 	ShExecInfo.lpFile = L"bcdboot";
-	ShExecInfo.lpParameters = WindowsFolder;
-	ShExecInfo.lpDirectory = ImageInstallObjects.installSources;
+	ShExecInfo.lpParameters = WindowsFolder.c_str();
+	ShExecInfo.lpDirectory = ImageInstallObjects.installSources.c_str();
 
 #ifdef _DEBUG
 	ShExecInfo.nShow = SW_SHOW;

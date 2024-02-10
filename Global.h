@@ -60,39 +60,39 @@ public:
 // Application Resource Strings
 class GlobalAppResStrings {
 public:
-	wchar_t *AppTitleText;
-	wchar_t *TitleBarText;
-	wchar_t *ProgressBarText1;
-	wchar_t *ProgressBarText2;
-	wchar_t *NextButtonText;
-	wchar_t *InstallButtonText;
-	wchar_t *EulaTitleText;
-	wchar_t *ChangelogTitleText;
-	wchar_t *PartitionTitleText;
-	wchar_t *InstallOptionTitleText;
-	wchar_t *CollectingInfoText;
-	wchar_t *InstallingText;
-	wchar_t *CopyingFilesText;
-	wchar_t *ExpandingFilesText;
-	wchar_t *InstallingFeaturesText;
-	wchar_t *InstallingUpdatesText;
-	wchar_t *InstallingTitleText;
-	wchar_t *RestartingTitleText;
-	wchar_t *AutoPartButtonText;
-	wchar_t *ManualPartButtonText;
-	wchar_t *CompatibilityErrorText;
-	wchar_t *RunInWinPERequiredErrorText;
-	wchar_t *NoInstallImageFoundErrorText;
-	wchar_t *ApplyInstallImageErrorText;
+	std::wstring AppTitleText;
+	std::wstring TitleBarText;
+	std::wstring ProgressBarText1;
+	std::wstring ProgressBarText2;
+	std::wstring NextButtonText;
+	std::wstring InstallButtonText;
+	std::wstring EulaTitleText;
+	std::wstring ChangelogTitleText;
+	std::wstring PartitionTitleText;
+	std::wstring InstallOptionTitleText;
+	std::wstring CollectingInfoText;
+	std::wstring InstallingText;
+	std::wstring CopyingFilesText;
+	std::wstring ExpandingFilesText;
+	std::wstring InstallingFeaturesText;
+	std::wstring InstallingUpdatesText;
+	std::wstring InstallingTitleText;
+	std::wstring RestartingTitleText;
+	std::wstring AutoPartButtonText;
+	std::wstring ManualPartButtonText;
+	std::wstring CompatibilityErrorText;
+	std::wstring RunInWinPERequiredErrorText;
+	std::wstring NoInstallImageFoundErrorText;
+	std::wstring ApplyInstallImageErrorText;
 };
 
 // Image installation variables
 class GlobalImageInstall {
 public:
 	int ImageIndex;
-	wchar_t *ImagePath;
-	wchar_t *destDrive;
-	wchar_t *installSources;
+	std::wstring ImagePath;
+	std::wstring destDrive;
+	std::wstring installSources;
 };
 
 // Bitmaps
