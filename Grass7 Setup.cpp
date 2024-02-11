@@ -66,13 +66,13 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	srcImageESD.append(L"\\install.esd");
 	srcImageWIM.append(L"\\install.wim");
 
-	if (gr7::fileExists(const_cast<wchar_t*>(srcImageESD.c_str())) == TRUE) {
+	if (gr7::fileExistsW(const_cast<wchar_t*>(srcImageESD.c_str())) == TRUE) {
 		ImageInstallObjects.ImagePath = srcImageESD;
 	}
-	if (gr7::fileExists(const_cast<wchar_t*>(srcImageWIM.c_str())) == TRUE) {
+	if (gr7::fileExistsW(const_cast<wchar_t*>(srcImageWIM.c_str())) == TRUE) {
 		ImageInstallObjects.ImagePath = srcImageWIM;
 	}
-	if (gr7::fileExists(const_cast<wchar_t*>(srcImageESD.c_str())) + gr7::fileExists(const_cast<wchar_t*>(srcImageWIM.c_str())) == FALSE) {
+	if (gr7::fileExistsW(const_cast<wchar_t*>(srcImageESD.c_str())) + gr7::fileExistsW(const_cast<wchar_t*>(srcImageWIM.c_str())) == FALSE) {
 		MessageBoxW(NULL,
 			AppResStringsObjects.NoInstallImageFoundErrorText.c_str(),
 			AppResStringsObjects.AppTitleText.c_str(), MB_ICONERROR | MB_OK);

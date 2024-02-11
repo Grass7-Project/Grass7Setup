@@ -55,37 +55,90 @@ void ResourceLoader::LoadBitmaps()
 // Load strings
 void ResourceLoader::LoadStrings()
 {
+	// Init variables
+	std::wstring AppTitleText(MAX_PATH, 0);
+	std::wstring TitleBarText(MAX_PATH, 0);
+
+	std::wstring EulaTitleText(MAX_PATH, 0);
+	std::wstring ChangelogTitleText(MAX_PATH, 0);
+	std::wstring PartitionTitleText(MAX_PATH, 0);
+	std::wstring InstallingTitleText(MAX_PATH, 0);
+	std::wstring RestartingTitleText(MAX_PATH, 0);
+
+	std::wstring NextButtonText(MAX_PATH, 0);
+	std::wstring InstallButtonText(MAX_PATH, 0);
+	std::wstring AutoPartButtonText(MAX_PATH, 0);
+	std::wstring ManualPartButtonText(MAX_PATH, 0);
+
+	std::wstring ProgressBarText1(MAX_PATH, 0);
+	std::wstring ProgressBarText2(MAX_PATH, 0);
+
+	std::wstring CollectingInfoText(MAX_PATH, 0);
+	std::wstring CopyingFilesText(MAX_PATH, 0);
+	std::wstring ExpandingFilesText(MAX_PATH, 0);
+	std::wstring InstallingFeaturesText(MAX_PATH, 0);
+	std::wstring InstallingUpdatesText(MAX_PATH, 0);
+
+	std::wstring CompatibilityErrorText(MAX_PATH, 0);
+	std::wstring RunInWinPERequiredErrorText(MAX_PATH, 0);
+	std::wstring NoInstallImageFoundErrorText(MAX_PATH, 0);
+	std::wstring ApplyInstallImageErrorText(MAX_PATH, 0);
+
 	// Basic application strings
-	AppResStringsObjects.AppTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_APP_TITLE);
-	AppResStringsObjects.TitleBarText = gr7::LoadStringToW(MainObjects.hInst, IDS_TITLEBAR);
+	AppTitleText.resize((size_t)LoadStringW(MainObjects.hInst, IDS_APP_TITLE, &AppTitleText[0], (int)AppTitleText.size()));
+	TitleBarText.resize((size_t)LoadStringW(MainObjects.hInst, IDS_TITLEBAR, &TitleBarText[0], (int)TitleBarText.size()));
 
 	// Dialog title strings
-	AppResStringsObjects.EulaTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_EULA_TITLE);
-	AppResStringsObjects.ChangelogTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_CHANGELOG_TITLE);
-	AppResStringsObjects.PartitionTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_PARTITION_TITLE);
-	AppResStringsObjects.InstallingTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLING_TITLE);
-	AppResStringsObjects.RestartingTitleText = gr7::LoadStringToW(MainObjects.hInst, IDS_RESTARTING_TITLE);
+	EulaTitleText.resize(LoadStringW(MainObjects.hInst, IDS_EULA_TITLE, &EulaTitleText[0], (int)EulaTitleText.size()));
+	ChangelogTitleText.resize(LoadStringW(MainObjects.hInst, IDS_CHANGELOG_TITLE, &ChangelogTitleText[0], (int)ChangelogTitleText.size()));
+	PartitionTitleText.resize(LoadStringW(MainObjects.hInst, IDS_PARTITION_TITLE, &PartitionTitleText[0], (int)PartitionTitleText.size()));
+	InstallingTitleText.resize(LoadStringW(MainObjects.hInst, IDS_INSTALLING_TITLE, &InstallingTitleText[0], (int)InstallingTitleText.size()));
+	RestartingTitleText.resize(LoadStringW(MainObjects.hInst, IDS_RESTARTING_TITLE, &RestartingTitleText[0], (int)RestartingTitleText.size()));
 
 	// Button strings
-	AppResStringsObjects.NextButtonText = gr7::LoadStringToW(MainObjects.hInst, IDS_NEXTBTN);
-	AppResStringsObjects.InstallButtonText = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLBTN);
-	AppResStringsObjects.AutoPartButtonText = gr7::LoadStringToW(MainObjects.hInst, IDS_AUTOPARTBTN);
-	AppResStringsObjects.ManualPartButtonText = gr7::LoadStringToW(MainObjects.hInst, IDS_MANUALPARTBTN);
+	NextButtonText.resize(LoadStringW(MainObjects.hInst, IDS_NEXTBTN, &NextButtonText[0], (int)NextButtonText.size()));
+	InstallButtonText.resize(LoadStringW(MainObjects.hInst, IDS_INSTALLBTN, &InstallButtonText[0], (int)InstallButtonText.size()));
+	AutoPartButtonText.resize(LoadStringW(MainObjects.hInst, IDS_AUTOPARTBTN, &AutoPartButtonText[0], (int)AutoPartButtonText.size()));
+	ManualPartButtonText.resize(LoadStringW(MainObjects.hInst, IDS_MANUALPARTBTN, &ManualPartButtonText[0], (int)ManualPartButtonText.size()));
 
 	// Progress Bar strings
-	AppResStringsObjects.ProgressBarText1 = gr7::LoadStringToW(MainObjects.hInst, IDS_PROGBAR_TEXT1);
-	AppResStringsObjects.ProgressBarText2 = gr7::LoadStringToW(MainObjects.hInst, IDS_PROGBAR_TEXT2);
+	ProgressBarText1.resize(LoadStringW(MainObjects.hInst, IDS_PROGBAR_TEXT1, &ProgressBarText1[0], (int)ProgressBarText1.size()));
+	ProgressBarText2.resize(LoadStringW(MainObjects.hInst, IDS_PROGBAR_TEXT2, &ProgressBarText2[0], (int)ProgressBarText2.size()));
 
 	// Installation progress strings
-	AppResStringsObjects.CollectingInfoText = gr7::LoadStringToW(MainObjects.hInst, IDS_COLLECTING_INFO);
-	AppResStringsObjects.CopyingFilesText = gr7::LoadStringToW(MainObjects.hInst, IDS_COPYING_FILES);
-	AppResStringsObjects.ExpandingFilesText = gr7::LoadStringToW(MainObjects.hInst, IDS_EXPANDING_FILES);
-	AppResStringsObjects.InstallingFeaturesText = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLING_FEATURES);
-	AppResStringsObjects.InstallingUpdatesText = gr7::LoadStringToW(MainObjects.hInst, IDS_INSTALLING_UPDATES);
+	CollectingInfoText.resize(LoadStringW(MainObjects.hInst, IDS_COLLECTING_INFO, &CollectingInfoText[0], (int)CollectingInfoText.size()));
+	CopyingFilesText.resize(LoadStringW(MainObjects.hInst, IDS_COPYING_FILES, &CopyingFilesText[0], (int)CopyingFilesText.size()));
+	ExpandingFilesText.resize(LoadStringW(MainObjects.hInst, IDS_EXPANDING_FILES, &ExpandingFilesText[0], (int)ExpandingFilesText.size()));
+	InstallingFeaturesText.resize(LoadStringW(MainObjects.hInst, IDS_INSTALLING_FEATURES, &InstallingFeaturesText[0], (int)InstallingFeaturesText.size()));
+	InstallingUpdatesText.resize(LoadStringW(MainObjects.hInst, IDS_INSTALLING_UPDATES, &InstallingUpdatesText[0], (int)InstallingUpdatesText.size()));
 
 	// Error strings
-	AppResStringsObjects.CompatibilityErrorText = gr7::LoadStringToW(MainObjects.hInst, IDS_COMPATIBILITY_ERR);
-	AppResStringsObjects.RunInWinPERequiredErrorText = gr7::LoadStringToW(MainObjects.hInst, IDS_WINPE_REQUIRED_ERR);
-	AppResStringsObjects.NoInstallImageFoundErrorText = gr7::LoadStringToW(MainObjects.hInst, IDS_NO_INSTALL_IMG_ERR);
-	AppResStringsObjects.ApplyInstallImageErrorText = gr7::LoadStringToW(MainObjects.hInst, IDS_IMG_APPLY_ERR);
+	CompatibilityErrorText.resize(LoadStringW(MainObjects.hInst, IDS_COMPATIBILITY_ERR, &CompatibilityErrorText[0], (int)CompatibilityErrorText.size()));
+	RunInWinPERequiredErrorText.resize(LoadStringW(MainObjects.hInst, IDS_WINPE_REQUIRED_ERR, &RunInWinPERequiredErrorText[0], (int)RunInWinPERequiredErrorText.size()));
+	NoInstallImageFoundErrorText.resize(LoadStringW(MainObjects.hInst, IDS_NO_INSTALL_IMG_ERR, &NoInstallImageFoundErrorText[0], (int)NoInstallImageFoundErrorText.size()));
+	ApplyInstallImageErrorText.resize(LoadStringW(MainObjects.hInst, IDS_IMG_APPLY_ERR, &ApplyInstallImageErrorText[0], (int)ApplyInstallImageErrorText.size()));
+
+	// Set loaded wstrings
+	AppResStringsObjects.AppTitleText = AppTitleText;
+	AppResStringsObjects.TitleBarText = TitleBarText;
+
+	AppResStringsObjects.EulaTitleText = EulaTitleText;
+	AppResStringsObjects.ChangelogTitleText = ChangelogTitleText;
+	AppResStringsObjects.PartitionTitleText = PartitionTitleText;
+	AppResStringsObjects.InstallingTitleText = InstallingTitleText;
+	AppResStringsObjects.RestartingTitleText = RestartingTitleText;
+
+	AppResStringsObjects.ProgressBarText1 = ProgressBarText1;
+	AppResStringsObjects.ProgressBarText2 = ProgressBarText2;
+
+	AppResStringsObjects.CollectingInfoText = CollectingInfoText;
+	AppResStringsObjects.CopyingFilesText = CopyingFilesText;
+	AppResStringsObjects.ExpandingFilesText = ExpandingFilesText;
+	AppResStringsObjects.InstallingFeaturesText = InstallingFeaturesText;
+	AppResStringsObjects.InstallingUpdatesText = InstallingUpdatesText;
+
+	AppResStringsObjects.CompatibilityErrorText = CompatibilityErrorText;
+	AppResStringsObjects.RunInWinPERequiredErrorText = RunInWinPERequiredErrorText;
+	AppResStringsObjects.NoInstallImageFoundErrorText = NoInstallImageFoundErrorText;
+	AppResStringsObjects.ApplyInstallImageErrorText = ApplyInstallImageErrorText;
 }
