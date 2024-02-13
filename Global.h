@@ -89,6 +89,12 @@ public:
 // Image installation variables
 class GlobalImageInstall {
 public:
+	int WaitThreadGo;
+	int WaitThreadRunning;
+	int CopyingFiles;
+	int ExpandingFiles;
+	int InstallingFeatures;
+	int InstallingUpdates;
 	int ImageIndex;
 	std::wstring ImagePath;
 	std::wstring destDrive;

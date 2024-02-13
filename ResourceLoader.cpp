@@ -128,6 +128,11 @@ void ResourceLoader::LoadStrings()
 	AppResStringsObjects.InstallingTitleText = InstallingTitleText;
 	AppResStringsObjects.RestartingTitleText = RestartingTitleText;
 
+	AppResStringsObjects.NextButtonText = NextButtonText;
+	AppResStringsObjects.InstallButtonText = InstallButtonText;
+	AppResStringsObjects.AutoPartButtonText = AutoPartButtonText;
+	AppResStringsObjects.ManualPartButtonText = ManualPartButtonText;
+
 	AppResStringsObjects.ProgressBarText1 = ProgressBarText1;
 	AppResStringsObjects.ProgressBarText2 = ProgressBarText2;
 

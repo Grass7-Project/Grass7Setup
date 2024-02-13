@@ -211,7 +211,15 @@ void MainGUI::DialogPaintCode()
 		PaintTextOpt.text = AppResStringsObjects.InstallingTitleText.c_str();
 		gr7::PaintText(hdc, PaintTextOpt);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
+		ProgressBarObjects.CollectingInfoPercentage = 100;
+		ProgressGUI::updateProgressBar();
+
+		ProgressBarObjects.CollectingInfoPercentage = ProgressBarObjects.CollectingInfoPercentage + 1;
+		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+		MainGUIObj.doNotClose = 1;
+		EnableMenuItem(GetSystemMenu(MainObjects.hWndSetupWindow, 0), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 		ProgressGUI::createProgressText();
+		Install::InstallMain();
 
 		::UpdateWindow(MainObjects.hWndSetupWindow);
 	}
@@ -223,6 +231,9 @@ void MainGUI::DialogPaintCode()
 		PaintTextOpt.text = AppResStringsObjects.RestartingTitleText.c_str();
 		gr7::PaintText(hdc, PaintTextOpt);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
+
+		std::thread Restart(Install::RestartSoon);
+		Restart.detach();
 
 		::UpdateWindow(MainObjects.hWndSetupWindow);
 	}
@@ -471,22 +482,12 @@ LRESULT CALLBACK MainGUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam
 					::ShowWindow(ButtonObjects.hBackBtn, FALSE);
 
 					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_INSTALLINGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
-					ProgressBarObjects.CollectingInfoPercentage = 100;
-					ProgressGUI::updateProgressBar();
-
-					ProgressBarObjects.CollectingInfoPercentage = ProgressBarObjects.CollectingInfoPercentage + 1;
-					::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
-					MainGUIObj.doNotClose = 1;
-					EnableMenuItem(GetSystemMenu(MainObjects.hWndSetupWindow, 0), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-					Install::InstallMain();
 				}
 
 				// Restarting Page
 				if (MainObjects.Page == 6) {
 					::SendMessageW(ButtonObjects.hCloseBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
 					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_RESTARTINGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
-					std::thread Restart(Install::RestartSoon);
-					Restart.detach();
 				}
 
 				// We show the window and update it to see our dialog page
