@@ -238,7 +238,8 @@ LRESULT CALLBACK ButtonGUI::CloseButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 		if (!ButtonObjects.CloseButtonDisabled) {
 			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.drawCloseButton, BtnGUI.hCloseBtnTmpImg, BitmapObjects.hCloseBtnImg1);
 
-			SendMessageW(MainObjects.hWndMainWindow, WM_CLOSE, (WPARAM)(INT)0, 0);
+			std::thread ExitCode(MainGUI::Exit);
+			ExitCode.detach();
 		}
 	}
 	break;

@@ -83,6 +83,8 @@ void ResourceLoader::LoadStrings()
 	std::wstring RunInWinPERequiredErrorText(MAX_PATH, 0);
 	std::wstring NoInstallImageFoundErrorText(MAX_PATH, 0);
 	std::wstring ApplyInstallImageErrorText(MAX_PATH, 0);
+	std::wstring SetupExit(MAX_PATH, 0);
+	std::wstring SetupExitDuringSetup(MAX_PATH, 0);
 
 	// Basic application strings
 	AppTitleText.resize((size_t)LoadStringW(MainObjects.hInst, IDS_APP_TITLE, &AppTitleText[0], (int)AppTitleText.size()));
@@ -117,6 +119,8 @@ void ResourceLoader::LoadStrings()
 	RunInWinPERequiredErrorText.resize(LoadStringW(MainObjects.hInst, IDS_WINPE_REQUIRED_ERR, &RunInWinPERequiredErrorText[0], (int)RunInWinPERequiredErrorText.size()));
 	NoInstallImageFoundErrorText.resize(LoadStringW(MainObjects.hInst, IDS_NO_INSTALL_IMG_ERR, &NoInstallImageFoundErrorText[0], (int)NoInstallImageFoundErrorText.size()));
 	ApplyInstallImageErrorText.resize(LoadStringW(MainObjects.hInst, IDS_IMG_APPLY_ERR, &ApplyInstallImageErrorText[0], (int)ApplyInstallImageErrorText.size()));
+	SetupExit.resize(LoadStringW(MainObjects.hInst, IDS_SETUP_EXIT, &SetupExit[0], (int)SetupExit.size()));
+	SetupExitDuringSetup.resize(LoadStringW(MainObjects.hInst, IDS_SETUP_EXIT_PROGRESS, &SetupExitDuringSetup[0], (int)SetupExitDuringSetup.size()));
 
 	// Set loaded wstrings
 	AppResStringsObjects.AppTitleText = AppTitleText;
@@ -146,4 +150,6 @@ void ResourceLoader::LoadStrings()
 	AppResStringsObjects.RunInWinPERequiredErrorText = RunInWinPERequiredErrorText;
 	AppResStringsObjects.NoInstallImageFoundErrorText = NoInstallImageFoundErrorText;
 	AppResStringsObjects.ApplyInstallImageErrorText = ApplyInstallImageErrorText;
+	AppResStringsObjects.SetupExit = SetupExit;
+	AppResStringsObjects.SetupExitDuringSetup = SetupExitDuringSetup;
 }

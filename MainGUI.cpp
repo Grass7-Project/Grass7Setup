@@ -94,7 +94,6 @@ BOOL MainGUI::InitInstance()
 	::SendMessageW(MainObjects.hWndSetupWindow, SETUPWND_UPDATE_DIALOG, (WPARAM)(INT)0, 0);
 
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_CREATE_PROG_BAR, (WPARAM)(INT)0, 0);
-
 	return 1;
 }
 
@@ -150,6 +149,18 @@ ATOM MainGUI::RegisterClasses()
 	wcex2.hIconSm = LoadIconW(wcex2.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
 	return RegisterClassExW(&wcex), RegisterClassExW(&wcex1), RegisterClassExW(&wcex2);
+}
+
+void MainGUI::Exit()
+{
+	if (ImageInstallObjects.SetupInProgress) {
+		MessageBoxW(NULL, AppResStringsObjects.SetupExitDuringSetup.c_str(), AppResStringsObjects.AppTitleText.c_str(), MB_ICONERROR | MB_OK);
+	}
+
+	if (!ImageInstallObjects.SetupInProgress) {
+		MessageBoxW(NULL, AppResStringsObjects.SetupExit.c_str(), AppResStringsObjects.AppTitleText.c_str(), MB_ICONERROR | MB_YESNO);
+		SendMessageW(MainObjects.hWndMainWindow, WM_CLOSE, (WPARAM)(INT)0, 0);
+	}
 }
 
 void MainGUI::DialogPaintCode()

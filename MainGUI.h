@@ -4,6 +4,7 @@ class MainGUI{
 public:
 	static BOOL	InitInstance();
 	static ATOM	RegisterClasses();
+	static void Exit();
 	static void DialogPaintCode();
 
 	static		LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);

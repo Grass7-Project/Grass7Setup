@@ -4,6 +4,7 @@
 class GlobalMain {
 public:
 	HINSTANCE hInst; // Handle to executable
+	HANDLE hProcess;
 
 	HWND hWndMainWindow,
 		hWndSetupWindow,
@@ -84,11 +85,14 @@ public:
 	std::wstring RunInWinPERequiredErrorText;
 	std::wstring NoInstallImageFoundErrorText;
 	std::wstring ApplyInstallImageErrorText;
+	std::wstring SetupExit;
+	std::wstring SetupExitDuringSetup;
 };
 
 // Image installation variables
 class GlobalImageInstall {
 public:
+	BOOL SetupInProgress;
 	int WaitThreadGo;
 	int WaitThreadRunning;
 	int CopyingFiles;

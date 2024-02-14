@@ -28,6 +28,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	VersionInfo.dwOSVersionInfoSize	= sizeof(OSVERSIONINFO);
 
 	MainObjects.hInst = hInstance;
+	MainObjects.hProcess = GetCurrentProcess();
 	ResourceLoader::LoadStrings();
 
     #pragma warning(suppress : 4996)
@@ -49,16 +50,19 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	if (dwValue == 0) {
 		MessageBoxW(NULL,
-			AppResStringsObjects.RunInWinPERequiredErrorText,
-			AppResStringsObjects.AppTitleText, MB_ICONERROR | MB_OK);
+			AppResStringsObjects.RunInWinPERequiredErrorText.c_str(),
+			AppResStringsObjects.AppTitleText.c_str(), MB_ICONERROR | MB_OK);
 		return 0;
 	}
 #endif
 
-	WCHAR installSourcesp[MAX_PATH];
-	GetModuleFileNameW(NULL, installSourcesp, MAX_PATH);
-	PathRemoveFileSpecW(installSourcesp);
-	ImageInstallObjects.installSources = installSourcesp;
+	std::wstring installSourcesp1(MAX_PATH, 0);
+
+	// Basic application strings
+	installSourcesp1.resize((size_t)GetModuleFileNameW(NULL, &installSourcesp1[0], (int)installSourcesp1.size()));
+	PathRemoveFileSpecW(&installSourcesp1[0]);
+
+	ImageInstallObjects.installSources = &installSourcesp1[0];
 
 	std::wstring srcImageESD = ImageInstallObjects.installSources;
 	std::wstring srcImageWIM = ImageInstallObjects.installSources;
