@@ -165,7 +165,7 @@ LRESULT CALLBACK ButtonGUI::BackButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 
 				MainObjects.Page = MainObjects.Page - 1;
 				ProgressBarObjects.CollectingInfoPercentage = ProgressBarObjects.CollectingInfoPercentage - 1;
-				::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+				::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_COLLECT_INFO_PROG_BAR, (WPARAM)(INT)0, 0);
 				::SendMessageW(MainObjects.hWndSetupWindow, SETUPWND_UPDATE_DIALOG, (WPARAM)(INT)0, 0);
 			}
 		}
@@ -319,7 +319,7 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 
 			MainObjects.Page = MainObjects.Page + 1;
 			ProgressBarObjects.CollectingInfoPercentage = ProgressBarObjects.CollectingInfoPercentage + 1;
-			::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+			::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_COLLECT_INFO_PROG_BAR, (WPARAM)(INT)0, 0);
 			::SendMessageW(MainObjects.hWndSetupWindow, SETUPWND_UPDATE_DIALOG, (WPARAM)(INT)0, 0);
 		}
 	}

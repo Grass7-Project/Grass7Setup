@@ -10,20 +10,6 @@ void ProgressGUI::createProgressBar()
 
 	gr7::GetDesktopResolution(hoz, ver);
 
-	ProgressBarObjects.hProgressCtrlInstalling = ::CreateWindowExW(
-		0,
-		PROGRESS_CLASS,
-		L"",
-		WS_CHILD | WS_VISIBLE | PBS_SMOOTH | WS_BORDER,
-		210,
-		ver - 66,
-		hoz - 210,
-		11,
-		MainObjects.hWndMainWindow,
-		(HMENU)ID_SMOOTHPROGRESSCTRL,
-		MainObjects.hInst,
-		NULL);
-
 	ProgressBarObjects.hProgressCtrlCollectingInfo = ::CreateWindowExW(
 		0,
 		PROGRESS_CLASS,
@@ -38,6 +24,34 @@ void ProgressGUI::createProgressBar()
 		MainObjects.hInst,
 		NULL);
 
+	ProgressBarObjects.hProgressCtrlInstalling = ::CreateWindowExW(
+		0,
+		PROGRESS_CLASS,
+		L"",
+		WS_CHILD | WS_VISIBLE | PBS_SMOOTH | WS_BORDER,
+		210,
+		ver - 66,
+		hoz - 210,
+		11,
+		MainObjects.hWndMainWindow,
+		(HMENU)ID_SMOOTHPROGRESSCTRL,
+		MainObjects.hInst,
+		NULL);
+
+	ProgressBarObjects.hProgressCtrlRestarting = ::CreateWindowExW(
+		0,
+		PROGRESS_CLASS,
+		L"",
+		WS_CHILD | WS_VISIBLE | PBS_SMOOTH | WS_BORDER,
+		0,
+		0,
+		208,
+		11,
+		MainObjects.hWndSetupWindow,
+		(HMENU)ID_SMOOTHPROGRESSCTRL,
+		MainObjects.hInst,
+		NULL);
+
 	::SendMessageW(ProgressBarObjects.hProgressCtrlCollectingInfo, PBM_SETPOS, (WPARAM)(INT)0, 0);
 	SetWindowTheme(ProgressBarObjects.hProgressCtrlCollectingInfo, L"", L"");
 	::SendMessageW(ProgressBarObjects.hProgressCtrlCollectingInfo, PBM_SETBARCOLOR, 0, RGB(153, 204, 51));
@@ -48,9 +62,17 @@ void ProgressGUI::createProgressBar()
 	::SendMessageW(ProgressBarObjects.hProgressCtrlInstalling, PBM_SETBARCOLOR, 0, RGB(153, 204, 51));
 	::SendMessageW(ProgressBarObjects.hProgressCtrlInstalling, PBM_SETBKCOLOR, 0, RGB(122, 147, 177));
 
+	::SendMessageW(ProgressBarObjects.hProgressCtrlRestarting, PBM_SETPOS, (WPARAM)(INT)0, 0);
+	SetWindowTheme(ProgressBarObjects.hProgressCtrlRestarting, L"", L"");
+	::SendMessageW(ProgressBarObjects.hProgressCtrlRestarting, PBM_SETBARCOLOR, 0, RGB(153, 204, 51));
+	::SendMessageW(ProgressBarObjects.hProgressCtrlRestarting, PBM_SETBKCOLOR, 0, RGB(122, 147, 177));
+
 	ProgressBarObjects.CollectingInfoPercentage = 0;
 	ProgressBarObjects.InstallingPercentage = 0;
-	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+	ProgressBarObjects.RestartingPercentage = 0;
+	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_COLLECT_INFO_PROG_BAR, (WPARAM)(INT)0, 0);
+	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
+	::SendMessageW(MainObjects.hWndSetupWindow, SETUPWND_RESTARTING_TIMER, (WPARAM)(INT)0, 0);
 
 	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 37, ver - 42, AppResStringsObjects.ProgressBarText1, 9);
 	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 228, ver - 42, AppResStringsObjects.ProgressBarText2, 9);
@@ -58,12 +80,45 @@ void ProgressGUI::createProgressBar()
 	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 200, ver - 47, L"2", 25);
 }
 
+void ProgressGUI::createProgressBarNew(HWND hWndParent, HINSTANCE hInst, HWND hWndProgressBar, int xPos, int yPos, int Width, int Height, int Percentage, COLORREF BarColor, COLORREF BackgroundColor, int MessageID)
+{
+	hWndProgressBar = ::CreateWindowExW(
+		0,
+		PROGRESS_CLASS,
+		L"",
+		WS_CHILD | WS_VISIBLE | PBS_SMOOTH | WS_BORDER,
+		xPos,
+		yPos,
+		Width,
+		Height,
+		hWndParent,
+		(HMENU)ID_SMOOTHPROGRESSCTRL,
+		hInst,
+		NULL);
+
+	::SendMessageW(hWndProgressBar, PBM_SETPOS, (WPARAM)(INT)0, 0);
+	SetWindowTheme(hWndProgressBar, L"", L"");
+	::SendMessageW(hWndProgressBar, PBM_SETBARCOLOR, 0, BarColor);
+	::SendMessageW(hWndProgressBar, PBM_SETBKCOLOR, 0, BackgroundColor);
+
+	Percentage = 0;
+	::SendMessageW(MainObjects.hWndMainWindow, MessageID, (WPARAM)(INT)0, 0);
+}
+
+void ProgressGUI::updateProgressBar(HWND hParentWnd, HWND hProgressBarWnd, int ProgressBarPercentage)
+{
+	::SendMessageW(hProgressBarWnd, PBM_SETPOS, (WPARAM)(INT)ProgressBarPercentage, 0);
+	::UpdateWindow(hParentWnd);
+}
+
+/*
 void ProgressGUI::updateProgressBar()
 {
 	::SendMessageW(ProgressBarObjects.hProgressCtrlCollectingInfo, PBM_SETPOS, (WPARAM)(INT)ProgressBarObjects.CollectingInfoPercentage, 0);
 	::SendMessageW(ProgressBarObjects.hProgressCtrlInstalling, PBM_SETPOS, (WPARAM)(INT)ProgressBarObjects.InstallingPercentage, 0);
 	::UpdateWindow(MainObjects.hWndMainWindow);
 }
+*/
 
 void ProgressGUI::createProgressText()
 {

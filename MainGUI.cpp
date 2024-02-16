@@ -158,8 +158,13 @@ void MainGUI::Exit()
 	}
 
 	if (!ImageInstallObjects.SetupInProgress) {
-		MessageBoxW(NULL, AppResStringsObjects.SetupExit.c_str(), AppResStringsObjects.AppTitleText.c_str(), MB_ICONERROR | MB_YESNO);
-		SendMessageW(MainObjects.hWndMainWindow, WM_CLOSE, (WPARAM)(INT)0, 0);
+		const int result = MessageBoxW(NULL, AppResStringsObjects.SetupExit.c_str(), AppResStringsObjects.AppTitleText.c_str(), MB_ICONERROR | MB_YESNO);
+		switch (result)
+		{
+		case IDYES:
+			SendMessageW(MainObjects.hWndMainWindow, WM_CLOSE, (WPARAM)(INT)0, 0);
+			break;
+		}
 	}
 }
 
@@ -223,10 +228,10 @@ void MainGUI::DialogPaintCode()
 		gr7::PaintText(hdc, PaintTextOpt);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 		ProgressBarObjects.CollectingInfoPercentage = 100;
-		ProgressGUI::updateProgressBar();
+		//ProgressGUI::updateProgressBar();
 
 		ProgressBarObjects.CollectingInfoPercentage = ProgressBarObjects.CollectingInfoPercentage + 1;
-		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_COLLECT_INFO_PROG_BAR, (WPARAM)(INT)0, 0);
 		MainGUIObj.doNotClose = 1;
 		EnableMenuItem(GetSystemMenu(MainObjects.hWndSetupWindow, 0), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 		ProgressGUI::createProgressText();
@@ -336,9 +341,14 @@ LRESULT CALLBACK MainGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
 			ProgressGUI::createProgressBar();
 			break;
 
-		// Calls the function to update the progress bar
-		case MAINWND_UPDATE_PROG_BAR:
-			ProgressGUI::updateProgressBar();
+		// Calls the function to update the Collecting Information Progress Bar
+		case MAINWND_UPDATE_COLLECT_INFO_PROG_BAR:
+			ProgressGUI::updateProgressBar(MainObjects.hWndMainWindow, ProgressBarObjects.hProgressCtrlCollectingInfo, ProgressBarObjects.CollectingInfoPercentage);
+			break;
+
+		// Calls the function to update the Installing Progress Bar
+		case MAINWND_UPDATE_INSTALLING_PROG_BAR:
+			ProgressGUI::updateProgressBar(MainObjects.hWndMainWindow, ProgressBarObjects.hProgressCtrlInstalling, ProgressBarObjects.InstallingPercentage);
 			break;
 
 		// Makes text color to be transparent on the main window
@@ -519,6 +529,10 @@ LRESULT CALLBACK MainGUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam
 			::SendMessageW(MainObjects.hWndSetupWindow, SETUPWND_UPDATE_DIALOG, (WPARAM)(INT)0, 0);
 		}
 		break;
+
+		case SETUPWND_RESTARTING_TIMER:
+			ProgressGUI::updateProgressBar(MainObjects.hWndSetupWindow, ProgressBarObjects.hProgressCtrlRestarting, ProgressBarObjects.RestartingPercentage);
+			break;
 
 		case WM_CTLCOLORDLG:
 		{

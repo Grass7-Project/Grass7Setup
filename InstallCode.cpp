@@ -38,7 +38,7 @@ void Install::InstallerThread()
 	// Finished
 	Sleep(3000);
 	ProgressBarObjects.InstallingPercentage = 100;
-	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
 
 #ifdef _DEBUG
 #else
@@ -61,7 +61,7 @@ void Install::Progress::CopyingFiles()
 	Sleep(5000);
 	ProgressTextPercentageObjects.CopyingFilesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
-	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
 	ImageInstallObjects.WaitThreadGo = 1;
 	while (ImageInstallObjects.WaitThreadRunning == 1) {
 		Sleep(1000);
@@ -99,7 +99,7 @@ void Install::Progress::ExpandingFiles()
 
 	ProgressTextPercentageObjects.ExpandingFilesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
-	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
 
 	HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
 	gr7::PaintTransparentBitmap(hdc, 43, 140, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
@@ -120,7 +120,7 @@ void Install::Progress::InstallingFeatures()
 	Sleep(5000);
 	ProgressTextPercentageObjects.InstallingFeaturesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
-	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
 	ImageInstallObjects.WaitThreadGo = 1;
 	while (ImageInstallObjects.WaitThreadRunning == 1) {
 		Sleep(1000);
@@ -144,7 +144,7 @@ void Install::Progress::InstallingUpdates()
 	Sleep(5000);
 	ProgressTextPercentageObjects.InstallingUpdatesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
-	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
 	ImageInstallObjects.WaitThreadGo = 1;
 	while (ImageInstallObjects.WaitThreadRunning == 1) {
 		Sleep(1000);
@@ -168,7 +168,7 @@ extract_progress(enum wimlib_progress_msg msg,
 	{
 	case WIMLIB_PROGRESS_MSG_EXTRACT_STREAMS:
 		ProgressTextPercentageObjects.ExpandingFilesPercentage = (INT)TO_PERCENT(info->extract.completed_bytes, info->extract.total_bytes);
-		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_PROG_BAR, (WPARAM)(INT)0, 0);
+		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
 		ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
 		break;
 	default:

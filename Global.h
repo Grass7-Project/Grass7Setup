@@ -40,13 +40,15 @@ public:
 		RichEditCtrlY;
 };
 
-// Main Progress Bar
+// Progress Bars
 class GlobalProgressBar {
 public:
 	HWND hProgressCtrlCollectingInfo,
-		hProgressCtrlInstalling;
+		hProgressCtrlInstalling,
+		hProgressCtrlRestarting;
 	int CollectingInfoPercentage,
-		InstallingPercentage;
+		InstallingPercentage,
+		RestartingPercentage;
 };
 
 // Installation Progress Window Text Percentage Status
