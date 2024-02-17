@@ -8,15 +8,16 @@ public:
 	static void				InitNormalBtn();
 	static void				InitAutoPartitionButton();
 	static void				InitManualPartitionButton();
-	static void				Paint(HWND &hWnd, int &drawButton, HBITMAP &hButtonImg, int xBmpPos, int yBmpPos, int drawText, LPCWSTR text, int customTextXY, int textX, int textY);
-	static void				ChangeBitmapState(HWND &hWnd, int &ButtonDisabled, int &drawButton, HBITMAP &hButtonTmpImg, HBITMAP &hButtonImg, int setState);
+
+private:
+	static void				Paint(HWND &hWnd, BOOL drawButton, HBITMAP &hButtonImg, int xBmpPos, int yBmpPos, int drawText, LPCWSTR text, int customTextXY, int textX, int textY);
+	static void				ChangeBitmapState(HWND &hWnd, BOOL ButtonDisabled, int &drawButton, HBITMAP &hButtonTmpImg, HBITMAP &hButtonImg, BOOL setState);
 	static LRESULT CALLBACK	BackButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 	static LRESULT CALLBACK	CloseButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 	static LRESULT CALLBACK	NormalButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 	static LRESULT CALLBACK	AutoPartButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 	static LRESULT CALLBACK	ManualPartButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 
-private:
 	// Temporary bitmaps, used for making the buttons look transparent
 	HBITMAP hBackBtnTmpImg,
 		hCloseBtnTmpImg,
@@ -28,7 +29,7 @@ private:
 	HDC hdcWndScreenshot,
 		hdcMainWnd;
 
-	int drawBackButton,
+	BOOL drawBackButton,
 		drawCloseButton,
 		drawNormalButton,
 		drawAutoPartButton,

@@ -28,3 +28,6 @@
 #include <sstream>
 
 #include <Gr7API.h>
+
+#include "ErrorHandler.h"
+#include "Global.h"

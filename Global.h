@@ -21,14 +21,15 @@ public:
 		hNormalBtn,
 		hAutoPartitionBtn,
 		hManualPartitionBtn;
-	int BackButtonDisabled,
+	int NormalButtonState,
+		AutoPartButtonState,
+		ManualPartButtonState;
+
+	BOOL BackButtonDisabled,
 		CloseButtonDisabled,
 		NormalButtonDisabled,
-		NormalButtonState,
 		AutoPartButtonDisabled,
-		AutoPartButtonState,
 		ManualPartButtonDisabled,
-		ManualPartButtonState,
 		InstallButtonText;
 };
 
@@ -83,10 +84,6 @@ public:
 	std::wstring RestartingTitleText;
 	std::wstring AutoPartButtonText;
 	std::wstring ManualPartButtonText;
-	std::wstring CompatibilityErrorText;
-	std::wstring RunInWinPERequiredErrorText;
-	std::wstring NoInstallImageFoundErrorText;
-	std::wstring ApplyInstallImageErrorText;
 	std::wstring SetupExit;
 	std::wstring SetupExitDuringSetup;
 };
@@ -94,13 +91,12 @@ public:
 // Image installation variables
 class GlobalImageInstall {
 public:
-	BOOL SetupInProgress;
-	int WaitThreadGo;
-	int WaitThreadRunning;
-	int CopyingFiles;
-	int ExpandingFiles;
-	int InstallingFeatures;
-	int InstallingUpdates;
+	BOOL WaitThreadGo,
+		WaitThreadRunning,
+		CopyingFiles,
+		ExpandingFiles,
+		InstallingFeatures,
+		InstallingUpdates;
 	int ImageIndex;
 	std::wstring ImagePath;
 	std::wstring destDrive;

@@ -2,10 +2,10 @@
 
 class Install {
 public:
+	static void InstallMain();
+private:
 	static void InstallerThread();
 	static int ApplyImage();
-	static void InstallMain();
-	static void RestartSoon();
 
 	class Progress {
 	public:

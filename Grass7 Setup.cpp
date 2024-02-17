@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Grass7 Setup.h"
 #include "MainGUI.h"
-#include "Global.h"
 #include "ResourceLoader.h"
 #include <iostream>
 
@@ -34,11 +33,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     #pragma warning(suppress : 4996)
 	if (GetVersionExW(&VersionInfo) != 0) {
 		if (VersionInfo.dwMajorVersion < WINDOWS_XP_MAJORVERSION) {
-			MessageBoxW(NULL,
-				AppResStringsObjects.CompatibilityErrorText.c_str(),
-				AppResStringsObjects.AppTitleText.c_str(),MB_ICONERROR | MB_OK);
-
-			return 0;
+			ErrorHandler::InvokeErrorHandler(1, 0, L"Setup needs at least Windows XP or above to run properly.", AppResStringsObjects.AppTitleText);
 		}
 	}
 
@@ -49,10 +44,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	RegGetValueW(HKEY_LOCAL_MACHINE, L"SYSTEM\\Setup", L"SystemSetupInProgress", RRF_RT_DWORD, NULL, (LPBYTE)&dwValue, &dwSize);
 
 	if (dwValue == 0) {
-		MessageBoxW(NULL,
-			AppResStringsObjects.RunInWinPERequiredErrorText.c_str(),
-			AppResStringsObjects.AppTitleText.c_str(), MB_ICONERROR | MB_OK);
-		return 0;
+		ErrorHandler::InvokeErrorHandler(1, 0, L"Setup is required to be run in WinPE.", AppResStringsObjects.AppTitleText);
 	}
 #endif
 
@@ -77,10 +69,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		ImageInstallObjects.ImagePath = srcImageWIM;
 	}
 	if (gr7::fileExistsW(const_cast<wchar_t*>(srcImageESD.c_str())) + gr7::fileExistsW(const_cast<wchar_t*>(srcImageWIM.c_str())) == FALSE) {
-		MessageBoxW(NULL,
-			AppResStringsObjects.NoInstallImageFoundErrorText.c_str(),
-			AppResStringsObjects.AppTitleText.c_str(), MB_ICONERROR | MB_OK);
-		return 0;
+		ErrorHandler::InvokeErrorHandler(1, 0, L"Setup did not detect any installation image file.", AppResStringsObjects.AppTitleText);
 	}
 
 	ImageInstallObjects.ImageIndex = 1;
@@ -90,8 +79,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 #else
 	ImageInstallObjects.destDrive = L"W:\\";
 #endif
-
-	MainGUI::RegisterClasses();
 
 	if (!MainGUI::InitInstance()) {
 		return FALSE;

@@ -200,6 +200,7 @@ xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionD
   <ItemGroup>
     <ClInclude Include="BootSetup.h" />
     <ClInclude Include="ButtonGUI.h" />
+    <ClInclude Include="ErrorHandler.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="Grass7 Setup.h" />
     <ClInclude Include="MainGUI.h" />
@@ -208,18 +209,21 @@ xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionD
     <ClInclude Include="ProgressGUI.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceLoader.h" />
+    <ClInclude Include="RestartCode.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BootSetup.cpp" />
     <ClCompile Include="ButtonGUI.cpp" />
+    <ClCompile Include="ErrorHandler.cpp" />
     <ClCompile Include="Grass7 Setup.cpp" />
     <ClCompile Include="MainGUI.cpp" />
     <ClCompile Include="InstallCode.cpp" />
     <ClCompile Include="PartitionCode.cpp" />
     <ClCompile Include="ProgressGUI.cpp" />
     <ClCompile Include="ResourceLoader.cpp" />
+    <ClCompile Include="RestartCode.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

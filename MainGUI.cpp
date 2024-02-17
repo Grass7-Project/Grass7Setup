@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "MainGUI.h"
-#include "Global.h"
 #include "ProgressGUI.h"
 #include "InstallCode.h"
 #include "ButtonGUI.h"
 #include "PartitionCode.h"
 #include "ResourceLoader.h"
+#include "RestartCode.h"
 #include <Uxtheme.h>
 #include <gdiplus.h>
 
@@ -14,6 +14,9 @@ MainGUI MainGUIObj;
 // Main GUI Code
 BOOL MainGUI::InitInstance()
 {
+	// Call the function to register the classes for the windows
+	MainGUI::RegisterClasses();
+
 	// Call the function to load the bitmaps
 	ResourceLoader::LoadBitmaps();
 
@@ -44,7 +47,7 @@ BOOL MainGUI::InitInstance()
 	SetWindowPos(MainObjects.hWndMainWindow, NULL, 0, 0, GetDeviceCaps(hDC, HORZRES), GetDeviceCaps(hDC, VERTRES), SWP_FRAMECHANGED);
 
 	if (!MainObjects.hWndMainWindow) {
-		return 0;
+		ErrorHandler::InvokeErrorHandler(1, 0, L"Failed to create Main Window", AppResStringsObjects.AppTitleText);
 	}
 
 	ButtonObjects.InstallButtonText = FALSE; // Set the install button text to not appear, currently
@@ -61,6 +64,8 @@ BOOL MainGUI::InitInstance()
 		NULL,
 		MainObjects.hInst,
 		NULL);
+
+	if (!MainObjects.hWndSetupWindow) ErrorHandler::InvokeErrorHandler(1, 0, L"Failed to create Setup Window", AppResStringsObjects.AppTitleText);
 
 	RECT rc;
 
@@ -153,11 +158,11 @@ ATOM MainGUI::RegisterClasses()
 
 void MainGUI::Exit()
 {
-	if (ImageInstallObjects.SetupInProgress) {
+	if (MainGUIObj.doNotClose) {
 		MessageBoxW(NULL, AppResStringsObjects.SetupExitDuringSetup.c_str(), AppResStringsObjects.AppTitleText.c_str(), MB_ICONERROR | MB_OK);
 	}
 
-	if (!ImageInstallObjects.SetupInProgress) {
+	if (!MainGUIObj.doNotClose) {
 		const int result = MessageBoxW(NULL, AppResStringsObjects.SetupExit.c_str(), AppResStringsObjects.AppTitleText.c_str(), MB_ICONERROR | MB_YESNO);
 		switch (result)
 		{
@@ -228,8 +233,6 @@ void MainGUI::DialogPaintCode()
 		gr7::PaintText(hdc, PaintTextOpt);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 		ProgressBarObjects.CollectingInfoPercentage = 100;
-		//ProgressGUI::updateProgressBar();
-
 		ProgressBarObjects.CollectingInfoPercentage = ProgressBarObjects.CollectingInfoPercentage + 1;
 		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_COLLECT_INFO_PROG_BAR, (WPARAM)(INT)0, 0);
 		MainGUIObj.doNotClose = 1;
@@ -248,8 +251,7 @@ void MainGUI::DialogPaintCode()
 		gr7::PaintText(hdc, PaintTextOpt);
 		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
-		std::thread Restart(Install::RestartSoon);
-		Restart.detach();
+		Restart::InitiateRestart();
 
 		::UpdateWindow(MainObjects.hWndSetupWindow);
 	}
@@ -498,7 +500,7 @@ LRESULT CALLBACK MainGUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam
 					::ShowWindow(ButtonObjects.hAutoPartitionBtn, FALSE);
 					::ShowWindow(ButtonObjects.hManualPartitionBtn, FALSE);
 
-					::SendMessageW(ButtonObjects.hCloseBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+					//::SendMessageW(ButtonObjects.hCloseBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 					::ShowWindow(ButtonObjects.hNormalBtn, FALSE);
 					::ShowWindow(ButtonObjects.hBackBtn, FALSE);
 
@@ -507,8 +509,13 @@ LRESULT CALLBACK MainGUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam
 
 				// Restarting Page
 				if (MainObjects.Page == 6) {
-					::SendMessageW(ButtonObjects.hCloseBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+					::ShowWindow(ButtonObjects.hCloseBtn, FALSE);
+					::ShowWindow(ProgressBarObjects.hProgressCtrlRestarting, TRUE);
 					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_RESTARTINGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
+				}
+
+				if (!MainObjects.hWndDialogWindow) {
+					ErrorHandler::InvokeErrorHandler(1, 0, L"Failed to create Dialog Window", AppResStringsObjects.AppTitleText);
 				}
 
 				// We show the window and update it to see our dialog page

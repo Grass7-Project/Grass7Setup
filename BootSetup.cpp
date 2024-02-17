@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "BootSetup.h"
-#include "Global.h"
 #include "MainGUI.h"
 #include <shellapi.h>
 

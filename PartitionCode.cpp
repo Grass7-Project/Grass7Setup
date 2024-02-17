@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "PartitionCode.h"
-#include "Global.h"
 #include "MainGUI.h"
 #include "BootSetup.h"
 #include <shellapi.h>

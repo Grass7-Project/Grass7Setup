@@ -1,78 +1,27 @@
 #include "stdafx.h"
 #include "ProgressGUI.h"
 #include "MainGUI.h"
-#include "Global.h"
 #include <Uxtheme.h>
 
 void ProgressGUI::createProgressBar()
 {
 	int hoz, ver;
-
 	gr7::GetDesktopResolution(hoz, ver);
 
-	ProgressBarObjects.hProgressCtrlCollectingInfo = ::CreateWindowExW(
-		0,
-		PROGRESS_CLASS,
-		L"",
-		WS_CHILD | WS_VISIBLE | PBS_SMOOTH | WS_BORDER,
-		0,
-		ver - 66,
-		208,
-		11,
-		MainObjects.hWndMainWindow,
-		(HMENU)ID_SMOOTHPROGRESSCTRL,
-		MainObjects.hInst,
-		NULL);
+	ProgressGUI::createProgressBarNew(MainObjects.hWndMainWindow, MainObjects.hInst, ProgressBarObjects.hProgressCtrlCollectingInfo, 0, ver - 66, 208, 11, ProgressBarObjects.CollectingInfoPercentage, RGB(153, 204, 51), RGB(122, 147, 177), MAINWND_UPDATE_COLLECT_INFO_PROG_BAR);
+	if (!ProgressBarObjects.hProgressCtrlCollectingInfo) {
+		ErrorHandler::InvokeErrorHandler(1, 0, L"Failed to create Collecting Information progress bar", AppResStringsObjects.AppTitleText);
+	}
+	ProgressGUI::createProgressBarNew(MainObjects.hWndMainWindow, MainObjects.hInst, ProgressBarObjects.hProgressCtrlInstalling, 210, ver - 66, hoz - 210, 11, ProgressBarObjects.InstallingPercentage, RGB(153, 204, 51), RGB(122, 147, 177), MAINWND_UPDATE_INSTALLING_PROG_BAR);
+	if (!ProgressBarObjects.hProgressCtrlInstalling) {
+		ErrorHandler::InvokeErrorHandler(1, 0, L"Failed to create Installing progress bar", AppResStringsObjects.AppTitleText);
+	}
+	ProgressGUI::createProgressBarNew(MainObjects.hWndSetupWindow, MainObjects.hInst, ProgressBarObjects.hProgressCtrlRestarting, 42, 62, 525, 11, ProgressBarObjects.RestartingPercentage, RGB(153, 204, 51), RGB(122, 147, 177), SETUPWND_RESTARTING_TIMER);
+	if (!ProgressBarObjects.hProgressCtrlRestarting) {
+		ErrorHandler::InvokeErrorHandler(1, 0, L"Failed to create Restarting progress bar", AppResStringsObjects.AppTitleText);
+	}
 
-	ProgressBarObjects.hProgressCtrlInstalling = ::CreateWindowExW(
-		0,
-		PROGRESS_CLASS,
-		L"",
-		WS_CHILD | WS_VISIBLE | PBS_SMOOTH | WS_BORDER,
-		210,
-		ver - 66,
-		hoz - 210,
-		11,
-		MainObjects.hWndMainWindow,
-		(HMENU)ID_SMOOTHPROGRESSCTRL,
-		MainObjects.hInst,
-		NULL);
-
-	ProgressBarObjects.hProgressCtrlRestarting = ::CreateWindowExW(
-		0,
-		PROGRESS_CLASS,
-		L"",
-		WS_CHILD | WS_VISIBLE | PBS_SMOOTH | WS_BORDER,
-		0,
-		0,
-		208,
-		11,
-		MainObjects.hWndSetupWindow,
-		(HMENU)ID_SMOOTHPROGRESSCTRL,
-		MainObjects.hInst,
-		NULL);
-
-	::SendMessageW(ProgressBarObjects.hProgressCtrlCollectingInfo, PBM_SETPOS, (WPARAM)(INT)0, 0);
-	SetWindowTheme(ProgressBarObjects.hProgressCtrlCollectingInfo, L"", L"");
-	::SendMessageW(ProgressBarObjects.hProgressCtrlCollectingInfo, PBM_SETBARCOLOR, 0, RGB(153, 204, 51));
-	::SendMessageW(ProgressBarObjects.hProgressCtrlCollectingInfo, PBM_SETBKCOLOR, 0, RGB(122, 147, 177));
-
-	::SendMessageW(ProgressBarObjects.hProgressCtrlInstalling, PBM_SETPOS, (WPARAM)(INT)0, 0);
-	SetWindowTheme(ProgressBarObjects.hProgressCtrlInstalling, L"", L"");
-	::SendMessageW(ProgressBarObjects.hProgressCtrlInstalling, PBM_SETBARCOLOR, 0, RGB(153, 204, 51));
-	::SendMessageW(ProgressBarObjects.hProgressCtrlInstalling, PBM_SETBKCOLOR, 0, RGB(122, 147, 177));
-
-	::SendMessageW(ProgressBarObjects.hProgressCtrlRestarting, PBM_SETPOS, (WPARAM)(INT)0, 0);
-	SetWindowTheme(ProgressBarObjects.hProgressCtrlRestarting, L"", L"");
-	::SendMessageW(ProgressBarObjects.hProgressCtrlRestarting, PBM_SETBARCOLOR, 0, RGB(153, 204, 51));
-	::SendMessageW(ProgressBarObjects.hProgressCtrlRestarting, PBM_SETBKCOLOR, 0, RGB(122, 147, 177));
-
-	ProgressBarObjects.CollectingInfoPercentage = 0;
-	ProgressBarObjects.InstallingPercentage = 0;
-	ProgressBarObjects.RestartingPercentage = 0;
-	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_COLLECT_INFO_PROG_BAR, (WPARAM)(INT)0, 0);
-	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
-	::SendMessageW(MainObjects.hWndSetupWindow, SETUPWND_RESTARTING_TIMER, (WPARAM)(INT)0, 0);
+	::ShowWindow(ProgressBarObjects.hProgressCtrlRestarting, FALSE);
 
 	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 37, ver - 42, AppResStringsObjects.ProgressBarText1, 9);
 	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 228, ver - 42, AppResStringsObjects.ProgressBarText2, 9);
@@ -80,7 +29,7 @@ void ProgressGUI::createProgressBar()
 	ProgressGUI::paintTextBelowProgressBar(MainObjects.hWndMainWindow, 200, ver - 47, L"2", 25);
 }
 
-void ProgressGUI::createProgressBarNew(HWND hWndParent, HINSTANCE hInst, HWND hWndProgressBar, int xPos, int yPos, int Width, int Height, int Percentage, COLORREF BarColor, COLORREF BackgroundColor, int MessageID)
+void ProgressGUI::createProgressBarNew(HWND &hWndParent, HINSTANCE &hInst, HWND &hWndProgressBar, int xPos, int yPos, int Width, int Height, int &Percentage, COLORREF BarColor, COLORREF BackgroundColor, int MessageID)
 {
 	hWndProgressBar = ::CreateWindowExW(
 		0,
@@ -105,20 +54,11 @@ void ProgressGUI::createProgressBarNew(HWND hWndParent, HINSTANCE hInst, HWND hW
 	::SendMessageW(MainObjects.hWndMainWindow, MessageID, (WPARAM)(INT)0, 0);
 }
 
-void ProgressGUI::updateProgressBar(HWND hParentWnd, HWND hProgressBarWnd, int ProgressBarPercentage)
+void ProgressGUI::updateProgressBar(HWND &hParentWnd, HWND &hProgressBarWnd, int &ProgressBarPercentage)
 {
 	::SendMessageW(hProgressBarWnd, PBM_SETPOS, (WPARAM)(INT)ProgressBarPercentage, 0);
 	::UpdateWindow(hParentWnd);
 }
-
-/*
-void ProgressGUI::updateProgressBar()
-{
-	::SendMessageW(ProgressBarObjects.hProgressCtrlCollectingInfo, PBM_SETPOS, (WPARAM)(INT)ProgressBarObjects.CollectingInfoPercentage, 0);
-	::SendMessageW(ProgressBarObjects.hProgressCtrlInstalling, PBM_SETPOS, (WPARAM)(INT)ProgressBarObjects.InstallingPercentage, 0);
-	::UpdateWindow(MainObjects.hWndMainWindow);
-}
-*/
 
 void ProgressGUI::createProgressText()
 {
@@ -129,24 +69,23 @@ void ProgressGUI::createProgressText()
 	ProgressTextPercentageObjects.InstallingUpdatesPercentage = 0;
 
 	// Create the text
-	ProgressGUI::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
-	ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
-	ProgressGUI::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
-	ProgressGUI::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
 }
 
-void ProgressGUI::updateProgressText(int x, int y, int &ProgressPercantage, std::wstring Text, COLORREF txtColor, int AddPercentage, std::wstring ExtraText, int cWeight)
+void ProgressGUI::updateProgressText(HWND &hWnd, int x, int y, int &ProgressPercantage, std::wstring &Text, COLORREF txtColor, int AddPercentage, std::wstring ExtraText, int cWeight)
 {
 	std::wstring ProgressText = Text;
 	std::wstring percentage(MAX_PATH, 0);
 
 	if (AddPercentage == 1) {
 		percentage.resize((size_t)swprintf_s(&percentage[0], percentage.size(), L"%d", ProgressPercantage));
-		percentage.append(L"%");
 
 		ProgressText.append(L"(");
 		ProgressText.append(percentage);
-		ProgressText.append(L")");
+		ProgressText.append(L"%)");
 		ProgressText.append(ExtraText);
 		ProgressText.append(L"            ");
 	}
@@ -155,7 +94,7 @@ void ProgressGUI::updateProgressText(int x, int y, int &ProgressPercantage, std:
 		ProgressText.append(L"                       ");
 	}
 
-	HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
+	HDC hdc = ::GetDC(hWnd);
 	PaintTextOptions PaintTextOpt;
 	PaintTextOpt.xPos = x;
 	PaintTextOpt.yPos = y;
@@ -168,12 +107,12 @@ void ProgressGUI::updateProgressText(int x, int y, int &ProgressPercantage, std:
 
 	gr7::PaintText(hdc, PaintTextOpt);
 
-	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
+	ReleaseDC(hWnd, hdc);
 
-	::UpdateWindow(MainObjects.hWndSetupWindow);
+	::UpdateWindow(hWnd);
 }
 
-void ProgressGUI::paintTextBelowProgressBar(HWND hWnd, int x, int y, std::wstring Text, int FontSize)
+void ProgressGUI::paintTextBelowProgressBar(HWND &hWnd, const int &x, const int &y, std::wstring Text, const int &FontSize)
 {
 	HDC hdc = ::GetDC(hWnd);
 	PaintTextOptions PaintTextOpt;
@@ -191,37 +130,37 @@ void ProgressGUI::paintTextBelowProgressBar(HWND hWnd, int x, int y, std::wstrin
 
 void ProgressGUI::WaitThread()
 {
-	ImageInstallObjects.WaitThreadRunning = 1;
-	while (ImageInstallObjects.WaitThreadGo == 0) {
+	ImageInstallObjects.WaitThreadRunning = TRUE;
+	while (ImageInstallObjects.WaitThreadGo == FALSE) {
 		Sleep(1000);
-		if (ImageInstallObjects.CopyingFiles == 1) {
-			ProgressGUI::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(0, 0, 0), TRUE, L" .", FW_BOLD);
+		if (ImageInstallObjects.CopyingFiles == TRUE) {
+			ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(0, 0, 0), TRUE, L" .", FW_BOLD);
 			Sleep(1000);
-			ProgressGUI::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(0, 0, 0), TRUE, L" ..", FW_BOLD);
+			ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(0, 0, 0), TRUE, L" ..", FW_BOLD);
 			Sleep(1000);
-			ProgressGUI::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(0, 0, 0), TRUE, L" ...", FW_BOLD);
+			ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(0, 0, 0), TRUE, L" ...", FW_BOLD);
 		}
-		if (ImageInstallObjects.ExpandingFiles == 1) {
-			ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L" .", FW_BOLD);
+		if (ImageInstallObjects.ExpandingFiles == TRUE) {
+			ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L" .", FW_BOLD);
 			Sleep(1000);
-			ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L" ..", FW_BOLD);
+			ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L" ..", FW_BOLD);
 			Sleep(1000);
-			ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L" ...", FW_BOLD);
+			ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L" ...", FW_BOLD);
 		}
-		if (ImageInstallObjects.InstallingFeatures == 1) {
-			ProgressGUI::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(0, 0, 0), TRUE, L" .", FW_BOLD);
+		if (ImageInstallObjects.InstallingFeatures == TRUE) {
+			ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(0, 0, 0), TRUE, L" .", FW_BOLD);
 			Sleep(1000);
-			ProgressGUI::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(0, 0, 0), TRUE, L" ..", FW_BOLD);
+			ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(0, 0, 0), TRUE, L" ..", FW_BOLD);
 			Sleep(1000);
-			ProgressGUI::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(0, 0, 0), TRUE, L" ...", FW_BOLD);
+			ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(0, 0, 0), TRUE, L" ...", FW_BOLD);
 		}
-		if (ImageInstallObjects.InstallingUpdates == 1) {
-			ProgressGUI::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(0, 0, 0), TRUE, L" .", FW_BOLD);
+		if (ImageInstallObjects.InstallingUpdates == TRUE) {
+			ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(0, 0, 0), TRUE, L" .", FW_BOLD);
 			Sleep(1000);
-			ProgressGUI::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(0, 0, 0), TRUE, L" ..", FW_BOLD);
+			ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(0, 0, 0), TRUE, L" ..", FW_BOLD);
 			Sleep(1000);
-			ProgressGUI::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(0, 0, 0), TRUE, L" ...", FW_BOLD);
+			ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(0, 0, 0), TRUE, L" ...", FW_BOLD);
 		}
 	}
-	ImageInstallObjects.WaitThreadRunning = 0;
+	ImageInstallObjects.WaitThreadRunning = FALSE;
 }

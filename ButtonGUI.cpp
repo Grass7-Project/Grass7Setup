@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ButtonGUI.h"
-#include "Global.h"
 #include "MainGUI.h"
 #include "PartitionCode.h"
 #include "ResourceLoader.h"
@@ -88,7 +87,7 @@ void ButtonGUI::InitButtonBitmaps()
 	BtnGUI.hManualPartBtnTmpImg = BitmapObjects.hManualPartBtnImg1;
 }
 
-void ButtonGUI::Paint(HWND &hWnd, int &drawButton, HBITMAP &hButtonImg, int xBmpPos = 0, int yBmpPos = 0, int drawText = FALSE, LPCWSTR text = L"", int customTextXY = FALSE, int textX = 0, int textY = 0)
+void ButtonGUI::Paint(HWND &hWnd, BOOL drawButton, HBITMAP &hButtonImg, int xBmpPos = 0, int yBmpPos = 0, int drawText = FALSE, LPCWSTR text = L"", int customTextXY = FALSE, int textX = 0, int textY = 0)
 {
 	if (drawButton == TRUE) {
 		InvalidateRect(hWnd, 0, TRUE);
@@ -132,7 +131,7 @@ void ButtonGUI::Paint(HWND &hWnd, int &drawButton, HBITMAP &hButtonImg, int xBmp
 	}
 }
 
-void ButtonGUI::ChangeBitmapState(HWND &hWnd, int &ButtonDisabled, int &drawButton, HBITMAP &hButtonTmpImg, HBITMAP &hButtonImg, int setState = FALSE)
+void ButtonGUI::ChangeBitmapState(HWND &hWnd, BOOL ButtonDisabled, int &drawButton, HBITMAP &hButtonTmpImg, HBITMAP &hButtonImg, BOOL setState = FALSE)
 {
 	ButtonDisabled = setState;
 	hButtonTmpImg = NULL;

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "InstallCode.h"
-#include "Global.h"
 #include "ProgressGUI.h"
 #include "MainGUI.h"
 #include "BootSetup.h"
@@ -11,13 +10,6 @@ void Install::InstallMain()
 {
 	std::thread InstallCode(Install::InstallerThread);
 	InstallCode.detach();
-}
-
-// Internal restarting now code
-void Install::RestartSoon()
-{
-	Sleep(5000);
-	SendMessageW(MainObjects.hWndMainWindow, WM_CLOSE, (WPARAM)(INT)0, 0);
 }
 
 // Installation Thread
@@ -52,18 +44,18 @@ void Install::InstallerThread()
 
 void Install::Progress::CopyingFiles()
 {
-	ImageInstallObjects.CopyingFiles = 1;
-	ProgressGUI::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
+	ImageInstallObjects.CopyingFiles = TRUE;
+	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
 
-	ImageInstallObjects.WaitThreadGo = 0;
+	ImageInstallObjects.WaitThreadGo = FALSE;
 	std::thread WaitThread(ProgressGUI::WaitThread);
 	WaitThread.detach();
 	Sleep(5000);
 	ProgressTextPercentageObjects.CopyingFilesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
-	ImageInstallObjects.WaitThreadGo = 1;
-	while (ImageInstallObjects.WaitThreadRunning == 1) {
+	ImageInstallObjects.WaitThreadGo = TRUE;
+	while (ImageInstallObjects.WaitThreadRunning == TRUE) {
 		Sleep(1000);
 	}
 
@@ -71,30 +63,27 @@ void Install::Progress::CopyingFiles()
 	gr7::PaintTransparentBitmap(hdc, 43, 120, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
-	ProgressGUI::updateProgressText(63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
-	ImageInstallObjects.CopyingFiles = 0;
+	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ImageInstallObjects.CopyingFiles = FALSE;
 }
 
 void Install::Progress::ExpandingFiles()
 {
-	ImageInstallObjects.ExpandingFiles = 1;
-	ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
+	ImageInstallObjects.ExpandingFiles = TRUE;
+	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
 
-	ImageInstallObjects.WaitThreadGo = 0;
+	ImageInstallObjects.WaitThreadGo = FALSE;
 	std::thread WaitThread(ProgressGUI::WaitThread);
 	WaitThread.detach();
 	Sleep(5000);
-	ImageInstallObjects.WaitThreadGo = 1;
-	while (ImageInstallObjects.WaitThreadRunning == 1) {
+	ImageInstallObjects.WaitThreadGo = TRUE;
+	while (ImageInstallObjects.WaitThreadRunning == TRUE) {
 		Sleep(1000);
 	}
 
 	/*int err = Install::ApplyImage();
 	if (err != 0) {
-	MessageBoxW(NULL,
-	AppResStringsObjects.ApplyInstallImageErrorText,
-	AppResStringsObjects.AppTitleText, MB_ICONERROR | MB_OK);
-	exit(0);
+	ErrorHandler::InvokeErrorHandler(1, 0, AppResStringsObjects.ApplyInstallImageErrorText, AppResStringsObjects.AppTitleText);
 	}*/
 
 	ProgressTextPercentageObjects.ExpandingFilesPercentage = 100;
@@ -105,38 +94,38 @@ void Install::Progress::ExpandingFiles()
 	gr7::PaintTransparentBitmap(hdc, 43, 140, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
-	ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
-	ImageInstallObjects.ExpandingFiles = 0;
+	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ImageInstallObjects.ExpandingFiles = FALSE;
 }
 
 void Install::Progress::InstallingFeatures()
 {
-	ImageInstallObjects.InstallingFeatures = 1;
-	ProgressGUI::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
+	ImageInstallObjects.InstallingFeatures = TRUE;
+	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
 
-	ImageInstallObjects.WaitThreadGo = 0;
+	ImageInstallObjects.WaitThreadGo = FALSE;
 	std::thread WaitThread(ProgressGUI::WaitThread);
 	WaitThread.detach();
 	Sleep(5000);
 	ProgressTextPercentageObjects.InstallingFeaturesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
-	ImageInstallObjects.WaitThreadGo = 1;
-	while (ImageInstallObjects.WaitThreadRunning == 1) {
+	ImageInstallObjects.WaitThreadGo = TRUE;
+	while (ImageInstallObjects.WaitThreadRunning == TRUE) {
 		Sleep(1000);
 	}
 	HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
 	gr7::PaintTransparentBitmap(hdc, 43, 158, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
-	ProgressGUI::updateProgressText(63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
-	ImageInstallObjects.InstallingFeatures = 0;
+	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ImageInstallObjects.InstallingFeatures = FALSE;
 }
 
 void Install::Progress::InstallingUpdates()
 {
-	ImageInstallObjects.InstallingUpdates = 1;
-	ProgressGUI::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
+	ImageInstallObjects.InstallingUpdates = TRUE;
+	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
 
 	ImageInstallObjects.WaitThreadGo = 0;
 	std::thread WaitThread(ProgressGUI::WaitThread);
@@ -145,16 +134,16 @@ void Install::Progress::InstallingUpdates()
 	ProgressTextPercentageObjects.InstallingUpdatesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
-	ImageInstallObjects.WaitThreadGo = 1;
-	while (ImageInstallObjects.WaitThreadRunning == 1) {
+	ImageInstallObjects.WaitThreadGo = TRUE;
+	while (ImageInstallObjects.WaitThreadRunning == TRUE) {
 		Sleep(1000);
 	}
 	HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
 	gr7::PaintTransparentBitmap(hdc, 43, 178, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
-	ProgressGUI::updateProgressText(63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
-	ImageInstallObjects.InstallingUpdates = 0;
+	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ImageInstallObjects.InstallingUpdates = FALSE;
 }
 
 #define TO_PERCENT(numerator, denominator) \
@@ -169,7 +158,7 @@ extract_progress(enum wimlib_progress_msg msg,
 	case WIMLIB_PROGRESS_MSG_EXTRACT_STREAMS:
 		ProgressTextPercentageObjects.ExpandingFilesPercentage = (INT)TO_PERCENT(info->extract.completed_bytes, info->extract.total_bytes);
 		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
-		ProgressGUI::updateProgressText(63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
+		ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
 		break;
 	default:
 		break;
