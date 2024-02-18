@@ -3,6 +3,7 @@
 #include "MainGUI.h"
 #include "ResourceLoader.h"
 #include <iostream>
+#include <shellapi.h>
 
 GlobalMain MainObjects;
 GlobalButtons ButtonObjects;
@@ -19,7 +20,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                      int       nCmdShow)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
-	UNREFERENCED_PARAMETER(lpCmdLine);
 
 	MSG msg;
 	HACCEL hAccelTable;
@@ -30,6 +30,27 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	MainObjects.hProcess = GetCurrentProcess();
 	ResourceLoader::LoadStrings();
 
+	LPWSTR *szArglist;
+	int nArgs;
+
+	szArglist = CommandLineToArgvW(lpCmdLine, &nArgs);
+	LocalFree(szArglist);
+	
+	// 3 Arguments avaliable
+	if (nArgs != 3) {
+		ErrorHandler::InvokeErrorHandler(1, 0, L"Too many command line arguments.", AppResStringsObjects.AppTitleText);
+	}
+
+	if (wcsstr(lpCmdLine, L"/nodeploy") != 0) {
+		ImageInstallObjects.NoDeploy = TRUE;
+	}
+	if (wcsstr(lpCmdLine, L"/debug") != 0) {
+		MainObjects.Debug = TRUE;
+	}
+	if (wcsstr(lpCmdLine, L"/disablewinpecheck") != 0) {
+		MainObjects.NoWinPECheck = TRUE;
+	}
+
     #pragma warning(suppress : 4996)
 	if (GetVersionExW(&VersionInfo) != 0) {
 		if (VersionInfo.dwMajorVersion < WINDOWS_XP_MAJORVERSION) {
@@ -37,16 +58,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		}
 	}
 
-#ifdef _DEBUG
-#else
-	DWORD dwValue;
-	DWORD dwSize = sizeof(dwValue);
-	RegGetValueW(HKEY_LOCAL_MACHINE, L"SYSTEM\\Setup", L"SystemSetupInProgress", RRF_RT_DWORD, NULL, (LPBYTE)&dwValue, &dwSize);
+	if (!MainObjects.NoWinPECheck) {
+		DWORD dwValue;
+		DWORD dwSize = sizeof(dwValue);
+		RegGetValueW(HKEY_LOCAL_MACHINE, L"SYSTEM\\Setup", L"SystemSetupInProgress", RRF_RT_DWORD, NULL, (LPBYTE)&dwValue, &dwSize);
 
-	if (dwValue == 0) {
-		ErrorHandler::InvokeErrorHandler(1, 0, L"Setup is required to be run in WinPE.", AppResStringsObjects.AppTitleText);
+		if (dwValue == 0) {
+			ErrorHandler::InvokeErrorHandler(1, 0, L"Setup is required to run in WinPE.", AppResStringsObjects.AppTitleText);
+		}
 	}
-#endif
 
 	std::wstring installSourcesp1(MAX_PATH, 0);
 
@@ -74,11 +94,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	ImageInstallObjects.ImageIndex = 1;
 
-#ifdef _DEBUG
-	ImageInstallObjects.destDrive = L"C:\\Users\\Genki\\Desktop\\gr7\\Deploy";
-#else
-	ImageInstallObjects.destDrive = L"W:\\";
-#endif
+	if (MainObjects.Debug) {
+		ImageInstallObjects.destDrive = L"C:\\Users\\Genki\\Desktop\\gr7\\Deploy";
+	} else {
+		ImageInstallObjects.destDrive = L"W:\\";
+	}
 
 	if (!MainGUI::InitInstance()) {
 		return FALSE;

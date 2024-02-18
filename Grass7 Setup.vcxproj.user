@@ -9,6 +9,7 @@
     <LocalDebuggerCommand>$(SolutionDir)ISO\sources\gr7setup.exe</LocalDebuggerCommand>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)ISO\sources</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>/debug /nodeploy /disablewinpecheck</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerCommand>$(SolutionDir)ISO\sources\gr7setup.exe</LocalDebuggerCommand>

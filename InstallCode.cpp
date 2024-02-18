@@ -81,10 +81,10 @@ void Install::Progress::ExpandingFiles()
 		Sleep(1000);
 	}
 
-	/*int err = Install::ApplyImage();
-	if (err != 0) {
-	ErrorHandler::InvokeErrorHandler(1, 0, AppResStringsObjects.ApplyInstallImageErrorText, AppResStringsObjects.AppTitleText);
-	}*/
+	if (!ImageInstallObjects.NoDeploy) {
+		int err = Install::ApplyImage();
+		ErrorHandler::InvokeErrorHandler(err, 0, L"Failed to apply installation image.", AppResStringsObjects.AppTitleText);
+	}
 
 	ProgressTextPercentageObjects.ExpandingFilesPercentage = 100;
 	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;

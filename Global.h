@@ -10,6 +10,9 @@ public:
 		hWndSetupWindow,
 		hWndDialogWindow;
 
+	BOOL Debug,
+		NoWinPECheck;
+
 	int Page;
 };
 
@@ -96,7 +99,8 @@ public:
 		CopyingFiles,
 		ExpandingFiles,
 		InstallingFeatures,
-		InstallingUpdates;
+		InstallingUpdates,
+		NoDeploy;
 	int ImageIndex;
 	std::wstring ImagePath;
 	std::wstring destDrive;

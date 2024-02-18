@@ -34,11 +34,11 @@ void BootSetup::SetupSystemBoot()
 	ShExecInfo.lpParameters = WindowsFolder.c_str();
 	ShExecInfo.lpDirectory = ImageInstallObjects.installSources.c_str();
 
-#ifdef _DEBUG
-	ShExecInfo.nShow = SW_SHOW;
-#else
-	ShExecInfo.nShow = SW_HIDE;
-#endif
+	if (MainObjects.Debug) {
+		ShExecInfo.nShow = SW_SHOW;
+	} else {
+		ShExecInfo.nShow = SW_HIDE;
+	}
 
 	ShExecInfo.hInstApp = NULL;
 	ShellExecuteExW(&ShExecInfo);

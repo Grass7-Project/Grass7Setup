@@ -31,6 +31,10 @@ BOOL MainGUI::InitInstance()
 		0,
 		(DLGPROC)MainGUI::WndProc);
 
+	if (!MainObjects.hWndMainWindow) {
+		ErrorHandler::InvokeErrorHandler(1, 0, L"Failed to create Main Window", AppResStringsObjects.AppTitleText);
+	}
+
 	EnableMenuItem(GetSystemMenu(MainObjects.hWndMainWindow, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
 	SetWindowLongW(MainObjects.hWndMainWindow, GWL_STYLE, GetWindowLongW(MainObjects.hWndMainWindow, GWL_STYLE) & ~WS_MINIMIZEBOX);
@@ -45,10 +49,6 @@ BOOL MainGUI::InitInstance()
 	// Set position of the main window
 	SetWindowPos(MainObjects.hWndMainWindow, NULL, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 	SetWindowPos(MainObjects.hWndMainWindow, NULL, 0, 0, GetDeviceCaps(hDC, HORZRES), GetDeviceCaps(hDC, VERTRES), SWP_FRAMECHANGED);
-
-	if (!MainObjects.hWndMainWindow) {
-		ErrorHandler::InvokeErrorHandler(1, 0, L"Failed to create Main Window", AppResStringsObjects.AppTitleText);
-	}
 
 	ButtonObjects.InstallButtonText = FALSE; // Set the install button text to not appear, currently
 
@@ -65,7 +65,9 @@ BOOL MainGUI::InitInstance()
 		MainObjects.hInst,
 		NULL);
 
-	if (!MainObjects.hWndSetupWindow) ErrorHandler::InvokeErrorHandler(1, 0, L"Failed to create Setup Window", AppResStringsObjects.AppTitleText);
+	if (!MainObjects.hWndSetupWindow) {
+		ErrorHandler::InvokeErrorHandler(1, 0, L"Failed to create Setup Window", AppResStringsObjects.AppTitleText);
+	}
 
 	RECT rc;
 
@@ -99,6 +101,23 @@ BOOL MainGUI::InitInstance()
 	::SendMessageW(MainObjects.hWndSetupWindow, SETUPWND_UPDATE_DIALOG, (WPARAM)(INT)0, 0);
 
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_CREATE_PROG_BAR, (WPARAM)(INT)0, 0);
+
+#ifdef _DEBUG
+	HDC hdc = ::GetDC(MainObjects.hWndMainWindow);
+	PaintTextOptions PaintTextOpt;
+	PaintTextOpt.xPos = 0;
+	PaintTextOpt.yPos = 0;
+	PaintTextOpt.font = L"Segoe UI";
+	PaintTextOpt.color = RGB(255, 255, 255);
+	PaintTextOpt.text = L"Debug Build";
+	PaintTextOpt.nSize = 9;
+	PaintTextOpt.cWeight = FW_LIGHT;
+
+	gr7::PaintText(hdc, PaintTextOpt);
+	ReleaseDC(MainObjects.hWndMainWindow, hdc);
+	::UpdateWindow(MainObjects.hWndMainWindow);
+#endif
+
 	return 1;
 }
 
@@ -272,7 +291,7 @@ LRESULT CALLBACK MainGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
 	{
 		case WM_CLOSE:
 		{
-			if (MainGUIObj.doNotClose == TRUE) {
+			if (MainGUIObj.doNotClose) {
 				return 0;
 			}
 			DestroyWindow(MainObjects.hWndDialogWindow);
@@ -385,7 +404,7 @@ LRESULT CALLBACK MainGUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam
 		break;
 		case WM_CLOSE:
 			{
-				if (MainGUIObj.doNotClose == TRUE) {
+				if (MainGUIObj.doNotClose) {
 					return 0;
 				}
 				::DestroyWindow(MainObjects.hWndDialogWindow);
@@ -452,6 +471,7 @@ LRESULT CALLBACK MainGUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam
 
 					RichEditControlObjects.hWndRichEditCtrl = gr7::CreateRichEdit(MainObjects.hWndDialogWindow, 42, 62, 543, 272, MainObjects.hInst);
 					gr7::FillRichEditFromFile(RichEditControlObjects.hWndRichEditCtrl, file.c_str() , SF_RTF);
+					::SendMessageW(RichEditControlObjects.hWndRichEditCtrl, EM_SETREADONLY, TRUE, 0);
 				}
 
 				// Changelog Page
@@ -478,17 +498,19 @@ LRESULT CALLBACK MainGUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam
 
 					RichEditControlObjects.hWndRichEditCtrl = gr7::CreateRichEdit(MainObjects.hWndDialogWindow, 42, 62, 543, 272, MainObjects.hInst);
 					gr7::FillRichEditFromFile(RichEditControlObjects.hWndRichEditCtrl, file.c_str(), SF_RTF);
+					::SendMessageW(RichEditControlObjects.hWndRichEditCtrl, EM_SETREADONLY, TRUE, 0);
 				}
 
 				// Partition Page
 				if (MainObjects.Page == 4) {
-					#ifdef _DEBUG
-					::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
-					::SendMessageW(ButtonObjects.hAutoPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
-					::SendMessageW(ButtonObjects.hManualPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
-					#else
-					::SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
-					#endif
+					if (MainObjects.Debug) {
+						::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+						::SendMessageW(ButtonObjects.hAutoPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+						::SendMessageW(ButtonObjects.hManualPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+					} else {
+						::SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+					}
+
 					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PARTITIONPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
 
 					::ShowWindow(ButtonObjects.hAutoPartitionBtn, TRUE);
@@ -499,8 +521,6 @@ LRESULT CALLBACK MainGUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam
 				if (MainObjects.Page == 5) {
 					::ShowWindow(ButtonObjects.hAutoPartitionBtn, FALSE);
 					::ShowWindow(ButtonObjects.hManualPartitionBtn, FALSE);
-
-					//::SendMessageW(ButtonObjects.hCloseBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 					::ShowWindow(ButtonObjects.hNormalBtn, FALSE);
 					::ShowWindow(ButtonObjects.hBackBtn, FALSE);
 
