@@ -45,7 +45,7 @@ void Install::InstallerThread()
 void Install::Progress::CopyingFiles()
 {
 	ImageInstallObjects.CopyingFiles = TRUE;
-	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
+	ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
 
 	ImageInstallObjects.WaitThreadGo = FALSE;
 	std::thread WaitThread(ProgressGUI::WaitThread);
@@ -63,14 +63,14 @@ void Install::Progress::CopyingFiles()
 	gr7::PaintTransparentBitmap(hdc, 43, 120, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
-	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
 	ImageInstallObjects.CopyingFiles = FALSE;
 }
 
 void Install::Progress::ExpandingFiles()
 {
 	ImageInstallObjects.ExpandingFiles = TRUE;
-	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
+	ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
 
 	ImageInstallObjects.WaitThreadGo = FALSE;
 	std::thread WaitThread(ProgressGUI::WaitThread);
@@ -94,14 +94,14 @@ void Install::Progress::ExpandingFiles()
 	gr7::PaintTransparentBitmap(hdc, 43, 140, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
-	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
 	ImageInstallObjects.ExpandingFiles = FALSE;
 }
 
 void Install::Progress::InstallingFeatures()
 {
 	ImageInstallObjects.InstallingFeatures = TRUE;
-	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
+	ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
 
 	ImageInstallObjects.WaitThreadGo = FALSE;
 	std::thread WaitThread(ProgressGUI::WaitThread);
@@ -118,14 +118,14 @@ void Install::Progress::InstallingFeatures()
 	gr7::PaintTransparentBitmap(hdc, 43, 158, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
-	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
 	ImageInstallObjects.InstallingFeatures = FALSE;
 }
 
 void Install::Progress::InstallingUpdates()
 {
 	ImageInstallObjects.InstallingUpdates = TRUE;
-	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
+	ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
 
 	ImageInstallObjects.WaitThreadGo = 0;
 	std::thread WaitThread(ProgressGUI::WaitThread);
@@ -138,11 +138,12 @@ void Install::Progress::InstallingUpdates()
 	while (ImageInstallObjects.WaitThreadRunning == TRUE) {
 		Sleep(1000);
 	}
+
 	HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
 	gr7::PaintTransparentBitmap(hdc, 43, 178, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 
-	ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
 	ImageInstallObjects.InstallingUpdates = FALSE;
 }
 
@@ -158,7 +159,7 @@ extract_progress(enum wimlib_progress_msg msg,
 	case WIMLIB_PROGRESS_MSG_EXTRACT_STREAMS:
 		ProgressTextPercentageObjects.ExpandingFilesPercentage = (INT)TO_PERCENT(info->extract.completed_bytes, info->extract.total_bytes);
 		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
-		ProgressGUI::updateProgressText(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
+		ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
 		break;
 	default:
 		break;

@@ -48,17 +48,7 @@ void Restart::CreateTimerText(HWND &hWnd, const int &xPos, const int &yPos, cons
 	TimerText.append(L"   ");
 
 	HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-	PaintTextOptions PaintTextOpt;
-	PaintTextOpt.xPos = xPos;
-	PaintTextOpt.yPos = yPos;
-	PaintTextOpt.font = L"Segoe UI";
-	PaintTextOpt.color = RGB(0, 0, 0);
-	PaintTextOpt.text = TimerText.c_str();
-	PaintTextOpt.nSize = 9;
-	PaintTextOpt.BkMode = OPAQUE;
-	PaintTextOpt.cWeight = FW_LIGHT;
-
-	gr7::PaintText(hdc, PaintTextOpt);
+	gr7::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 0, 0), TimerText.c_str(), 9, 1, OPAQUE, FW_LIGHT);
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 	::UpdateWindow(MainObjects.hWndSetupWindow);
 }

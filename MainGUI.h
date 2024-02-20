@@ -4,7 +4,7 @@ class MainGUI{
 public:
 	static BOOL	InitInstance();
 	static void Exit();
-	static void DialogPaintCode();
+	static void DialogPaintCode(HDC &hdc);
 
 private:
 	static		ATOM				RegisterClasses();

@@ -108,20 +108,11 @@ void ButtonGUI::Paint(HWND &hWnd, BOOL drawButton, HBITMAP &hButtonImg, int xBmp
 		EndPaint(hWnd, &ps);
 		if (drawText == TRUE) {
 			HDC hdc = ::GetDC(hWnd);
-			PaintTextOptions PaintTextOpt;
-			PaintTextOpt.font = L"Segoe UI";
-			PaintTextOpt.color = RGB(0, 0, 0);
-			PaintTextOpt.text = text;
-			PaintTextOpt.nSize = 9;
 			if (customTextXY == 0) {
-				PaintTextOpt.xPos = (rc.right - rc.left) / 2 - 12;
-				PaintTextOpt.yPos = (rc.bottom - rc.top) / 2 - 7;
-				gr7::PaintText(hdc, PaintTextOpt);
+				gr7::PaintText(hdc, (rc.right - rc.left) / 2 - 12, (rc.bottom - rc.top) / 2 - 7, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
 			}
 			if (customTextXY == 1) {
-				PaintTextOpt.xPos = textX;
-				PaintTextOpt.yPos = textY;
-				gr7::PaintText(hdc, PaintTextOpt);
+				gr7::PaintText(hdc, textX, textY, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
 			}
 			ReleaseDC(hWnd, hdc);
 
@@ -131,7 +122,7 @@ void ButtonGUI::Paint(HWND &hWnd, BOOL drawButton, HBITMAP &hButtonImg, int xBmp
 	}
 }
 
-void ButtonGUI::ChangeBitmapState(HWND &hWnd, BOOL ButtonDisabled, int &drawButton, HBITMAP &hButtonTmpImg, HBITMAP &hButtonImg, BOOL setState = FALSE)
+void ButtonGUI::ChangeBitmapState(HWND &hWnd, BOOL &ButtonDisabled, int &drawButton, HBITMAP &hButtonTmpImg, HBITMAP &hButtonImg, BOOL setState = FALSE)
 {
 	ButtonDisabled = setState;
 	hButtonTmpImg = NULL;
@@ -416,8 +407,8 @@ LRESULT CALLBACK ButtonGUI::AutoPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		if (ButtonObjects.AutoPartButtonState != 3) {
 			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg1);
 
-			PartitionCode::AutomaticPartitioning();
-			::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+			std::thread AutoPartThread(PartitionCode::AutomaticPartitioning);
+			AutoPartThread.detach();
 		}
 	}
 	break;
@@ -509,8 +500,8 @@ LRESULT CALLBACK ButtonGUI::ManualPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wP
 		if (ButtonObjects.ManualPartButtonState != 3) {
 			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg1);
 
-			PartitionCode::ManualPartitioning();
-			::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+			std::thread ManualPartThread(PartitionCode::ManualPartitioning);
+			ManualPartThread.detach();
 		}
 	}
 	break;

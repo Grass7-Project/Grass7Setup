@@ -33,9 +33,11 @@ void PartitionCode::AutomaticPartitioning()
 	ShellExecuteExW(&ShExecInfo);
 	WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
 	CloseHandle(ShExecInfo.hProcess);
+	::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
 }
 
 void PartitionCode::ManualPartitioning()
 {
 	ShellExecuteW(NULL, NULL, L"cmd", L"/C diskpart", NULL, SW_SHOW);
+	::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
 }

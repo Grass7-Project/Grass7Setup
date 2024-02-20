@@ -101,23 +101,6 @@ BOOL MainGUI::InitInstance()
 	::SendMessageW(MainObjects.hWndSetupWindow, SETUPWND_UPDATE_DIALOG, (WPARAM)(INT)0, 0);
 
 	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_CREATE_PROG_BAR, (WPARAM)(INT)0, 0);
-
-#ifdef _DEBUG
-	HDC hdc = ::GetDC(MainObjects.hWndMainWindow);
-	PaintTextOptions PaintTextOpt;
-	PaintTextOpt.xPos = 0;
-	PaintTextOpt.yPos = 0;
-	PaintTextOpt.font = L"Segoe UI";
-	PaintTextOpt.color = RGB(255, 255, 255);
-	PaintTextOpt.text = L"Debug Build";
-	PaintTextOpt.nSize = 9;
-	PaintTextOpt.cWeight = FW_LIGHT;
-
-	gr7::PaintText(hdc, PaintTextOpt);
-	ReleaseDC(MainObjects.hWndMainWindow, hdc);
-	::UpdateWindow(MainObjects.hWndMainWindow);
-#endif
-
 	return 1;
 }
 
@@ -192,94 +175,60 @@ void MainGUI::Exit()
 	}
 }
 
-void MainGUI::DialogPaintCode()
+void MainGUI::DialogPaintCode(HDC &hdc)
 {
+	
 	// Text painting options
-	PaintTextOptions PaintTextOpt;
-	PaintTextOpt.xPos = 43;
-	PaintTextOpt.yPos = 22;
-	PaintTextOpt.font = L"Segoe UI";
-	PaintTextOpt.color = RGB(0, 105, 51);
-	PaintTextOpt.nSize = 12;
+	int xPos = 43;
+	int yPos = 22;
+	COLORREF color = RGB(0, 105, 51);
+	int nSize = 12;
 
 	// Welcome Page
 	if (MainObjects.Page == 1) {
 		// Draw Logo Text
-		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
 		gr7::PaintTransparentBitmap(hdc, 0, (428 / 2) - 72, BitmapObjects.hBanner, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
-		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 	}
 
 	// License Page
 	if (MainObjects.Page == 2) {
 		// Draw Dialog Title Text
-		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		PaintTextOpt.text = AppResStringsObjects.EulaTitleText.c_str();
-		gr7::PaintText(hdc, PaintTextOpt);
-		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
-
-		::UpdateWindow(MainObjects.hWndSetupWindow);
+		gr7::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.EulaTitleText.c_str(), nSize, 1, TRANSPARENT, FW_LIGHT);
 	}
 
 	// Changelog Page
 	if (MainObjects.Page == 3) {
 		// Draw Dialog Title Text
-		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		PaintTextOpt.text = AppResStringsObjects.ChangelogTitleText.c_str();
-		gr7::PaintText(hdc, PaintTextOpt);
-		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
-
-		::UpdateWindow(MainObjects.hWndSetupWindow);
+		gr7::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.ChangelogTitleText.c_str(), nSize, 1, TRANSPARENT, FW_LIGHT);
 	}
 
 	// Partition Page
 	if (MainObjects.Page == 4) {
 		// Draw Dialog Title Text
-		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		PaintTextOpt.text = AppResStringsObjects.PartitionTitleText.c_str();
-		gr7::PaintText(hdc, PaintTextOpt);
+		gr7::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.PartitionTitleText.c_str(), nSize, 1, TRANSPARENT, FW_LIGHT);
 		int nHeightFont = -MulDiv(9, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
-
-		::UpdateWindow(MainObjects.hWndSetupWindow);
 	}
 
 	// Installing Page
 	if (MainObjects.Page == 5) {
 		// Draw Dialog Title Text
-		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		PaintTextOpt.text = AppResStringsObjects.InstallingTitleText.c_str();
-		gr7::PaintText(hdc, PaintTextOpt);
-		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
+		gr7::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.InstallingTitleText.c_str(), nSize, 1, TRANSPARENT, FW_LIGHT);
 		ProgressBarObjects.CollectingInfoPercentage = 100;
 		ProgressBarObjects.CollectingInfoPercentage = ProgressBarObjects.CollectingInfoPercentage + 1;
 		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_COLLECT_INFO_PROG_BAR, (WPARAM)(INT)0, 0);
 		MainGUIObj.doNotClose = 1;
 		EnableMenuItem(GetSystemMenu(MainObjects.hWndSetupWindow, 0), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-		ProgressGUI::createProgressText();
-		Install::InstallMain();
-
+		ProgressGUI::createProgressText(hdc);
 		::UpdateWindow(MainObjects.hWndSetupWindow);
+		Install::InstallMain();
 	}
 
 	// Restarting Page
 	if (MainObjects.Page == 6) {
 		// Draw Dialog Title Text
-		HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-		PaintTextOpt.text = AppResStringsObjects.RestartingTitleText.c_str();
-		gr7::PaintText(hdc, PaintTextOpt);
-		ReleaseDC(MainObjects.hWndSetupWindow, hdc);
-
+		gr7::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.RestartingTitleText.c_str(), nSize, 1, TRANSPARENT, FW_LIGHT);
 		Restart::InitiateRestart();
-
-		::UpdateWindow(MainObjects.hWndSetupWindow);
 	}
-
-	HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-	gr7::PaintTransparentBitmap(hdc, 0, 382, BitmapObjects.hBottomPanel, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
-	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
-
-	::SendMessageW(ButtonObjects.hNormalBtn, BTN_UPDATE, (WPARAM)(INT)0, 0);
 }
 
 // Main Window Window Procedure
@@ -332,7 +281,6 @@ LRESULT CALLBACK MainGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
 				SelectObject(hdcBkgMem, oldBkgBitmap);
 
 				// Draw Fake Window
-				HDC hdcWndMem = CreateCompatibleDC(hdc);
 				GetObjectW(BitmapObjects.hFakeWindow, sizeof(WndBitmap), &WndBitmap);
 				int xPos = (horizontal - WndBitmap.bmWidth) / 2;
 				int yPos = (vertical - WndBitmap.bmHeight) / 2;
@@ -342,16 +290,20 @@ LRESULT CALLBACK MainGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
 				gr7::PaintTransparentBitmap(hdc, xPos + 56, yPos + 26 - 33, BitmapObjects.hSmallLogo, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 				
 				// Draw Title Text
-				PaintTextOptions PaintTextOpt;
-				PaintTextOpt.xPos = xPos + 56 + 23;
-				PaintTextOpt.yPos = yPos + 26 - 33;
-				PaintTextOpt.font = L"Segoe UI";
-				PaintTextOpt.color = RGB(0, 0, 0);
-				PaintTextOpt.text = AppResStringsObjects.TitleBarText.c_str();
-				PaintTextOpt.nSize = 9;
-				gr7::PaintText(hdc, PaintTextOpt);
+				gr7::PaintText(hdc, xPos + 56 + 23, yPos + 26 - 33, L"Segoe UI", RGB(0, 0, 0), AppResStringsObjects.TitleBarText.c_str(), 9, 1, TRANSPARENT, FW_LIGHT);
 
-				DeleteDC(hdcWndMem);
+				// Paint bottom progress bar text
+				int hoz, ver;
+				gr7::GetDesktopResolution(hoz, ver);
+				gr7::PaintText(hdc, 37, ver - 42, L"Segoe UI", RGB(255, 255, 255), AppResStringsObjects.ProgressBarText1.c_str(), 9, 1, TRANSPARENT, FW_LIGHT);
+				gr7::PaintText(hdc, 228, ver - 42, L"Segoe UI", RGB(255, 255, 255), AppResStringsObjects.ProgressBarText2.c_str(), 9, 1, TRANSPARENT, FW_LIGHT);
+				gr7::PaintText(hdc, 6, ver - 47, L"Segoe UI", RGB(255, 255, 255), L"1", 25, 1, TRANSPARENT, FW_LIGHT);
+				gr7::PaintText(hdc, 200, ver - 47, L"Segoe UI", RGB(255, 255, 255), L"2", 25, 1, TRANSPARENT, FW_LIGHT);
+
+				#ifdef _DEBUG
+				gr7::PaintText(hdc, 0, 0, L"Segoe UI", RGB(255, 255, 255), L"Debug Build", 9, 1, TRANSPARENT, FW_LIGHT);
+				#endif
+
 				DeleteDC(hdcBkgMem);
 				EndPaint(hWnd, &ps);
 			}
@@ -428,6 +380,7 @@ LRESULT CALLBACK MainGUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam
 			HDC             hdc;
 			{
 				hdc = BeginPaint(hWnd, &ps);
+				gr7::PaintTransparentBitmap(hdc, 0, 382, BitmapObjects.hBottomPanel, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 				EndPaint(hWnd, &ps);
 			}
 			break;
@@ -542,8 +495,7 @@ LRESULT CALLBACK MainGUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam
 				::ShowWindow(MainObjects.hWndDialogWindow, TRUE);
 				::UpdateWindow(MainObjects.hWndDialogWindow);
 
-				//Activate custom paint code for dialogs
-				MainGUI::DialogPaintCode();
+				::SendMessageW(ButtonObjects.hNormalBtn, BTN_UPDATE, (WPARAM)(INT)0, 0);
 			}
 			break;
 
@@ -617,6 +569,8 @@ LRESULT CALLBACK MainGUI::WndProcDialogWnd(HWND hWnd, UINT message, WPARAM wPara
 			HDC             hdc;
 			{
 				hdc = BeginPaint(hWnd, &ps);
+				gr7::PaintTransparentBitmap(hdc, 0, 382, BitmapObjects.hBottomPanel, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+				MainGUI::DialogPaintCode(hdc);
 				EndPaint(hWnd, &ps);
 			}
 			break;

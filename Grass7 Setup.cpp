@@ -30,15 +30,17 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	MainObjects.hProcess = GetCurrentProcess();
 	ResourceLoader::LoadStrings();
 
-	LPWSTR *szArglist;
-	int nArgs;
+	if (lpCmdLine != L"") {
+		LPWSTR *szArglist;
+		int nArgs;
 
-	szArglist = CommandLineToArgvW(lpCmdLine, &nArgs);
-	LocalFree(szArglist);
-	
-	// 3 Arguments avaliable
-	if (nArgs != 3) {
-		ErrorHandler::InvokeErrorHandler(1, 0, L"Too many command line arguments.", AppResStringsObjects.AppTitleText);
+		szArglist = CommandLineToArgvW(lpCmdLine, &nArgs);
+		LocalFree(szArglist);
+
+		// 3 Arguments avaliable
+		if (nArgs > 3) {
+			ErrorHandler::InvokeErrorHandler(1, 0, L"Too many command line arguments.", AppResStringsObjects.AppTitleText);
+		}
 	}
 
 	if (wcsstr(lpCmdLine, L"/nodeploy") != 0) {

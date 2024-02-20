@@ -94,6 +94,7 @@ public:
 // Image installation variables
 class GlobalImageInstall {
 public:
+	HDC hdcDialogWindow;
 	BOOL WaitThreadGo,
 		WaitThreadRunning,
 		CopyingFiles,
