@@ -43,12 +43,14 @@ BOOL MainGUI::InitInstance()
 	DWORD dwStyle = GetWindowLongW(MainObjects.hWndMainWindow, GWL_STYLE);
 	DWORD dwRemove = WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 	DWORD dwNewStyle = dwStyle & ~dwRemove;
-	HDC hDC = GetWindowDC(NULL);
+	HDC hdcMonitor = GetWindowDC(NULL);
 	SetWindowLongW(MainObjects.hWndMainWindow, GWL_STYLE, dwNewStyle);
 
 	// Set position of the main window
 	SetWindowPos(MainObjects.hWndMainWindow, NULL, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-	SetWindowPos(MainObjects.hWndMainWindow, NULL, 0, 0, GetDeviceCaps(hDC, HORZRES), GetDeviceCaps(hDC, VERTRES), SWP_FRAMECHANGED);
+	SetWindowPos(MainObjects.hWndMainWindow, NULL, 0, 0, GetDeviceCaps(hdcMonitor, HORZRES), GetDeviceCaps(hdcMonitor, VERTRES), SWP_FRAMECHANGED);
+
+	ReleaseDC(NULL, hdcMonitor);
 
 	ButtonObjects.InstallButtonText = FALSE; // Set the install button text to not appear, currently
 
@@ -158,6 +160,55 @@ ATOM MainGUI::RegisterClasses()
 	return RegisterClassExW(&wcex), RegisterClassExW(&wcex1), RegisterClassExW(&wcex2);
 }
 
+void MainGUI::MainWindowPaintCode(HWND &hWnd)
+{
+	PAINTSTRUCT     ps;
+	HDC             hdc;
+	BITMAP          BkgBitmap;
+	BITMAP          WndBitmap;
+	int				horizontal;
+	int				vertical;
+
+	gr7::GetDesktopResolution(horizontal, vertical);
+	hdc = BeginPaint(hWnd, &ps);
+	SetStretchBltMode(hdc, HALFTONE);
+
+	// Draw Background Image
+	HDC hdcBkgMem = CreateCompatibleDC(hdc);
+	HGDIOBJ oldBkgBitmap = (HBITMAP)SelectObject(hdcBkgMem, BitmapObjects.hBackground);
+	GetObjectW(BitmapObjects.hBackground, sizeof(BkgBitmap), &BkgBitmap);
+	StretchBlt(hdc, 0, 0, horizontal, vertical, hdcBkgMem, 0, 0, BkgBitmap.bmWidth, BkgBitmap.bmHeight, SRCCOPY);
+	SelectObject(hdcBkgMem, oldBkgBitmap);
+
+	DeleteDC(hdcBkgMem);
+	DeleteObject(oldBkgBitmap);
+
+	// Draw Fake Window
+	GetObjectW(BitmapObjects.hFakeWindow, sizeof(WndBitmap), &WndBitmap);
+	int xPos = (horizontal - WndBitmap.bmWidth) / 2;
+	int yPos = (vertical - WndBitmap.bmHeight) / 2;
+	gr7::PaintTransparentBitmap(hdc, xPos, yPos - 33, BitmapObjects.hFakeWindow, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+
+	// Draw Small Logo
+	gr7::PaintTransparentBitmap(hdc, xPos + 56, yPos + 26 - 33, BitmapObjects.hSmallLogo, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+
+	// Draw Title Text
+	gr7::PaintText(hdc, xPos + 56 + 23, yPos + 26 - 33, L"Segoe UI", RGB(0, 0, 0), AppResStringsObjects.TitleBarText.c_str(), 9, 1, TRANSPARENT, FW_LIGHT);
+
+	// Paint bottom progress bar text
+	int hoz, ver;
+	gr7::GetDesktopResolution(hoz, ver);
+	gr7::PaintText(hdc, 37, ver - 42, L"Segoe UI", RGB(255, 255, 255), AppResStringsObjects.ProgressBarText1.c_str(), 9, 1, TRANSPARENT, FW_LIGHT);
+	gr7::PaintText(hdc, 228, ver - 42, L"Segoe UI", RGB(255, 255, 255), AppResStringsObjects.ProgressBarText2.c_str(), 9, 1, TRANSPARENT, FW_LIGHT);
+	gr7::PaintText(hdc, 6, ver - 47, L"Segoe UI", RGB(255, 255, 255), L"1", 25, 1, TRANSPARENT, FW_LIGHT);
+	gr7::PaintText(hdc, 200, ver - 47, L"Segoe UI", RGB(255, 255, 255), L"2", 25, 1, TRANSPARENT, FW_LIGHT);
+
+#ifdef _DEBUG
+	gr7::PaintText(hdc, 0, 0, L"Segoe UI", RGB(255, 255, 255), L"Debug Build", 9, 1, TRANSPARENT, FW_LIGHT);
+#endif
+	EndPaint(hWnd, &ps);
+}
+
 void MainGUI::Exit()
 {
 	if (MainGUIObj.doNotClose) {
@@ -175,9 +226,121 @@ void MainGUI::Exit()
 	}
 }
 
+void MainGUI::DialogUpdateCode()
+{
+	::ShowWindow(MainObjects.hWndDialogWindow, 0);
+
+	// Welcome Page
+	if (MainObjects.Page == 1) {
+		::SendMessageW(ButtonObjects.hAutoPartitionBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+		::SendMessageW(ButtonObjects.hManualPartitionBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+		::ShowWindow(ButtonObjects.hAutoPartitionBtn, FALSE);
+		::ShowWindow(ButtonObjects.hManualPartitionBtn, FALSE);
+
+		MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_WELCOMEPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
+		::SendMessageW(ButtonObjects.hBackBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+		if (ButtonObjects.NormalButtonState == 3) {
+			::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+		}
+
+		if (RichEditControlObjects.hWndRichEditCtrl != NULL)
+		{
+			DestroyWindow(RichEditControlObjects.hWndRichEditCtrl);
+		}
+	}
+
+	// License Page
+	if (MainObjects.Page == 2) {
+		if (ButtonObjects.BackButtonDisabled == FALSE) {
+			::SendMessageW(ButtonObjects.hBackBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+		}
+		MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_LICENSEPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
+
+		::SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+
+		// Show license
+		std::wstring file = ImageInstallObjects.installSources;
+		file.append(L"\\license.rtf");
+
+		RichEditControlObjects.hWndRichEditCtrl = gr7::CreateRichEdit(MainObjects.hWndDialogWindow, 42, 62, 543, 272, MainObjects.hInst);
+		gr7::FillRichEditFromFile(RichEditControlObjects.hWndRichEditCtrl, file.c_str(), SF_RTF);
+		::SendMessageW(RichEditControlObjects.hWndRichEditCtrl, EM_SETREADONLY, TRUE, 0);
+	}
+
+	// Changelog Page
+	if (MainObjects.Page == 3) {
+		::ShowWindow(ButtonObjects.hAutoPartitionBtn, FALSE);
+		::ShowWindow(ButtonObjects.hManualPartitionBtn, FALSE);
+
+		if (ButtonObjects.NormalButtonState == 3) {
+			::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+		}
+
+		if (RichEditControlObjects.hWndRichEditCtrl != NULL)
+		{
+			DestroyWindow(RichEditControlObjects.hWndRichEditCtrl);
+		}
+		if (ButtonObjects.BackButtonDisabled == TRUE) {
+			::SendMessageW(ButtonObjects.hBackBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+		}
+
+		MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_CHANGELOGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
+
+		std::wstring file = ImageInstallObjects.installSources;
+		file.append(L"\\changelog.rtf");
+
+		RichEditControlObjects.hWndRichEditCtrl = gr7::CreateRichEdit(MainObjects.hWndDialogWindow, 42, 62, 543, 272, MainObjects.hInst);
+		gr7::FillRichEditFromFile(RichEditControlObjects.hWndRichEditCtrl, file.c_str(), SF_RTF);
+		::SendMessageW(RichEditControlObjects.hWndRichEditCtrl, EM_SETREADONLY, TRUE, 0);
+	}
+
+	// Partition Page
+	if (MainObjects.Page == 4) {
+		if (ImageInstallObjects.NoDeploy) {
+			::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+			::SendMessageW(ButtonObjects.hAutoPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+			::SendMessageW(ButtonObjects.hManualPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+		}
+		else {
+			::SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+		}
+
+		MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PARTITIONPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
+
+		::ShowWindow(ButtonObjects.hAutoPartitionBtn, TRUE);
+		::ShowWindow(ButtonObjects.hManualPartitionBtn, TRUE);
+	}
+
+	// Installing Page
+	if (MainObjects.Page == 5) {
+		::ShowWindow(ButtonObjects.hAutoPartitionBtn, FALSE);
+		::ShowWindow(ButtonObjects.hManualPartitionBtn, FALSE);
+		::ShowWindow(ButtonObjects.hNormalBtn, FALSE);
+		::ShowWindow(ButtonObjects.hBackBtn, FALSE);
+
+		MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_INSTALLINGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
+	}
+
+	// Restarting Page
+	if (MainObjects.Page == 6) {
+		::ShowWindow(ButtonObjects.hCloseBtn, FALSE);
+		::ShowWindow(ProgressBarObjects.hProgressCtrlRestarting, TRUE);
+		MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_RESTARTINGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
+	}
+
+	if (!MainObjects.hWndDialogWindow) {
+		ErrorHandler::InvokeErrorHandler(1, 0, L"Failed to create Dialog Window", AppResStringsObjects.AppTitleText);
+	}
+
+	// We show the window and update it to see our dialog page
+	::ShowWindow(MainObjects.hWndDialogWindow, TRUE);
+	::UpdateWindow(MainObjects.hWndDialogWindow);
+
+	::SendMessageW(ButtonObjects.hNormalBtn, BTN_UPDATE, (WPARAM)(INT)0, 0);
+}
+
 void MainGUI::DialogPaintCode(HDC &hdc)
 {
-	
 	// Text painting options
 	int xPos = 43;
 	int yPos = 22;
@@ -262,50 +425,8 @@ LRESULT CALLBACK MainGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
 			break;
 
 		case WM_PAINT:
-			PAINTSTRUCT     ps;
-			HDC             hdc;
-			BITMAP          BkgBitmap;
-			BITMAP          WndBitmap;
-			int				horizontal;
-			int				vertical;
 			{
-				gr7::GetDesktopResolution(horizontal, vertical);
-				hdc = BeginPaint(hWnd, &ps);
-				SetStretchBltMode(hdc, HALFTONE);
-
-				// Draw Background Image
-				HDC hdcBkgMem = CreateCompatibleDC(hdc);
-				HGDIOBJ oldBkgBitmap = (HBITMAP)SelectObject(hdcBkgMem, BitmapObjects.hBackground);
-				GetObjectW(BitmapObjects.hBackground, sizeof(BkgBitmap), &BkgBitmap);
-				StretchBlt(hdc, 0, 0, horizontal, vertical, hdcBkgMem, 0, 0, BkgBitmap.bmWidth, BkgBitmap.bmHeight, SRCCOPY);
-				SelectObject(hdcBkgMem, oldBkgBitmap);
-
-				// Draw Fake Window
-				GetObjectW(BitmapObjects.hFakeWindow, sizeof(WndBitmap), &WndBitmap);
-				int xPos = (horizontal - WndBitmap.bmWidth) / 2;
-				int yPos = (vertical - WndBitmap.bmHeight) / 2;
-				gr7::PaintTransparentBitmap(hdc, xPos, yPos - 33, BitmapObjects.hFakeWindow, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
-				
-				// Draw Small Logo
-				gr7::PaintTransparentBitmap(hdc, xPos + 56, yPos + 26 - 33, BitmapObjects.hSmallLogo, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
-				
-				// Draw Title Text
-				gr7::PaintText(hdc, xPos + 56 + 23, yPos + 26 - 33, L"Segoe UI", RGB(0, 0, 0), AppResStringsObjects.TitleBarText.c_str(), 9, 1, TRANSPARENT, FW_LIGHT);
-
-				// Paint bottom progress bar text
-				int hoz, ver;
-				gr7::GetDesktopResolution(hoz, ver);
-				gr7::PaintText(hdc, 37, ver - 42, L"Segoe UI", RGB(255, 255, 255), AppResStringsObjects.ProgressBarText1.c_str(), 9, 1, TRANSPARENT, FW_LIGHT);
-				gr7::PaintText(hdc, 228, ver - 42, L"Segoe UI", RGB(255, 255, 255), AppResStringsObjects.ProgressBarText2.c_str(), 9, 1, TRANSPARENT, FW_LIGHT);
-				gr7::PaintText(hdc, 6, ver - 47, L"Segoe UI", RGB(255, 255, 255), L"1", 25, 1, TRANSPARENT, FW_LIGHT);
-				gr7::PaintText(hdc, 200, ver - 47, L"Segoe UI", RGB(255, 255, 255), L"2", 25, 1, TRANSPARENT, FW_LIGHT);
-
-				#ifdef _DEBUG
-				gr7::PaintText(hdc, 0, 0, L"Segoe UI", RGB(255, 255, 255), L"Debug Build", 9, 1, TRANSPARENT, FW_LIGHT);
-				#endif
-
-				DeleteDC(hdcBkgMem);
-				EndPaint(hWnd, &ps);
+				MainGUI::MainWindowPaintCode(hWnd);
 			}
 			break;
 
@@ -388,114 +509,7 @@ LRESULT CALLBACK MainGUI::WndProcSetupWnd(HWND hWnd, UINT message, WPARAM wParam
 		// This code updates the dialog to show a new page
 		case SETUPWND_UPDATE_DIALOG:
 			{
-				::ShowWindow(MainObjects.hWndDialogWindow, 0);
-
-				// Welcome Page
-				if (MainObjects.Page == 1) {
-					::SendMessageW(ButtonObjects.hAutoPartitionBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
-					::SendMessageW(ButtonObjects.hManualPartitionBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
-					::ShowWindow(ButtonObjects.hAutoPartitionBtn, FALSE);
-					::ShowWindow(ButtonObjects.hManualPartitionBtn, FALSE);
-
-					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_WELCOMEPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
-					::SendMessageW(ButtonObjects.hBackBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
-					if (ButtonObjects.NormalButtonState == 3) {
-						::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
-					}
-
-					if (RichEditControlObjects.hWndRichEditCtrl != NULL)
-					{
-						DestroyWindow(RichEditControlObjects.hWndRichEditCtrl);
-					}
-				}
-
-				// License Page
-				if (MainObjects.Page == 2) {
-					if (ButtonObjects.BackButtonDisabled == FALSE) {
-						::SendMessageW(ButtonObjects.hBackBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
-					}
-					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_LICENSEPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
-
-					::SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
-
-					// Show license
-					std::wstring file = ImageInstallObjects.installSources;
-					file.append(L"\\license.rtf");
-
-					RichEditControlObjects.hWndRichEditCtrl = gr7::CreateRichEdit(MainObjects.hWndDialogWindow, 42, 62, 543, 272, MainObjects.hInst);
-					gr7::FillRichEditFromFile(RichEditControlObjects.hWndRichEditCtrl, file.c_str() , SF_RTF);
-					::SendMessageW(RichEditControlObjects.hWndRichEditCtrl, EM_SETREADONLY, TRUE, 0);
-				}
-
-				// Changelog Page
-				if (MainObjects.Page == 3) {
-					::ShowWindow(ButtonObjects.hAutoPartitionBtn, FALSE);
-					::ShowWindow(ButtonObjects.hManualPartitionBtn, FALSE);
-
-					if (ButtonObjects.NormalButtonState == 3) {
-						::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
-					}
-
-					if (RichEditControlObjects.hWndRichEditCtrl != NULL)
-					{
-						DestroyWindow(RichEditControlObjects.hWndRichEditCtrl);
-					}
-					if (ButtonObjects.BackButtonDisabled == TRUE) {
-						::SendMessageW(ButtonObjects.hBackBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
-					}
-
-					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_CHANGELOGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
-
-					std::wstring file = ImageInstallObjects.installSources;
-					file.append(L"\\changelog.rtf");
-
-					RichEditControlObjects.hWndRichEditCtrl = gr7::CreateRichEdit(MainObjects.hWndDialogWindow, 42, 62, 543, 272, MainObjects.hInst);
-					gr7::FillRichEditFromFile(RichEditControlObjects.hWndRichEditCtrl, file.c_str(), SF_RTF);
-					::SendMessageW(RichEditControlObjects.hWndRichEditCtrl, EM_SETREADONLY, TRUE, 0);
-				}
-
-				// Partition Page
-				if (MainObjects.Page == 4) {
-					if (MainObjects.Debug) {
-						::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
-						::SendMessageW(ButtonObjects.hAutoPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
-						::SendMessageW(ButtonObjects.hManualPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
-					} else {
-						::SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
-					}
-
-					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_PARTITIONPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
-
-					::ShowWindow(ButtonObjects.hAutoPartitionBtn, TRUE);
-					::ShowWindow(ButtonObjects.hManualPartitionBtn, TRUE);
-				}
-
-				// Installing Page
-				if (MainObjects.Page == 5) {
-					::ShowWindow(ButtonObjects.hAutoPartitionBtn, FALSE);
-					::ShowWindow(ButtonObjects.hManualPartitionBtn, FALSE);
-					::ShowWindow(ButtonObjects.hNormalBtn, FALSE);
-					::ShowWindow(ButtonObjects.hBackBtn, FALSE);
-
-					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_INSTALLINGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
-				}
-
-				// Restarting Page
-				if (MainObjects.Page == 6) {
-					::ShowWindow(ButtonObjects.hCloseBtn, FALSE);
-					::ShowWindow(ProgressBarObjects.hProgressCtrlRestarting, TRUE);
-					MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_RESTARTINGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)WndProcDialogWnd);
-				}
-
-				if (!MainObjects.hWndDialogWindow) {
-					ErrorHandler::InvokeErrorHandler(1, 0, L"Failed to create Dialog Window", AppResStringsObjects.AppTitleText);
-				}
-
-				// We show the window and update it to see our dialog page
-				::ShowWindow(MainObjects.hWndDialogWindow, TRUE);
-				::UpdateWindow(MainObjects.hWndDialogWindow);
-
-				::SendMessageW(ButtonObjects.hNormalBtn, BTN_UPDATE, (WPARAM)(INT)0, 0);
+				MainGUI::DialogUpdateCode();
 			}
 			break;
 

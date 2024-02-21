@@ -93,31 +93,28 @@ void ButtonGUI::Paint(HWND &hWnd, BOOL drawButton, HBITMAP &hButtonImg, int xBmp
 		InvalidateRect(hWnd, 0, TRUE);
 		BITMAP          bitmap01;
 		PAINTSTRUCT		ps;
+		HDC				hdc;
 		RECT			rc;
 		GetWindowRect(hWnd, &rc);
 		GetObjectW(hButtonImg, sizeof(bitmap01), &bitmap01);
 
-		HDC hdc = BeginPaint(hWnd, &ps);
+		hdc = BeginPaint(hWnd, &ps);
 
 		BitBlt(hdc, xBmpPos, yBmpPos, bitmap01.bmWidth, bitmap01.bmHeight, BtnGUI.hdcWndScreenshot, rc.left + xBmpPos, rc.top + yBmpPos, SRCCOPY);
 
-		HDC hdcMem01 = CreateCompatibleDC(hdc);
 		gr7::PaintTransparentBitmap(hdc, xBmpPos, yBmpPos, hButtonImg, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
-		DeleteDC(hdcMem01);
 
-		EndPaint(hWnd, &ps);
 		if (drawText == TRUE) {
-			HDC hdc = ::GetDC(hWnd);
 			if (customTextXY == 0) {
 				gr7::PaintText(hdc, (rc.right - rc.left) / 2 - 12, (rc.bottom - rc.top) / 2 - 7, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
 			}
 			if (customTextXY == 1) {
 				gr7::PaintText(hdc, textX, textY, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
 			}
-			ReleaseDC(hWnd, hdc);
-
 			::UpdateWindow(hWnd);
 		}
+
+		EndPaint(hWnd, &ps);
 		drawButton = FALSE;
 	}
 }
