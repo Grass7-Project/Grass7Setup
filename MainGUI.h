@@ -2,17 +2,9 @@
 
 class MainGUI{
 public:
-	static BOOL	InitInstance();
-	static void Exit();
-	static void MainGUI::MainWindowPaintCode(HWND &hWnd);
-	static void MainGUI::DialogUpdateCode();
-	static void DialogPaintCode(HDC &hdc);
+	static void Init(HWND &hWnd, HINSTANCE &hInst);
 
 private:
-	static		ATOM				RegisterClasses();
+	static void Paint(HWND &hWnd);
 	static		LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
-	static		LRESULT CALLBACK	WndProcSetupWnd(HWND, UINT, WPARAM, LPARAM);
-	static		LRESULT CALLBACK	WndProcDialogWnd(HWND, UINT, WPARAM, LPARAM);
-
-	BOOL doNotClose;
 };

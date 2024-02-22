@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "RestartCode.h"
 #include "ProgressGUI.h"
-#include "MainGUI.h"
 
 // Internal restarting now code
 void Restart::InitiateRestart()

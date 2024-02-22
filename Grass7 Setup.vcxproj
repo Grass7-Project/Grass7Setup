@@ -77,6 +77,8 @@
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(SolutionDir)depends\gr7api\$(Platform)\$(Configuration)\;$(SolutionDir)depends\wimlib\$(Platform)\devel;</LibraryPath>
     <ExtensionsToDeleteOnClean>$(SolutionDir)Build\$(Platform)\$(Configuration)\libwim-15.dll;*.cdf;*.cache;*.obj;*.ilk;*.ipdb;*.iobj;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi</ExtensionsToDeleteOnClean>
     <TargetName>gr7setup</TargetName>
+    <CodeAnalysisRuleSet>C:\Program Files (x86)\Microsoft Visual Studio 14.0\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -86,6 +88,8 @@
     <TargetName>gr7setup</TargetName>
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet>C:\Program Files (x86)\Microsoft Visual Studio 14.0\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -112,6 +116,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -133,6 +138,7 @@ xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionD
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -200,30 +206,35 @@ xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionD
   <ItemGroup>
     <ClInclude Include="BootSetup.h" />
     <ClInclude Include="ButtonGUI.h" />
+    <ClInclude Include="DialogGUI.h" />
     <ClInclude Include="ErrorHandler.h" />
     <ClInclude Include="Global.h" />
-    <ClInclude Include="Grass7 Setup.h" />
     <ClInclude Include="MainGUI.h" />
     <ClInclude Include="InstallCode.h" />
+    <ClInclude Include="MainInit.h" />
     <ClInclude Include="PartitionCode.h" />
     <ClInclude Include="ProgressGUI.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceLoader.h" />
     <ClInclude Include="RestartCode.h" />
+    <ClInclude Include="SetupGUI.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BootSetup.cpp" />
     <ClCompile Include="ButtonGUI.cpp" />
+    <ClCompile Include="DialogGUI.cpp" />
     <ClCompile Include="ErrorHandler.cpp" />
-    <ClCompile Include="Grass7 Setup.cpp" />
+    <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="MainGUI.cpp" />
     <ClCompile Include="InstallCode.cpp" />
+    <ClCompile Include="MainInit.cpp" />
     <ClCompile Include="PartitionCode.cpp" />
     <ClCompile Include="ProgressGUI.cpp" />
     <ClCompile Include="ResourceLoader.cpp" />
     <ClCompile Include="RestartCode.cpp" />
+    <ClCompile Include="SetupGUI.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

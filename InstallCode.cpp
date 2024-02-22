@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "InstallCode.h"
 #include "ProgressGUI.h"
-#include "MainGUI.h"
 #include "BootSetup.h"
 #include <wimlib.h>
 

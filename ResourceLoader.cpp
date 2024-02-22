@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ResourceLoader.h"
-#include "MainGUI.h"
 
 void ResourceLoader::LoadBitmaps()
 {

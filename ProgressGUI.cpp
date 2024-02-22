@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ProgressGUI.h"
-#include "MainGUI.h"
 #include <Uxtheme.h>
 
 void ProgressGUI::createProgressBar()
@@ -20,8 +19,9 @@ void ProgressGUI::createProgressBar()
 	if (!ProgressBarObjects.hProgressCtrlRestarting) {
 		ErrorHandler::InvokeErrorHandler(1, 0, L"Failed to create Restarting progress bar", AppResStringsObjects.AppTitleText);
 	}
-
-	::ShowWindow(ProgressBarObjects.hProgressCtrlRestarting, FALSE);
+	else {
+		::ShowWindow(ProgressBarObjects.hProgressCtrlRestarting, FALSE);
+	}
 }
 
 void ProgressGUI::createProgressBarNew(HWND &hWndParent, HINSTANCE &hInst, HWND &hWndProgressBar, int xPos, int yPos, int Width, int Height, int &Percentage, COLORREF BarColor, COLORREF BackgroundColor, int MessageID)

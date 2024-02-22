@@ -11,7 +11,8 @@ public:
 		hWndDialogWindow;
 
 	BOOL Debug,
-		NoWinPECheck;
+		NoWinPECheck,
+		doNotClose;
 
 	int Page;
 };
@@ -34,14 +35,6 @@ public:
 		AutoPartButtonDisabled,
 		ManualPartButtonDisabled,
 		InstallButtonText;
-};
-
-// Rich Edit Control
-class GlobalRichEditControl {
-public:
-	HWND hWndRichEditCtrl;
-	int RichEditCtrlX,
-		RichEditCtrlY;
 };
 
 // Progress Bars
@@ -141,7 +134,6 @@ public:
 
 extern GlobalMain MainObjects;
 extern GlobalButtons ButtonObjects;
-extern GlobalRichEditControl RichEditControlObjects;
 extern GlobalProgressBar ProgressBarObjects;
 extern GlobalProgressTextPercentage ProgressTextPercentageObjects;
 extern GlobalAppResStrings AppResStringsObjects;

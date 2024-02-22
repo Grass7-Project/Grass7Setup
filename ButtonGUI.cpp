@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "ButtonGUI.h"
+#include "MainInit.h"
 #include "MainGUI.h"
 #include "PartitionCode.h"
-#include "ResourceLoader.h"
 
 ButtonGUI BtnGUI;
 
@@ -43,6 +43,7 @@ void ButtonGUI::InitCloseBtn()
 // Initialize Normal Button
 void ButtonGUI::InitNormalBtn()
 {
+	ButtonObjects.InstallButtonText = FALSE; // Set the install button text to not appear, currently
 	ButtonObjects.NormalButtonDisabled = FALSE;
 	BtnGUI.drawNormalButton = TRUE;
 
@@ -225,7 +226,7 @@ LRESULT CALLBACK ButtonGUI::CloseButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 		if (!ButtonObjects.CloseButtonDisabled) {
 			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.drawCloseButton, BtnGUI.hCloseBtnTmpImg, BitmapObjects.hCloseBtnImg1);
 
-			std::thread ExitCode(MainGUI::Exit);
+			std::thread ExitCode(MainInit::Exit);
 			ExitCode.detach();
 		}
 	}
