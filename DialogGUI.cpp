@@ -204,9 +204,7 @@ void DialogGUI::Paint(HWND &hWnd)
 		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_COLLECT_INFO_PROG_BAR, (WPARAM)(INT)0, 0);
 		MainObjects.doNotClose = 1;
 		EnableMenuItem(GetSystemMenu(MainObjects.hWndSetupWindow, 0), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-		ProgressGUI::createProgressText(hdc);
-		::UpdateWindow(MainObjects.hWndSetupWindow);
-		Install::InstallMain();
+		Install::InstallMain(hdc);
 	}
 
 	// Restarting Page

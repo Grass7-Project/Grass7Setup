@@ -55,19 +55,19 @@ void ProgressGUI::updateProgressBar(HWND &hParentWnd, HWND &hProgressBarWnd, int
 	::UpdateWindow(hParentWnd);
 }
 
-void ProgressGUI::createProgressText(HDC &hdc)
+void ProgressGUI::createProgressText(HDC &hdc, int &percent1, int &percent2, int &percent3, int &percent4, std::wstring &Text1, std::wstring &Text2, std::wstring &Text3, std::wstring &Text4)
 {
 	// Init the percentage values
-	ProgressTextPercentageObjects.CopyingFilesPercentage = 0;
-	ProgressTextPercentageObjects.ExpandingFilesPercentage = 0;
-	ProgressTextPercentageObjects.InstallingFeaturesPercentage = 0;
-	ProgressTextPercentageObjects.InstallingUpdatesPercentage = 0;
+	percent1 = 0;
+	percent2 = 0;
+	percent3 = 0;
+	percent4 = 0;
 
 	// Create the text
-	ProgressGUI::updateProgressText(hdc, 63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
-	ProgressGUI::updateProgressText(hdc, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
-	ProgressGUI::updateProgressText(hdc, 63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
-	ProgressGUI::updateProgressText(hdc, 63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ProgressGUI::updateProgressText(hdc, 63, 123, percent1, Text1, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ProgressGUI::updateProgressText(hdc, 63, 143, percent2, Text2, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ProgressGUI::updateProgressText(hdc, 63, 163, percent3, Text3, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
+	ProgressGUI::updateProgressText(hdc, 63, 183, percent4, Text4, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
 }
 
 void ProgressGUI::updateProgressTexthWnd(HWND &hWnd, int x, int y, int &ProgressPercantage, std::wstring &Text, COLORREF txtColor, int AddPercentage, std::wstring ExtraText, int cWeight)
@@ -99,39 +99,16 @@ void ProgressGUI::updateProgressText(HDC &hdc, int x, int y, int &ProgressPercan
 	gr7::PaintText(hdc, x, y, L"Segoe UI", txtColor, ProgressText.c_str(), 9, 1, OPAQUE, cWeight);
 }
 
-void ProgressGUI::WaitThread()
+void ProgressGUI::WaitThread(BOOL &WaitThreadRunning, BOOL &WaitThreadExit, int &Percentage, std::wstring &Text, int xPos, int yPos)
 {
-	ImageInstallObjects.WaitThreadRunning = TRUE;
-	while (ImageInstallObjects.WaitThreadGo == FALSE) {
+	WaitThreadRunning = TRUE;
+	while (WaitThreadExit == FALSE) {
 		Sleep(1000);
-		if (ImageInstallObjects.CopyingFiles == TRUE) {
-			ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(0, 0, 0), TRUE, L" .", FW_BOLD);
-			Sleep(1000);
-			ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(0, 0, 0), TRUE, L" ..", FW_BOLD);
-			Sleep(1000);
-			ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 123, ProgressTextPercentageObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(0, 0, 0), TRUE, L" ...", FW_BOLD);
-		}
-		if (ImageInstallObjects.ExpandingFiles == TRUE) {
-			ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L" .", FW_BOLD);
-			Sleep(1000);
-			ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L" ..", FW_BOLD);
-			Sleep(1000);
-			ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 143, ProgressTextPercentageObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L" ...", FW_BOLD);
-		}
-		if (ImageInstallObjects.InstallingFeatures == TRUE) {
-			ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(0, 0, 0), TRUE, L" .", FW_BOLD);
-			Sleep(1000);
-			ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(0, 0, 0), TRUE, L" ..", FW_BOLD);
-			Sleep(1000);
-			ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 163, ProgressTextPercentageObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(0, 0, 0), TRUE, L" ...", FW_BOLD);
-		}
-		if (ImageInstallObjects.InstallingUpdates == TRUE) {
-			ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(0, 0, 0), TRUE, L" .", FW_BOLD);
-			Sleep(1000);
-			ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(0, 0, 0), TRUE, L" ..", FW_BOLD);
-			Sleep(1000);
-			ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 183, ProgressTextPercentageObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(0, 0, 0), TRUE, L" ...", FW_BOLD);
-		}
+		ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, xPos, yPos, Percentage, Text, RGB(0, 0, 0), TRUE, L" .", FW_BOLD);
+		Sleep(1000);
+		ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, xPos, yPos, Percentage, Text, RGB(0, 0, 0), TRUE, L" ..", FW_BOLD);
+		Sleep(1000);
+		ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, xPos, yPos, Percentage, Text, RGB(0, 0, 0), TRUE, L" ...", FW_BOLD);
 	}
-	ImageInstallObjects.WaitThreadRunning = FALSE;
+	WaitThreadRunning = FALSE;
 }

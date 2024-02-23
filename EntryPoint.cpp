@@ -5,7 +5,6 @@
 GlobalMain MainObjects;
 GlobalButtons ButtonObjects;
 GlobalProgressBar ProgressBarObjects;
-GlobalProgressTextPercentage ProgressTextPercentageObjects;
 GlobalAppResStrings AppResStringsObjects;
 GlobalImageInstall ImageInstallObjects;
 GlobalBitmaps BitmapObjects;

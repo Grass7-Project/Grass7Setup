@@ -48,15 +48,6 @@ public:
 		RestartingPercentage;
 };
 
-// Installation Progress Window Text Percentage Status
-class GlobalProgressTextPercentage {
-public:
-	int CopyingFilesPercentage,
-		ExpandingFilesPercentage,
-		InstallingFeaturesPercentage,
-		InstallingUpdatesPercentage;
-};
-
 // Application Resource Strings
 class GlobalAppResStrings {
 public:
@@ -87,14 +78,7 @@ public:
 // Image installation variables
 class GlobalImageInstall {
 public:
-	HDC hdcDialogWindow;
-	BOOL WaitThreadGo,
-		WaitThreadRunning,
-		CopyingFiles,
-		ExpandingFiles,
-		InstallingFeatures,
-		InstallingUpdates,
-		NoDeploy;
+	BOOL NoDeploy;
 	int ImageIndex;
 	std::wstring ImagePath;
 	std::wstring destDrive;
@@ -135,7 +119,6 @@ public:
 extern GlobalMain MainObjects;
 extern GlobalButtons ButtonObjects;
 extern GlobalProgressBar ProgressBarObjects;
-extern GlobalProgressTextPercentage ProgressTextPercentageObjects;
 extern GlobalAppResStrings AppResStringsObjects;
 extern GlobalImageInstall ImageInstallObjects;
 extern GlobalBitmaps BitmapObjects;
