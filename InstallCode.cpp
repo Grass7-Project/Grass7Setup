@@ -60,7 +60,7 @@ void Install::Progress::CopyingFiles(HWND &hWndParent)
 	ProgressGUI::updateProgressTexthWnd(hWndParent, 63, 123, InstallPrivateObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
 
 	InstallPrivateObjects.WaitThreadExit = FALSE;
-	std::thread WaitThread(ProgressGUI::WaitThread, std::ref(InstallPrivateObjects.WaitThreadRunning), std::ref(InstallPrivateObjects.WaitThreadExit), std::ref(InstallPrivateObjects.CopyingFilesPercentage), std::ref(AppResStringsObjects.CopyingFilesText), 63, 123);
+	std::thread WaitThread(ProgressGUI::WaitThread, std::ref(InstallPrivateObjects.WaitThreadRunning), std::ref(InstallPrivateObjects.WaitThreadExit), std::ref(InstallPrivateObjects.CopyingFilesPercentage), std::ref(AppResStringsObjects.CopyingFilesText), 63, 123, std::ref(InstallPrivateObjects.DotsText));
 	WaitThread.detach();
 	Sleep(5000);
 	InstallPrivateObjects.CopyingFilesPercentage = 100;
@@ -83,22 +83,19 @@ void Install::Progress::ExpandingFiles(HWND &hWndParent)
 	ProgressGUI::updateProgressTexthWnd(hWndParent, 63, 143, InstallPrivateObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
 
 	InstallPrivateObjects.WaitThreadExit = FALSE;
-	std::thread WaitThread(ProgressGUI::WaitThread, std::ref(InstallPrivateObjects.WaitThreadRunning), std::ref(InstallPrivateObjects.WaitThreadExit), std::ref(InstallPrivateObjects.ExpandingFilesPercentage), std::ref(AppResStringsObjects.ExpandingFilesText), 63, 143);
+	std::thread WaitThread(ProgressGUI::WaitThread, std::ref(InstallPrivateObjects.WaitThreadRunning), std::ref(InstallPrivateObjects.WaitThreadExit), std::ref(InstallPrivateObjects.ExpandingFilesPercentage), std::ref(AppResStringsObjects.ExpandingFilesText), 63, 143, std::ref(InstallPrivateObjects.DotsText));
 	WaitThread.detach();
 	Sleep(5000);
-	InstallPrivateObjects.WaitThreadExit = TRUE;
-	while (InstallPrivateObjects.WaitThreadRunning == TRUE) {
-		Sleep(1000);
-	}
 
 	if (!ImageInstallObjects.NoDeploy) {
 		int err = Install::ApplyImage();
 		ErrorHandler::InvokeErrorHandler(err, 0, L"Failed to apply installation image.", AppResStringsObjects.AppTitleText);
 	}
 
-	InstallPrivateObjects.ExpandingFilesPercentage = 100;
-	ProgressBarObjects.InstallingPercentage = ProgressBarObjects.InstallingPercentage + 25;
-	::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
+	InstallPrivateObjects.WaitThreadExit = TRUE;
+	while (InstallPrivateObjects.WaitThreadRunning == TRUE) {
+		Sleep(1000);
+	}
 
 	HDC hdc = ::GetDC(hWndParent);
 	gr7::PaintTransparentBitmap(hdc, 43, 140, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
@@ -112,7 +109,7 @@ void Install::Progress::InstallingFeatures(HWND &hWndParent)
 	ProgressGUI::updateProgressTexthWnd(hWndParent, 63, 163, InstallPrivateObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
 
 	InstallPrivateObjects.WaitThreadExit = FALSE;
-	std::thread WaitThread(ProgressGUI::WaitThread, std::ref(InstallPrivateObjects.WaitThreadRunning), std::ref(InstallPrivateObjects.WaitThreadExit), std::ref(InstallPrivateObjects.InstallingFeaturesPercentage), std::ref(AppResStringsObjects.InstallingFeaturesText), 63, 163);
+	std::thread WaitThread(ProgressGUI::WaitThread, std::ref(InstallPrivateObjects.WaitThreadRunning), std::ref(InstallPrivateObjects.WaitThreadExit), std::ref(InstallPrivateObjects.InstallingFeaturesPercentage), std::ref(AppResStringsObjects.InstallingFeaturesText), 63, 163, std::ref(InstallPrivateObjects.DotsText));
 	WaitThread.detach();
 	Sleep(5000);
 	InstallPrivateObjects.InstallingFeaturesPercentage = 100;
@@ -134,7 +131,7 @@ void Install::Progress::InstallingUpdates(HWND &hWndParent)
 	ProgressGUI::updateProgressTexthWnd(hWndParent, 63, 183, InstallPrivateObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
 
 	InstallPrivateObjects.WaitThreadExit = FALSE;
-	std::thread WaitThread(ProgressGUI::WaitThread, std::ref(InstallPrivateObjects.WaitThreadRunning), std::ref(InstallPrivateObjects.WaitThreadExit), std::ref(InstallPrivateObjects.InstallingUpdatesPercentage), std::ref(AppResStringsObjects.InstallingUpdatesText), 63, 183);
+	std::thread WaitThread(ProgressGUI::WaitThread, std::ref(InstallPrivateObjects.WaitThreadRunning), std::ref(InstallPrivateObjects.WaitThreadExit), std::ref(InstallPrivateObjects.InstallingUpdatesPercentage), std::ref(AppResStringsObjects.InstallingUpdatesText), 63, 183, std::ref(InstallPrivateObjects.DotsText));
 	WaitThread.detach();
 	Sleep(5000);
 	InstallPrivateObjects.InstallingUpdatesPercentage = 100;
@@ -161,8 +158,9 @@ enum wimlib_progress_status Install::extract_progress(enum wimlib_progress_msg m
 	{
 	case WIMLIB_PROGRESS_MSG_EXTRACT_STREAMS:
 		InstallPrivateObjects.ExpandingFilesPercentage = (INT)TO_PERCENT(info->extract.completed_bytes, info->extract.total_bytes);
+		ProgressBarObjects.InstallingPercentage = 25 + InstallPrivateObjects.ExpandingFilesPercentage * 0.25;
 		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
-		ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 143, InstallPrivateObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, L"", FW_BOLD);
+		ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 143, InstallPrivateObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, InstallPrivateObjects.DotsText, FW_BOLD);
 		break;
 	default:
 		break;

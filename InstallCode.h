@@ -20,6 +20,8 @@ private:
 	BOOL WaitThreadRunning,
 		WaitThreadExit;
 
+	std::wstring DotsText;
+
 	int CopyingFilesPercentage,
 		ExpandingFilesPercentage,
 		InstallingFeaturesPercentage,

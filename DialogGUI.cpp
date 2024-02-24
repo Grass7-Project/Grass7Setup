@@ -112,7 +112,7 @@ void DialogGUI::Update()
 
 	// Partition Page
 	if (MainObjects.Page == 4) {
-		if (ImageInstallObjects.NoDeploy) {
+		if (MainObjects.Debug) {
 			::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
 			::SendMessageW(ButtonObjects.hAutoPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 			::SendMessageW(ButtonObjects.hManualPartitionBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);

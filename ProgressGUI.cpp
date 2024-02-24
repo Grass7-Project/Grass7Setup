@@ -99,16 +99,19 @@ void ProgressGUI::updateProgressText(HDC &hdc, int x, int y, int &ProgressPercan
 	gr7::PaintText(hdc, x, y, L"Segoe UI", txtColor, ProgressText.c_str(), 9, 1, OPAQUE, cWeight);
 }
 
-void ProgressGUI::WaitThread(BOOL &WaitThreadRunning, BOOL &WaitThreadExit, int &Percentage, std::wstring &Text, int xPos, int yPos)
+void ProgressGUI::WaitThread(BOOL &WaitThreadRunning, BOOL &WaitThreadExit, int &Percentage, std::wstring &Text, int xPos, int yPos, std::wstring &Dots)
 {
 	WaitThreadRunning = TRUE;
 	while (WaitThreadExit == FALSE) {
 		Sleep(1000);
-		ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, xPos, yPos, Percentage, Text, RGB(0, 0, 0), TRUE, L" .", FW_BOLD);
+		Dots = L" .";
+		ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, xPos, yPos, Percentage, Text, RGB(0, 0, 0), TRUE, Dots, FW_BOLD);
 		Sleep(1000);
-		ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, xPos, yPos, Percentage, Text, RGB(0, 0, 0), TRUE, L" ..", FW_BOLD);
+		Dots = L" ..";
+		ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, xPos, yPos, Percentage, Text, RGB(0, 0, 0), TRUE, Dots, FW_BOLD);
 		Sleep(1000);
-		ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, xPos, yPos, Percentage, Text, RGB(0, 0, 0), TRUE, L" ...", FW_BOLD);
+		Dots = L" ...";
+		ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, xPos, yPos, Percentage, Text, RGB(0, 0, 0), TRUE, Dots, FW_BOLD);
 	}
 	WaitThreadRunning = FALSE;
 }
