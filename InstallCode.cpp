@@ -158,6 +158,7 @@ enum wimlib_progress_status Install::extract_progress(enum wimlib_progress_msg m
 	{
 	case WIMLIB_PROGRESS_MSG_EXTRACT_STREAMS:
 		InstallPrivateObjects.ExpandingFilesPercentage = (INT)TO_PERCENT(info->extract.completed_bytes, info->extract.total_bytes);
+		#pragma warning(suppress : 4244)
 		ProgressBarObjects.InstallingPercentage = 25 + InstallPrivateObjects.ExpandingFilesPercentage * 0.25;
 		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_INSTALLING_PROG_BAR, (WPARAM)(INT)0, 0);
 		ProgressGUI::updateProgressTexthWnd(MainObjects.hWndSetupWindow, 63, 143, InstallPrivateObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(0, 0, 0), TRUE, InstallPrivateObjects.DotsText, FW_BOLD);

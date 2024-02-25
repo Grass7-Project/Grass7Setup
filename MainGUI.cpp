@@ -26,15 +26,18 @@ void MainGUI::Init(HWND &hWnd, HINSTANCE &hInst)
 
 	RegisterClassExW(&wcex);
 
-	// Note: the main window HAS to be a dialog, it is adjusted to look like a window before being shown
-	// This is because of some code being broken and not working correctly if it was a real window like the setup window
-	// I have no idea why, but since this is based on the old setup project before i built upon this, its gonna stay like that.
-
-	hWnd = CreateDialogW(
+	hWnd = CreateWindowW(
+		L"MainWindow",
+		AppResStringsObjects.AppTitleText.c_str(),
+		WS_SYSMENU | DS_FIXEDSYS,
+		CW_USEDEFAULT,
+		CW_USEDEFAULT,
+		CW_USEDEFAULT,
+		CW_USEDEFAULT,
+		NULL,
+		NULL,
 		hInst,
-		MAKEINTRESOURCE(IDD_PARENTPAGE),
-		0,
-		(DLGPROC)MainGUI::WndProc);
+		NULL);
 
 	if (!hWnd) {
 		ErrorHandler::InvokeErrorHandler(1, 0, L"Failed to create Main Window", AppResStringsObjects.AppTitleText);

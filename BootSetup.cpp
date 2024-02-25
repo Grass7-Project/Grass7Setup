@@ -19,10 +19,11 @@ int BootSetup::GetSystemFirmwareType()
 
 void BootSetup::SetupSystemBoot()
 {
-	std::wstring WindowsFolder = ImageInstallObjects.destDrive;
+	wchar_t WindowsFolder[MAX_PATH];
 
-	#pragma warning(suppress : 4129)
-	ImageInstallObjects.destDrive.append(L"\Windows");
+		wcsncpy_s(WindowsFolder, ImageInstallObjects.destDrive.c_str(), sizeof(WindowsFolder));
+#pragma warning(suppress : 6054; suppress : 4129)
+	wcsncat_s(WindowsFolder, L"\Windows", sizeof(WindowsFolder));
 
 	SHELLEXECUTEINFO ShExecInfo;
 	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
@@ -30,7 +31,7 @@ void BootSetup::SetupSystemBoot()
 	ShExecInfo.hwnd = NULL;
 	ShExecInfo.lpVerb = L"open";
 	ShExecInfo.lpFile = L"bcdboot";
-	ShExecInfo.lpParameters = WindowsFolder.c_str();
+	ShExecInfo.lpParameters = WindowsFolder;
 	ShExecInfo.lpDirectory = ImageInstallObjects.installSources.c_str();
 
 	if (MainObjects.Debug) {

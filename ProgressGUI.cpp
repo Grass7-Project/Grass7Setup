@@ -26,11 +26,18 @@ void ProgressGUI::createProgressBar()
 
 void ProgressGUI::createProgressBarNew(HWND &hWndParent, HINSTANCE &hInst, HWND &hWndProgressBar, int xPos, int yPos, int Width, int Height, int &Percentage, COLORREF BarColor, COLORREF BackgroundColor, int MessageID)
 {
+	DWORD dwStyle;
+	if (!MainObjects.dwmEnabled) {
+		dwStyle = WS_CHILD | WS_VISIBLE | PBS_SMOOTH;
+	}
+	else {
+		dwStyle = WS_CHILD | WS_VISIBLE | PBS_SMOOTH | WS_BORDER;
+	}
 	hWndProgressBar = ::CreateWindowExW(
 		0,
 		PROGRESS_CLASS,
 		L"",
-		WS_CHILD | WS_VISIBLE | PBS_SMOOTH | WS_BORDER,
+		dwStyle,
 		xPos,
 		yPos,
 		Width,

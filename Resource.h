@@ -42,7 +42,6 @@
 #define IDB_CHECKMARK_BMP		229
 
 // Dialogs
-#define IDD_PARENTPAGE			300
 #define IDD_WELCOMEPAGE			301
 #define IDD_LICENSEPAGE			302
 #define IDD_CHANGELOGPAGE		303

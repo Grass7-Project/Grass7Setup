@@ -59,6 +59,21 @@ int MainInit::Init(MSG &msg, HINSTANCE &hInstance, HINSTANCE &hPrevInstance, LPT
 		}
 	}
 
+	MainObjects.dwmEnabled = 0;
+	HMODULE hMod = LoadLibraryExW(L"dwmapi.dll", NULL, LOAD_LIBRARY_SEARCH_SYSTEM32);
+	if (hMod)
+	{
+		HRESULT(WINAPI* pfnDwmIsCompositionEnabled)(BOOL *pfEnabled);
+
+		(FARPROC&)pfnDwmIsCompositionEnabled = GetProcAddress(hMod, "DwmIsCompositionEnabled");
+
+		if (pfnDwmIsCompositionEnabled)
+		{
+			pfnDwmIsCompositionEnabled(&MainObjects.dwmEnabled);
+		}
+		FreeLibrary(hMod);
+	}
+
 	std::wstring installSourcesp1(MAX_PATH, 0);
 
 	// Basic application strings

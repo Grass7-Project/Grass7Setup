@@ -27,7 +27,8 @@ void SetupGUI::Init(HWND &hWnd, HWND &hWndParent, HINSTANCE &hInst)
 	hWnd = CreateWindowW(
 		L"SetupWindow",
 		AppResStringsObjects.AppTitleText.c_str(),
-		WS_CHILD | WS_VISIBLE | WS_SYSMENU | DS_FIXEDSYS, CW_USEDEFAULT,
+		WS_CHILD | WS_VISIBLE | WS_SYSMENU | DS_FIXEDSYS,
+		CW_USEDEFAULT,
 		CW_USEDEFAULT,
 		622,
 		428,

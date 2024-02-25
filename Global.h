@@ -12,7 +12,8 @@ public:
 
 	BOOL Debug,
 		NoWinPECheck,
-		doNotClose;
+		doNotClose,
+		dwmEnabled;
 
 	int Page;
 };
