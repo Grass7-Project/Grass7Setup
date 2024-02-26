@@ -17,12 +17,16 @@ void Install::InstallMain(HDC &hdc)
 		AppResStringsObjects.CopyingFilesText,
 		AppResStringsObjects.ExpandingFilesText,
 		AppResStringsObjects.InstallingFeaturesText,
-		AppResStringsObjects.InstallingUpdatesText);
+		AppResStringsObjects.InstallingUpdatesText,
+		InstallPrivateObjects.ValuesInit);
 
 	::UpdateWindow(MainObjects.hWndSetupWindow);
 
-	std::thread InstallCode(Install::InstallerThread);
-	InstallCode.detach();
+	if (!InstallPrivateObjects.InstallInProgress) {
+		InstallPrivateObjects.InstallInProgress = TRUE;
+		std::thread InstallCode(Install::InstallerThread);
+		InstallCode.detach();
+	}
 }
 
 // Installation Thread

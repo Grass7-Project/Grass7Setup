@@ -62,13 +62,16 @@ void ProgressGUI::updateProgressBar(HWND &hParentWnd, HWND &hProgressBarWnd, int
 	::UpdateWindow(hParentWnd);
 }
 
-void ProgressGUI::createProgressText(HDC &hdc, int &percent1, int &percent2, int &percent3, int &percent4, std::wstring &Text1, std::wstring &Text2, std::wstring &Text3, std::wstring &Text4)
+void ProgressGUI::createProgressText(HDC &hdc, int &percent1, int &percent2, int &percent3, int &percent4, std::wstring &Text1, std::wstring &Text2, std::wstring &Text3, std::wstring &Text4, BOOL &ValuesInit)
 {
-	// Init the percentage values
-	percent1 = 0;
-	percent2 = 0;
-	percent3 = 0;
-	percent4 = 0;
+	if (!ValuesInit) {
+		// Init the percentage values
+		percent1 = 0;
+		percent2 = 0;
+		percent3 = 0;
+		percent4 = 0;
+	}
+	ValuesInit = TRUE;
 
 	// Create the text
 	ProgressGUI::updateProgressText(hdc, 63, 123, percent1, Text1, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);

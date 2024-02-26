@@ -18,7 +18,9 @@ private:
 	};
 
 	BOOL WaitThreadRunning,
-		WaitThreadExit;
+		WaitThreadExit,
+		InstallInProgress,
+		ValuesInit;
 
 	std::wstring DotsText;
 

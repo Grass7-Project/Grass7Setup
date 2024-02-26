@@ -13,7 +13,6 @@ void ButtonGUI::InitBackBtn()
 	GetWindowRect(MainObjects.hWndSetupWindow, &rc);
 
 	ButtonObjects.BackButtonDisabled = FALSE;
-	BtnGUI.drawBackButton = TRUE;
 
 	int height;
 	int width;
@@ -33,7 +32,6 @@ void ButtonGUI::InitCloseBtn()
 	GetWindowRect(MainObjects.hWndSetupWindow, &rc);
 
 	ButtonObjects.CloseButtonDisabled = FALSE;
-	BtnGUI.drawCloseButton = TRUE;
 
 	ButtonObjects.hCloseBtn = CreateWindowExW(NULL, L"BUTTON", NULL, BS_OWNERDRAW | WS_CHILD | WS_VISIBLE, rc.right - 40, rc.top - 42, 44, 16, MainObjects.hWndMainWindow, (HMENU)ID_CLOSEBTN, MainObjects.hInst, 0);
 
@@ -45,7 +43,7 @@ void ButtonGUI::InitNormalBtn()
 {
 	ButtonObjects.InstallButtonText = FALSE; // Set the install button text to not appear, currently
 	ButtonObjects.NormalButtonDisabled = FALSE;
-	BtnGUI.drawNormalButton = TRUE;
+	ButtonObjects.NormalButtonState = 1;
 
 	ButtonObjects.hNormalBtn = CreateWindowExW(NULL,L"BUTTON", NULL, BS_OWNERDRAW | WS_CHILD | WS_VISIBLE, 529, 394, 75, 23, MainObjects.hWndSetupWindow, (HMENU)ID_NORMALBTN, MainObjects.hInst, 0);
 	SetWindowSubclass(ButtonObjects.hNormalBtn, &ButtonGUI::NormalButtonProc, ID_NORMALBTN, 0);
@@ -55,7 +53,6 @@ void ButtonGUI::InitNormalBtn()
 void ButtonGUI::InitAutoPartitionButton()
 {
 	ButtonObjects.AutoPartButtonDisabled = FALSE;
-	BtnGUI.drawAutoPartButton = TRUE;
 
 	ButtonObjects.hAutoPartitionBtn = CreateWindowExW(NULL, L"BUTTON", NULL, BS_OWNERDRAW | WS_CHILD | WS_VISIBLE, 18, 338, 140, 26, MainObjects.hWndSetupWindow, (HMENU)ID_AUTOMATICPARTBTN, MainObjects.hInst, 0);
 	SetWindowSubclass(ButtonObjects.hAutoPartitionBtn, &ButtonGUI::AutoPartButtonProc, ID_AUTOMATICPARTBTN, 0);
@@ -64,7 +61,6 @@ void ButtonGUI::InitAutoPartitionButton()
 void ButtonGUI::InitManualPartitionButton()
 {
 	ButtonObjects.ManualPartButtonDisabled = FALSE;
-	BtnGUI.drawManualPartButton = TRUE;
 
 	ButtonObjects.hManualPartitionBtn = CreateWindowExW(NULL, L"BUTTON", NULL, BS_OWNERDRAW | WS_CHILD | WS_VISIBLE, 175, 338, 123, 26, MainObjects.hWndSetupWindow, (HMENU)ID_MANUALPARTBTN, MainObjects.hInst, 0);
 	SetWindowSubclass(ButtonObjects.hManualPartitionBtn, &ButtonGUI::ManualPartButtonProc, ID_MANUALPARTBTN, 0);
@@ -88,44 +84,38 @@ void ButtonGUI::InitButtonBitmaps()
 	BtnGUI.hManualPartBtnTmpImg = BitmapObjects.hManualPartBtnImg1;
 }
 
-void ButtonGUI::Paint(HWND &hWnd, BOOL drawButton, HBITMAP &hButtonImg, int xBmpPos = 0, int yBmpPos = 0, int drawText = FALSE, LPCWSTR text = L"", int customTextXY = FALSE, int textX = 0, int textY = 0)
+void ButtonGUI::Paint(HWND &hWnd, HBITMAP &hButtonImg, int xBmpPos = 0, int yBmpPos = 0, int drawText = FALSE, LPCWSTR text = L"", int customTextXY = FALSE, int textX = 0, int textY = 0)
 {
-	if (drawButton == TRUE) {
-		InvalidateRect(hWnd, 0, TRUE);
-		BITMAP          bitmap01;
-		PAINTSTRUCT		ps;
-		HDC				hdc;
-		RECT			rc;
-		GetWindowRect(hWnd, &rc);
-		GetObjectW(hButtonImg, sizeof(bitmap01), &bitmap01);
+	InvalidateRect(hWnd, 0, TRUE);
+	BITMAP          bitmap01;
+	PAINTSTRUCT		ps;
+	HDC				hdc;
+	RECT			rc;
+	GetWindowRect(hWnd, &rc);
+	GetObjectW(hButtonImg, sizeof(bitmap01), &bitmap01);
 
-		hdc = BeginPaint(hWnd, &ps);
+	hdc = BeginPaint(hWnd, &ps);
 
-		BitBlt(hdc, xBmpPos, yBmpPos, bitmap01.bmWidth, bitmap01.bmHeight, BtnGUI.hdcWndScreenshot, rc.left + xBmpPos, rc.top + yBmpPos, SRCCOPY);
+	BitBlt(hdc, xBmpPos, yBmpPos, bitmap01.bmWidth, bitmap01.bmHeight, BtnGUI.hdcWndScreenshot, rc.left + xBmpPos, rc.top + yBmpPos, SRCCOPY);
 
-		gr7::PaintTransparentBitmap(hdc, xBmpPos, yBmpPos, hButtonImg, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+	gr7::PaintTransparentBitmap(hdc, xBmpPos, yBmpPos, hButtonImg, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 
-		if (drawText == TRUE) {
-			if (customTextXY == 0) {
-				gr7::PaintText(hdc, (rc.right - rc.left) / 2 - 12, (rc.bottom - rc.top) / 2 - 7, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
-			}
-			if (customTextXY == 1) {
-				gr7::PaintText(hdc, textX, textY, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
-			}
-			::UpdateWindow(hWnd);
+	if (drawText == TRUE) {
+		if (customTextXY == 0) {
+			gr7::PaintText(hdc, (rc.right - rc.left) / 2 - 12, (rc.bottom - rc.top) / 2 - 7, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
 		}
-
-		EndPaint(hWnd, &ps);
-		drawButton = FALSE;
+		if (customTextXY == 1) {
+			gr7::PaintText(hdc, textX, textY, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
+		}
 	}
+
+	EndPaint(hWnd, &ps);
 }
 
-void ButtonGUI::ChangeBitmapState(HWND &hWnd, BOOL &ButtonDisabled, int &drawButton, HBITMAP &hButtonTmpImg, HBITMAP &hButtonImg, BOOL setState = FALSE)
+void ButtonGUI::ChangeBitmapState(HWND &hWnd, BOOL &ButtonDisabled, HBITMAP &hButtonTmpImg, HBITMAP &hButtonImg, BOOL setState = FALSE)
 {
 	ButtonDisabled = setState;
-	hButtonTmpImg = NULL;
 	hButtonTmpImg = hButtonImg;
-	drawButton = TRUE;
 	::RedrawWindow(hWnd, NULL, NULL, RDW_INTERNALPAINT);
 }
 
@@ -136,20 +126,20 @@ LRESULT CALLBACK ButtonGUI::BackButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 	{
 		case WM_PAINT:
 		{
-			ButtonGUI::Paint(hWnd, BtnGUI.drawBackButton, BtnGUI.hBackBtnTmpImg);
+			ButtonGUI::Paint(hWnd, BtnGUI.hBackBtnTmpImg);
 		}
 		break;
 		case WM_LBUTTONDOWN:
 		{
 			if (!ButtonObjects.BackButtonDisabled) {
-				ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.BackButtonDisabled, BtnGUI.drawBackButton, BtnGUI.hBackBtnTmpImg, BitmapObjects.hBackBtnImg2);
+				ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.BackButtonDisabled, BtnGUI.hBackBtnTmpImg, BitmapObjects.hBackBtnImg2);
 			}
 		}
 		break;
 		case WM_LBUTTONUP:
 		{
 			if (!ButtonObjects.BackButtonDisabled) {
-				ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.BackButtonDisabled, BtnGUI.drawBackButton, BtnGUI.hBackBtnTmpImg, BitmapObjects.hBackBtnImg4);
+				ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.BackButtonDisabled, BtnGUI.hBackBtnTmpImg, BitmapObjects.hBackBtnImg4);
 
 				MainObjects.Page = MainObjects.Page - 1;
 				ProgressBarObjects.CollectingInfoPercentage = ProgressBarObjects.CollectingInfoPercentage - 1;
@@ -175,7 +165,7 @@ LRESULT CALLBACK ButtonGUI::BackButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 		{
 			BtnGUI.BackButtonHover = TRUE;
 			if (!ButtonObjects.BackButtonDisabled) {
-				ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.BackButtonDisabled, BtnGUI.drawBackButton, BtnGUI.hBackBtnTmpImg, BitmapObjects.hBackBtnImg4);
+				ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.BackButtonDisabled, BtnGUI.hBackBtnTmpImg, BitmapObjects.hBackBtnImg4);
 			}
 		}
 		break;
@@ -183,18 +173,18 @@ LRESULT CALLBACK ButtonGUI::BackButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 		{
 			BtnGUI.BackButtonTracking = BtnGUI.BackButtonHover = FALSE;
 			if (!ButtonObjects.BackButtonDisabled) {
-				ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.BackButtonDisabled, BtnGUI.drawBackButton, BtnGUI.hBackBtnTmpImg, BitmapObjects.hBackBtnImg1);
+				ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.BackButtonDisabled, BtnGUI.hBackBtnTmpImg, BitmapObjects.hBackBtnImg1);
 			}
 		}
 		break;
 		case BTN_DISABLE:
 		{
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.BackButtonDisabled, BtnGUI.drawBackButton, BtnGUI.hBackBtnTmpImg, BitmapObjects.hBackBtnImg3, TRUE);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.BackButtonDisabled, BtnGUI.hBackBtnTmpImg, BitmapObjects.hBackBtnImg3, TRUE);
 		}
 		break;
 		case BTN_ENABLE:
 		{
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.BackButtonDisabled, BtnGUI.drawBackButton, BtnGUI.hBackBtnTmpImg, BitmapObjects.hBackBtnImg1, FALSE);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.BackButtonDisabled, BtnGUI.hBackBtnTmpImg, BitmapObjects.hBackBtnImg1, FALSE);
 		}
 		break;
 		case WM_NCDESTROY:
@@ -211,20 +201,20 @@ LRESULT CALLBACK ButtonGUI::CloseButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 	{
 	case WM_PAINT:
 	{
-		ButtonGUI::Paint(hWnd, BtnGUI.drawCloseButton, BtnGUI.hCloseBtnTmpImg, -7, -9);
+		ButtonGUI::Paint(hWnd, BtnGUI.hCloseBtnTmpImg, -7, -9);
 	}
 	break;
 	case WM_LBUTTONDOWN:
 	{
 		if (!ButtonObjects.CloseButtonDisabled) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.drawCloseButton, BtnGUI.hCloseBtnTmpImg, BitmapObjects.hCloseBtnImg2);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.hCloseBtnTmpImg, BitmapObjects.hCloseBtnImg2);
 		}
 	}
 	break;
 	case WM_LBUTTONUP:
 	{
 		if (!ButtonObjects.CloseButtonDisabled) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.drawCloseButton, BtnGUI.hCloseBtnTmpImg, BitmapObjects.hCloseBtnImg1);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.hCloseBtnTmpImg, BitmapObjects.hCloseBtnImg1);
 
 			std::thread ExitCode(MainInit::Exit);
 			ExitCode.detach();
@@ -248,7 +238,7 @@ LRESULT CALLBACK ButtonGUI::CloseButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 	{
 		BtnGUI.CloseButtonHover = TRUE;
 		if (!ButtonObjects.CloseButtonDisabled) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.drawCloseButton, BtnGUI.hCloseBtnTmpImg, BitmapObjects.hCloseBtnImg4);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.hCloseBtnTmpImg, BitmapObjects.hCloseBtnImg4);
 		}
 	}
 	break;
@@ -256,18 +246,18 @@ LRESULT CALLBACK ButtonGUI::CloseButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 	{
 		BtnGUI.CloseButtonTracking = BtnGUI.CloseButtonHover = FALSE;
 		if (!ButtonObjects.CloseButtonDisabled) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.drawCloseButton, BtnGUI.hCloseBtnTmpImg, BitmapObjects.hCloseBtnImg1);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.hCloseBtnTmpImg, BitmapObjects.hCloseBtnImg1);
 		}
 	}
 	break;
 	case BTN_DISABLE:
 	{
-		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.drawCloseButton, BtnGUI.hCloseBtnTmpImg, BitmapObjects.hCloseBtnImg3, TRUE);
+		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.hCloseBtnTmpImg, BitmapObjects.hCloseBtnImg3, TRUE);
 	}
 	break;
 	case BTN_ENABLE:
 	{
-		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.drawCloseButton, BtnGUI.hCloseBtnTmpImg, BitmapObjects.hCloseBtnImg1, FALSE);
+		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.hCloseBtnTmpImg, BitmapObjects.hCloseBtnImg1, FALSE);
 	}
 	break;
 	case WM_NCDESTROY:
@@ -285,10 +275,10 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 	case WM_PAINT:
 	{
 		if (ButtonObjects.InstallButtonText == FALSE) {
-			ButtonGUI::Paint(hWnd, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.NextButtonText.c_str());
+			ButtonGUI::Paint(hWnd, BtnGUI.hNormalBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.NextButtonText.c_str());
 		}
 		if (ButtonObjects.InstallButtonText == TRUE) {
-			ButtonGUI::Paint(hWnd, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.InstallButtonText.c_str());
+			ButtonGUI::Paint(hWnd, BtnGUI.hNormalBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.InstallButtonText.c_str());
 		}
 	}
 	break;
@@ -296,14 +286,14 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 	{
 		if (ButtonObjects.NormalButtonState != 3) {
 			ButtonObjects.NormalButtonState = 2;
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg2);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg2);
 		}
 	}
 	break;
 	case WM_LBUTTONUP:
 	{
 		if (ButtonObjects.NormalButtonState != 3) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg1);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg1);
 
 			MainObjects.Page = MainObjects.Page + 1;
 			ProgressBarObjects.CollectingInfoPercentage = ProgressBarObjects.CollectingInfoPercentage + 1;
@@ -330,7 +320,7 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 		BtnGUI.NormalButtonHover = TRUE;
 		if (ButtonObjects.NormalButtonState != 3) {
 			ButtonObjects.NormalButtonState = 4;
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg4);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg4);
 		}
 	}
 	break;
@@ -338,20 +328,20 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 	{
 		BtnGUI.NormalButtonTracking = BtnGUI.NormalButtonHover = FALSE;
 		if (ButtonObjects.NormalButtonState != 3) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg1);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg1);
 		}
 	}
 	break;
 	case BTN_DISABLE:
 	{
 		ButtonObjects.NormalButtonState = 3;
-		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg3, TRUE);
+		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg3, TRUE);
 	}
 	break;
 	case BTN_ENABLE:
 	{
 		ButtonObjects.NormalButtonState = 1;
-		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg1, FALSE);
+		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg1, FALSE);
 	}
 	break;
 	case BTN_UPDATE:
@@ -362,16 +352,16 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 			ButtonObjects.InstallButtonText = FALSE;
 		}
 		if (ButtonObjects.NormalButtonState == 1) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg1, FALSE);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg1, FALSE);
 		}
 		if (ButtonObjects.NormalButtonState == 2) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg4, FALSE);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg4, FALSE);
 		}
 		if (ButtonObjects.NormalButtonState == 3) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg3, TRUE);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg3, TRUE);
 		}
 		if (ButtonObjects.NormalButtonState == 4) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.drawNormalButton, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg4);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg4);
 		}
 	}
 	break;
@@ -389,21 +379,21 @@ LRESULT CALLBACK ButtonGUI::AutoPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	{
 	case WM_PAINT:
 	{
-		ButtonGUI::Paint(hWnd, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.AutoPartButtonText.c_str(), TRUE, 9, 5);
+		ButtonGUI::Paint(hWnd, BtnGUI.hAutoPartBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.AutoPartButtonText.c_str(), TRUE, 9, 5);
 	}
 	break;
 	case WM_LBUTTONDOWN:
 	{
 		if (ButtonObjects.AutoPartButtonState != 3) {
 			ButtonObjects.AutoPartButtonState = 2;
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg2);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg2);
 		}
 	}
 	break;
 	case WM_LBUTTONUP:
 	{
 		if (ButtonObjects.AutoPartButtonState != 3) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg1);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg1);
 
 			std::thread AutoPartThread(PartitionCode::AutomaticPartitioning);
 			AutoPartThread.detach();
@@ -428,7 +418,7 @@ LRESULT CALLBACK ButtonGUI::AutoPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		BtnGUI.AutoPartButtonHover = TRUE;
 		if (ButtonObjects.AutoPartButtonState != 3) {
 			ButtonObjects.AutoPartButtonState = 4;
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg4);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg4);
 		}
 	}
 	break;
@@ -436,35 +426,35 @@ LRESULT CALLBACK ButtonGUI::AutoPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	{
 		BtnGUI.AutoPartButtonTracking = BtnGUI.AutoPartButtonHover = FALSE;
 		if (ButtonObjects.AutoPartButtonState != 3) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg1);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg1);
 		}
 	}
 	break;
 	case BTN_DISABLE:
 	{
 		ButtonObjects.AutoPartButtonState = 3;
-		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg3, TRUE);
+		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg3, TRUE);
 	}
 	break;
 	case BTN_ENABLE:
 	{
 		ButtonObjects.AutoPartButtonState = 1;
-		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg1, FALSE);
+		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg1, FALSE);
 	}
 	break;
 	case BTN_UPDATE:
 	{
 		if (ButtonObjects.AutoPartButtonState == 1) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg1, FALSE);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg1, FALSE);
 		}
 		if (ButtonObjects.AutoPartButtonState == 2) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg4, FALSE);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg4, FALSE);
 		}
 		if (ButtonObjects.AutoPartButtonState == 3) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg3, TRUE);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg3, TRUE);
 		}
 		if (ButtonObjects.AutoPartButtonState == 4) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.drawAutoPartButton, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg4);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg4);
 		}
 	}
 	break;
@@ -482,21 +472,21 @@ LRESULT CALLBACK ButtonGUI::ManualPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wP
 	{
 	case WM_PAINT:
 	{
-		ButtonGUI::Paint(hWnd, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.ManualPartButtonText.c_str(), TRUE, 9, 5);
+		ButtonGUI::Paint(hWnd, BtnGUI.hManualPartBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.ManualPartButtonText.c_str(), TRUE, 9, 5);
 	}
 	break;
 	case WM_LBUTTONDOWN:
 	{
 		if (ButtonObjects.ManualPartButtonState != 3) {
 			ButtonObjects.ManualPartButtonState = 2;
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg2);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg2);
 		}
 	}
 	break;
 	case WM_LBUTTONUP:
 	{
 		if (ButtonObjects.ManualPartButtonState != 3) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg1);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg1);
 
 			std::thread ManualPartThread(PartitionCode::ManualPartitioning);
 			ManualPartThread.detach();
@@ -521,7 +511,7 @@ LRESULT CALLBACK ButtonGUI::ManualPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wP
 		BtnGUI.ManualPartButtonHover = TRUE;
 		if (ButtonObjects.ManualPartButtonState != 3) {
 			ButtonObjects.ManualPartButtonState = 4;
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg4);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg4);
 		}
 	}
 	break;
@@ -529,35 +519,35 @@ LRESULT CALLBACK ButtonGUI::ManualPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wP
 	{
 		BtnGUI.ManualPartButtonTracking = BtnGUI.ManualPartButtonHover = FALSE;
 		if (ButtonObjects.ManualPartButtonState != 3) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg1);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg1);
 		}
 	}
 	break;
 	case BTN_DISABLE:
 	{
 		ButtonObjects.ManualPartButtonState = 3;
-		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg3, TRUE);
+		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg3, TRUE);
 	}
 	break;
 	case BTN_ENABLE:
 	{
 		ButtonObjects.ManualPartButtonState = 1;
-		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg1, FALSE);
+		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg1, FALSE);
 	}
 	break;
 	case BTN_UPDATE:
 	{
 		if (ButtonObjects.ManualPartButtonState == 1) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg1, FALSE);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg1, FALSE);
 		}
 		if (ButtonObjects.ManualPartButtonState == 2) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg4, FALSE);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg4, FALSE);
 		}
 		if (ButtonObjects.ManualPartButtonState == 3) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg3, TRUE);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg3, TRUE);
 		}
 		if (ButtonObjects.ManualPartButtonState == 4) {
-			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.drawManualPartButton, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg4);
+			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg4);
 		}
 	}
 	break;
