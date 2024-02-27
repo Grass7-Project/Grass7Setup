@@ -16,7 +16,7 @@ void ButtonGUI::InitBackBtn()
 
 	int height;
 	int width;
-	gr7::GetDesktopResolution(width, height);
+	Grass7API::Monitor::GetDesktopResolution(width, height);
 
 	BitBlt(BtnGUI.hdcWndScreenshot, 0, 0, width, height, BtnGUI.hdcMainWnd, 0, 0, SRCCOPY);
 
@@ -71,7 +71,7 @@ void ButtonGUI::InitButtonBitmaps()
 {
 	int height;
 	int width;
-	gr7::GetDesktopResolution(width, height);
+	Grass7API::Monitor::GetDesktopResolution(width, height);
 	BtnGUI.hdcMainWnd = ::GetDC(MainObjects.hWndMainWindow);
 	BtnGUI.hdcWndScreenshot = ::CreateCompatibleDC(BtnGUI.hdcMainWnd);
 	BtnGUI.hbmpWndScreenshot = ::CreateCompatibleBitmap(BtnGUI.hdcMainWnd, width, height);
@@ -98,14 +98,14 @@ void ButtonGUI::Paint(HWND &hWnd, HBITMAP &hButtonImg, int xBmpPos = 0, int yBmp
 
 	BitBlt(hdc, xBmpPos, yBmpPos, bitmap01.bmWidth, bitmap01.bmHeight, BtnGUI.hdcWndScreenshot, rc.left + xBmpPos, rc.top + yBmpPos, SRCCOPY);
 
-	gr7::PaintTransparentBitmap(hdc, xBmpPos, yBmpPos, hButtonImg, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+	Grass7API::Paint::PaintTransparentBitmap(hdc, xBmpPos, yBmpPos, hButtonImg, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 
 	if (drawText == TRUE) {
 		if (customTextXY == 0) {
-			gr7::PaintText(hdc, (rc.right - rc.left) / 2 - 12, (rc.bottom - rc.top) / 2 - 7, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
+			Grass7API::Paint::PaintText(hdc, (rc.right - rc.left) / 2 - 12, (rc.bottom - rc.top) / 2 - 7, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
 		}
 		if (customTextXY == 1) {
-			gr7::PaintText(hdc, textX, textY, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
+			Grass7API::Paint::PaintText(hdc, textX, textY, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
 		}
 	}
 

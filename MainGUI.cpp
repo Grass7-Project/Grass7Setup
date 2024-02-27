@@ -71,7 +71,7 @@ void MainGUI::Paint(HWND &hWnd)
 	int				horizontal;
 	int				vertical;
 
-	gr7::GetDesktopResolution(horizontal, vertical);
+	Grass7API::Monitor::GetDesktopResolution(horizontal, vertical);
 	hdc = BeginPaint(hWnd, &ps);
 	SetStretchBltMode(hdc, HALFTONE);
 
@@ -89,24 +89,24 @@ void MainGUI::Paint(HWND &hWnd)
 	GetObjectW(BitmapObjects.hFakeWindow, sizeof(WndBitmap), &WndBitmap);
 	int xPos = (horizontal - WndBitmap.bmWidth) / 2;
 	int yPos = (vertical - WndBitmap.bmHeight) / 2;
-	gr7::PaintTransparentBitmap(hdc, xPos, yPos - 33, BitmapObjects.hFakeWindow, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+	Grass7API::Paint::PaintTransparentBitmap(hdc, xPos, yPos - 33, BitmapObjects.hFakeWindow, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 
 	// Draw Small Logo
-	gr7::PaintTransparentBitmap(hdc, xPos + 56, yPos + 26 - 33, BitmapObjects.hSmallLogo, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+	Grass7API::Paint::PaintTransparentBitmap(hdc, xPos + 56, yPos + 26 - 33, BitmapObjects.hSmallLogo, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 
 	// Draw Title Text
-	gr7::PaintText(hdc, xPos + 56 + 23, yPos + 26 - 33, L"Segoe UI", RGB(0, 0, 0), AppResStringsObjects.TitleBarText.c_str(), 9, 1, TRANSPARENT, FW_LIGHT);
+	Grass7API::Paint::PaintText(hdc, xPos + 56 + 23, yPos + 26 - 33, L"Segoe UI", RGB(0, 0, 0), AppResStringsObjects.TitleBarText.c_str(), 9, 1, TRANSPARENT, FW_LIGHT);
 
 	// Paint bottom progress bar text
 	int hoz, ver;
-	gr7::GetDesktopResolution(hoz, ver);
-	gr7::PaintText(hdc, 37, ver - 42, L"Segoe UI", RGB(255, 255, 255), AppResStringsObjects.ProgressBarText1.c_str(), 9, 1, TRANSPARENT, FW_LIGHT);
-	gr7::PaintText(hdc, 228, ver - 42, L"Segoe UI", RGB(255, 255, 255), AppResStringsObjects.ProgressBarText2.c_str(), 9, 1, TRANSPARENT, FW_LIGHT);
-	gr7::PaintText(hdc, 6, ver - 47, L"Segoe UI", RGB(255, 255, 255), L"1", 25, 1, TRANSPARENT, FW_LIGHT);
-	gr7::PaintText(hdc, 200, ver - 47, L"Segoe UI", RGB(255, 255, 255), L"2", 25, 1, TRANSPARENT, FW_LIGHT);
+	Grass7API::Monitor::GetDesktopResolution(hoz, ver);
+	Grass7API::Paint::PaintText(hdc, 37, ver - 42, L"Segoe UI", RGB(255, 255, 255), AppResStringsObjects.ProgressBarText1.c_str(), 9, 1, TRANSPARENT, FW_LIGHT);
+	Grass7API::Paint::PaintText(hdc, 228, ver - 42, L"Segoe UI", RGB(255, 255, 255), AppResStringsObjects.ProgressBarText2.c_str(), 9, 1, TRANSPARENT, FW_LIGHT);
+	Grass7API::Paint::PaintText(hdc, 6, ver - 47, L"Segoe UI", RGB(255, 255, 255), L"1", 25, 1, TRANSPARENT, FW_LIGHT);
+	Grass7API::Paint::PaintText(hdc, 200, ver - 47, L"Segoe UI", RGB(255, 255, 255), L"2", 25, 1, TRANSPARENT, FW_LIGHT);
 
 #ifdef _DEBUG
-	gr7::PaintText(hdc, 0, 0, L"Segoe UI", RGB(255, 255, 255), L"Debug Build", 9, 1, TRANSPARENT, FW_LIGHT);
+	Grass7API::Paint::PaintText(hdc, 0, 0, L"Segoe UI", RGB(255, 255, 255), L"Debug Build", 9, 1, TRANSPARENT, FW_LIGHT);
 #endif
 	EndPaint(hWnd, &ps);
 }

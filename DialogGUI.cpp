@@ -78,8 +78,8 @@ void DialogGUI::Update()
 		std::wstring file = ImageInstallObjects.installSources;
 		file.append(L"\\license.rtf");
 
-		DialogGUIPrivateObjects.hWndRichEditCtrl = gr7::CreateRichEdit(MainObjects.hWndDialogWindow, 42, 62, 543, 272, MainObjects.hInst);
-		gr7::FillRichEditFromFile(DialogGUIPrivateObjects.hWndRichEditCtrl, file.c_str(), SF_RTF);
+		DialogGUIPrivateObjects.hWndRichEditCtrl = Grass7API::RichEditControl::CreateRichEdit(MainObjects.hWndDialogWindow, 42, 62, 543, 272, MainObjects.hInst);
+		Grass7API::RichEditControl::FillRichEditFromFile(DialogGUIPrivateObjects.hWndRichEditCtrl, file.c_str(), SF_RTF);
 		::SendMessageW(DialogGUIPrivateObjects.hWndRichEditCtrl, EM_SETREADONLY, TRUE, 0);
 	}
 
@@ -105,8 +105,8 @@ void DialogGUI::Update()
 		std::wstring file = ImageInstallObjects.installSources;
 		file.append(L"\\changelog.rtf");
 
-		DialogGUIPrivateObjects.hWndRichEditCtrl = gr7::CreateRichEdit(MainObjects.hWndDialogWindow, 42, 62, 543, 272, MainObjects.hInst);
-		gr7::FillRichEditFromFile(DialogGUIPrivateObjects.hWndRichEditCtrl, file.c_str(), SF_RTF);
+		DialogGUIPrivateObjects.hWndRichEditCtrl = Grass7API::RichEditControl::CreateRichEdit(MainObjects.hWndDialogWindow, 42, 62, 543, 272, MainObjects.hInst);
+		Grass7API::RichEditControl::FillRichEditFromFile(DialogGUIPrivateObjects.hWndRichEditCtrl, file.c_str(), SF_RTF);
 		::SendMessageW(DialogGUIPrivateObjects.hWndRichEditCtrl, EM_SETREADONLY, TRUE, 0);
 	}
 
@@ -162,7 +162,7 @@ void DialogGUI::Paint(HWND &hWnd)
 	HDC             hdc;
 
 	hdc = BeginPaint(hWnd, &ps);
-	gr7::PaintTransparentBitmap(hdc, 0, 382, BitmapObjects.hBottomPanel, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+	Grass7API::Paint::PaintTransparentBitmap(hdc, 0, 382, BitmapObjects.hBottomPanel, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 
 	// Text painting options
 	int xPos = 43;
@@ -173,32 +173,32 @@ void DialogGUI::Paint(HWND &hWnd)
 	// Welcome Page
 	if (MainObjects.Page == 1) {
 		// Draw Logo Text
-		gr7::PaintTransparentBitmap(hdc, 0, (428 / 2) - 72, BitmapObjects.hBanner, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+		Grass7API::Paint::PaintTransparentBitmap(hdc, 0, (428 / 2) - 72, BitmapObjects.hBanner, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	}
 
 	// License Page
 	if (MainObjects.Page == 2) {
 		// Draw Dialog Title Text
-		gr7::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.EulaTitleText.c_str(), nSize, 1, TRANSPARENT, FW_LIGHT);
+		Grass7API::Paint::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.EulaTitleText.c_str(), nSize, 1, TRANSPARENT, FW_LIGHT);
 	}
 
 	// Changelog Page
 	if (MainObjects.Page == 3) {
 		// Draw Dialog Title Text
-		gr7::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.ChangelogTitleText.c_str(), nSize, 1, TRANSPARENT, FW_LIGHT);
+		Grass7API::Paint::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.ChangelogTitleText.c_str(), nSize, 1, TRANSPARENT, FW_LIGHT);
 	}
 
 	// Partition Page
 	if (MainObjects.Page == 4) {
 		// Draw Dialog Title Text
-		gr7::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.PartitionTitleText.c_str(), nSize, 1, TRANSPARENT, FW_LIGHT);
+		Grass7API::Paint::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.PartitionTitleText.c_str(), nSize, 1, TRANSPARENT, FW_LIGHT);
 		int nHeightFont = -MulDiv(9, GetDeviceCaps(hdc, LOGPIXELSY), 72);
 	}
 
 	// Installing Page
 	if (MainObjects.Page == 5) {
 		// Draw Dialog Title Text
-		gr7::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.InstallingTitleText.c_str(), nSize, 1, TRANSPARENT, FW_LIGHT);
+		Grass7API::Paint::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.InstallingTitleText.c_str(), nSize, 1, TRANSPARENT, FW_LIGHT);
 		ProgressBarObjects.CollectingInfoPercentage = 100;
 		ProgressBarObjects.CollectingInfoPercentage = ProgressBarObjects.CollectingInfoPercentage + 1;
 		::SendMessageW(MainObjects.hWndMainWindow, MAINWND_UPDATE_COLLECT_INFO_PROG_BAR, (WPARAM)(INT)0, 0);
@@ -210,7 +210,7 @@ void DialogGUI::Paint(HWND &hWnd)
 	// Restarting Page
 	if (MainObjects.Page == 6) {
 		// Draw Dialog Title Text
-		gr7::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.RestartingTitleText.c_str(), nSize, 1, TRANSPARENT, FW_LIGHT);
+		Grass7API::Paint::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 105, 51), AppResStringsObjects.RestartingTitleText.c_str(), nSize, 1, TRANSPARENT, FW_LIGHT);
 		Restart::InitiateRestart();
 	}
 

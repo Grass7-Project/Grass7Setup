@@ -5,7 +5,7 @@
 void ProgressGUI::createProgressBar()
 {
 	int hoz, ver;
-	gr7::GetDesktopResolution(hoz, ver);
+	Grass7API::Monitor::GetDesktopResolution(hoz, ver);
 
 	ProgressGUI::createProgressBarNew(MainObjects.hWndMainWindow, MainObjects.hInst, ProgressBarObjects.hProgressCtrlCollectingInfo, 0, ver - 66, 208, 11, ProgressBarObjects.CollectingInfoPercentage, RGB(153, 204, 51), RGB(122, 147, 177), MAINWND_UPDATE_COLLECT_INFO_PROG_BAR);
 	if (!ProgressBarObjects.hProgressCtrlCollectingInfo) {
@@ -106,7 +106,7 @@ void ProgressGUI::updateProgressText(HDC &hdc, int x, int y, int &ProgressPercan
 		ProgressText.append(L"                       ");
 	}
 
-	gr7::PaintText(hdc, x, y, L"Segoe UI", txtColor, ProgressText.c_str(), 9, 1, OPAQUE, cWeight);
+	Grass7API::Paint::PaintText(hdc, x, y, L"Segoe UI", txtColor, ProgressText.c_str(), 9, 1, OPAQUE, cWeight);
 }
 
 void ProgressGUI::WaitThread(BOOL &WaitThreadRunning, BOOL &WaitThreadExit, int &Percentage, std::wstring &Text, int xPos, int yPos, std::wstring &Dots)

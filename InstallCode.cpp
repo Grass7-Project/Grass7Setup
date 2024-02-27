@@ -76,7 +76,7 @@ void Install::Progress::CopyingFiles(HWND &hWndParent)
 	}
 
 	HDC hdc = ::GetDC(hWndParent);
-	gr7::PaintTransparentBitmap(hdc, 43, 120, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+	Grass7API::Paint::PaintTransparentBitmap(hdc, 43, 120, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(hWndParent, hdc);
 
 	ProgressGUI::updateProgressTexthWnd(hWndParent, 63, 123, InstallPrivateObjects.CopyingFilesPercentage, AppResStringsObjects.CopyingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
@@ -102,7 +102,7 @@ void Install::Progress::ExpandingFiles(HWND &hWndParent)
 	}
 
 	HDC hdc = ::GetDC(hWndParent);
-	gr7::PaintTransparentBitmap(hdc, 43, 140, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+	Grass7API::Paint::PaintTransparentBitmap(hdc, 43, 140, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(hWndParent, hdc);
 
 	ProgressGUI::updateProgressTexthWnd(hWndParent, 63, 143, InstallPrivateObjects.ExpandingFilesPercentage, AppResStringsObjects.ExpandingFilesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
@@ -124,7 +124,7 @@ void Install::Progress::InstallingFeatures(HWND &hWndParent)
 		Sleep(1000);
 	}
 	HDC hdc = ::GetDC(hWndParent);
-	gr7::PaintTransparentBitmap(hdc, 43, 158, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+	Grass7API::Paint::PaintTransparentBitmap(hdc, 43, 158, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(hWndParent, hdc);
 
 	ProgressGUI::updateProgressTexthWnd(hWndParent, 63, 163, InstallPrivateObjects.InstallingFeaturesPercentage, AppResStringsObjects.InstallingFeaturesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);
@@ -147,7 +147,7 @@ void Install::Progress::InstallingUpdates(HWND &hWndParent)
 	}
 
 	HDC hdc = ::GetDC(hWndParent);
-	gr7::PaintTransparentBitmap(hdc, 43, 178, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
+	Grass7API::Paint::PaintTransparentBitmap(hdc, 43, 178, BitmapObjects.hCheckmark, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 	ReleaseDC(hWndParent, hdc);
 
 	ProgressGUI::updateProgressTexthWnd(hWndParent, 63, 183, InstallPrivateObjects.InstallingUpdatesPercentage, AppResStringsObjects.InstallingUpdatesText, RGB(128, 128, 128), FALSE, L"", FW_LIGHT);

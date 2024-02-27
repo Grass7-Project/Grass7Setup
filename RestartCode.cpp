@@ -47,7 +47,7 @@ void Restart::CreateTimerText(HWND &hWnd, const int &xPos, const int &yPos, cons
 	TimerText.append(L"   ");
 
 	HDC hdc = ::GetDC(MainObjects.hWndSetupWindow);
-	gr7::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 0, 0), TimerText.c_str(), 9, 1, OPAQUE, FW_LIGHT);
+	Grass7API::Paint::PaintText(hdc, xPos, yPos, L"Segoe UI", RGB(0, 0, 0), TimerText.c_str(), 9, 1, OPAQUE, FW_LIGHT);
 	ReleaseDC(MainObjects.hWndSetupWindow, hdc);
 	::UpdateWindow(MainObjects.hWndSetupWindow);
 }

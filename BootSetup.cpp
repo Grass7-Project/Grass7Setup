@@ -4,7 +4,7 @@
 
 int BootSetup::GetSystemFirmwareType()
 {
-	gr7::ModifyPrivilege(SE_SYSTEM_ENVIRONMENT_NAME, TRUE, GetCurrentProcess());
+	Grass7API::Privilege::ModifyPrivilege(SE_SYSTEM_ENVIRONMENT_NAME, TRUE, GetCurrentProcess());
 
 	if (GetFirmwareEnvironmentVariableW(L"", _T("{00000000-0000-0000-0000-000000000000}"), NULL, 0) == 0) {
 		if (GetLastError() == ERROR_INVALID_FUNCTION) {

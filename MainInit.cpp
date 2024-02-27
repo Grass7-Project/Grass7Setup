@@ -59,20 +59,7 @@ int MainInit::Init(MSG &msg, HINSTANCE &hInstance, HINSTANCE &hPrevInstance, LPT
 		}
 	}
 
-	MainObjects.dwmEnabled = 0;
-	HMODULE hMod = LoadLibraryExW(L"dwmapi.dll", NULL, LOAD_LIBRARY_SEARCH_SYSTEM32);
-	if (hMod)
-	{
-		HRESULT(WINAPI* pfnDwmIsCompositionEnabled)(BOOL *pfEnabled);
-
-		(FARPROC&)pfnDwmIsCompositionEnabled = GetProcAddress(hMod, "DwmIsCompositionEnabled");
-
-		if (pfnDwmIsCompositionEnabled)
-		{
-			pfnDwmIsCompositionEnabled(&MainObjects.dwmEnabled);
-		}
-		FreeLibrary(hMod);
-	}
+	Grass7API::DWM::DwmIsCompositionEnabled(MainObjects.dwmEnabled);
 
 	std::wstring installSourcesp1(MAX_PATH, 0);
 
@@ -88,13 +75,13 @@ int MainInit::Init(MSG &msg, HINSTANCE &hInstance, HINSTANCE &hPrevInstance, LPT
 	srcImageESD.append(L"\\install.esd");
 	srcImageWIM.append(L"\\install.wim");
 
-	if (gr7::fileExistsW(const_cast<wchar_t*>(srcImageESD.c_str())) == TRUE) {
+	if (Grass7API::FileManagement::fileExistsW(const_cast<wchar_t*>(srcImageESD.c_str())) == TRUE) {
 		ImageInstallObjects.ImagePath = srcImageESD;
 	}
-	if (gr7::fileExistsW(const_cast<wchar_t*>(srcImageWIM.c_str())) == TRUE) {
+	if (Grass7API::FileManagement::fileExistsW(const_cast<wchar_t*>(srcImageWIM.c_str())) == TRUE) {
 		ImageInstallObjects.ImagePath = srcImageWIM;
 	}
-	if (gr7::fileExistsW(const_cast<wchar_t*>(srcImageESD.c_str())) + gr7::fileExistsW(const_cast<wchar_t*>(srcImageWIM.c_str())) == FALSE) {
+	if (Grass7API::FileManagement::fileExistsW(const_cast<wchar_t*>(srcImageESD.c_str())) + Grass7API::FileManagement::fileExistsW(const_cast<wchar_t*>(srcImageWIM.c_str())) == FALSE) {
 		ErrorHandler::InvokeErrorHandler(1, 0, L"Setup did not detect any installation image file.", AppResStringsObjects.AppTitleText);
 	}
 
