@@ -162,7 +162,6 @@ void DialogGUI::Paint(HWND &hWnd)
 	HDC             hdc;
 
 	hdc = BeginPaint(hWnd, &ps);
-	Grass7API::Paint::PaintTransparentBitmap(hdc, 0, 382, BitmapObjects.hBottomPanel, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 
 	// Text painting options
 	int xPos = 43;
