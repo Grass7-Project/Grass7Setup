@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "MainInit.h"
-#include <shellapi.h>
 
 GlobalMain MainObjects;
 GlobalButtons ButtonObjects;

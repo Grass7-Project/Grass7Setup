@@ -26,9 +26,8 @@ public:
 		hNormalBtn,
 		hAutoPartitionBtn,
 		hManualPartitionBtn;
-	int NormalButtonState,
-		AutoPartButtonState,
-		ManualPartButtonState;
+
+	int NormalButtonState;
 
 	BOOL BackButtonDisabled,
 		CloseButtonDisabled,

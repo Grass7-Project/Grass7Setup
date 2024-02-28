@@ -251,7 +251,7 @@ LRESULT CALLBACK DialogGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
 		}
 		break;
 
-		// Set background color of the dialog
+	// Set background color of the dialog
 	case WM_CTLCOLORDLG:
 	{
 		SetBkColor((HDC)wParam, RGB(255, 255, 255));

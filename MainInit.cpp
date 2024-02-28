@@ -125,6 +125,9 @@ BOOL MainInit::InitGUI()
 	// Create Dialog Window
 	DialogGUI::Init();
 
+	RECT rc;
+	GetWindowRect(MainObjects.hWndSetupWindow, &rc);
+
 	::ShowWindow(MainObjects.hWndSetupWindow, TRUE); // Show the Setup Window
 	::UpdateWindow(MainObjects.hWndSetupWindow); // Update the Setup Window to trigger a redraw
 
@@ -132,8 +135,9 @@ BOOL MainInit::InitGUI()
 	::UpdateWindow(MainObjects.hWndMainWindow); // Update the Main Window to trigger a redraw
 
 	// We call the functions to init the custom buttons
-	ButtonGUI::InitBackBtn();
-	ButtonGUI::InitCloseBtn();
+	ButtonGUI::InitMainWndScreenshot();
+	ButtonGUI::InitBackBtn(rc);
+	ButtonGUI::InitCloseBtn(rc);
 	ButtonGUI::InitNormalBtn();
 	ButtonGUI::InitAutoPartitionButton();
 	ButtonGUI::InitManualPartitionButton();

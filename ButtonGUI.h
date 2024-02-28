@@ -2,9 +2,10 @@
 
 class ButtonGUI{
 public:
+	static void				InitMainWndScreenshot();
 	static void				InitButtonBitmaps();
-	static void				InitBackBtn();
-	static void				InitCloseBtn();
+	static void				InitBackBtn(RECT &rc);
+	static void				InitCloseBtn(RECT &rc);
 	static void				InitNormalBtn();
 	static void				InitAutoPartitionButton();
 	static void				InitManualPartitionButton();
