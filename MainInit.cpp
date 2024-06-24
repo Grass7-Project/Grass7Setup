@@ -62,36 +62,37 @@ int MainInit::Init(MSG &msg, HINSTANCE &hInstance, HINSTANCE &hPrevInstance, LPT
 	Grass7API::DWM::DwmIsCompositionEnabled(MainObjects.dwmEnabled);
 
 	std::wstring installSourcesp1(MAX_PATH, 0);
-
-	// Basic application strings
 	installSourcesp1.resize((size_t)GetModuleFileNameW(NULL, &installSourcesp1[0], (int)installSourcesp1.size()));
 	PathRemoveFileSpecW(&installSourcesp1[0]);
 
 	ImageInstallObjects.installSources = &installSourcesp1[0];
 
-	std::wstring srcImageESD = ImageInstallObjects.installSources;
-	std::wstring srcImageWIM = ImageInstallObjects.installSources;
+	if (!ImageInstallObjects.NoDeploy) {
 
-	srcImageESD.append(L"\\install.esd");
-	srcImageWIM.append(L"\\install.wim");
+		std::wstring srcImageESD = ImageInstallObjects.installSources;
+		std::wstring srcImageWIM = ImageInstallObjects.installSources;
 
-	if (Grass7API::FileManagement::fileExistsW(const_cast<wchar_t*>(srcImageESD.c_str())) == TRUE) {
-		ImageInstallObjects.ImagePath = srcImageESD;
-	}
-	if (Grass7API::FileManagement::fileExistsW(const_cast<wchar_t*>(srcImageWIM.c_str())) == TRUE) {
-		ImageInstallObjects.ImagePath = srcImageWIM;
-	}
-	if (Grass7API::FileManagement::fileExistsW(const_cast<wchar_t*>(srcImageESD.c_str())) + Grass7API::FileManagement::fileExistsW(const_cast<wchar_t*>(srcImageWIM.c_str())) == FALSE) {
-		ErrorHandler::InvokeErrorHandler(1, 0, L"Setup did not detect any installation image file.", AppResStringsObjects.AppTitleText);
-	}
+		srcImageESD.append(L"\\install.esd");
+		srcImageWIM.append(L"\\install.wim");
 
-	ImageInstallObjects.ImageIndex = 1;
+		if (Grass7API::FileManagement::fileExistsW(const_cast<wchar_t*>(srcImageESD.c_str())) == TRUE) {
+			ImageInstallObjects.ImagePath = srcImageESD;
+		}
+		if (Grass7API::FileManagement::fileExistsW(const_cast<wchar_t*>(srcImageWIM.c_str())) == TRUE) {
+			ImageInstallObjects.ImagePath = srcImageWIM;
+		}
+		if (Grass7API::FileManagement::fileExistsW(const_cast<wchar_t*>(srcImageESD.c_str())) + Grass7API::FileManagement::fileExistsW(const_cast<wchar_t*>(srcImageWIM.c_str())) == FALSE) {
+			ErrorHandler::InvokeErrorHandler(1, 0, L"Setup did not detect any installation image file.", AppResStringsObjects.AppTitleText);
+		}
 
-	if (MainObjects.Debug) {
-		ImageInstallObjects.destDrive = L"C:\\Users\\Genki\\Desktop\\gr7\\Deploy";
-	}
-	else {
-		ImageInstallObjects.destDrive = L"W:\\";
+		ImageInstallObjects.ImageIndex = 1;
+
+		if (MainObjects.Debug) {
+			ImageInstallObjects.destDrive = L"C:\\Users\\Genki\\Desktop\\gr7\\Deploy";
+		}
+		else {
+			ImageInstallObjects.destDrive = L"W:\\";
+		}
 	}
 
 	if (!MainInit::InitGUI()) {

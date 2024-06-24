@@ -61,6 +61,12 @@ LRESULT CALLBACK SetupGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
 
 	switch (message)
 	{
+	case WM_KEYDOWN:
+	{
+		SetFocus(MainObjects.hWndMainWindow);
+		return SendMessage(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
+	}
+	break;
 	case WM_CREATE:
 	{
 		ButtonGUI::InitButtonBitmaps();

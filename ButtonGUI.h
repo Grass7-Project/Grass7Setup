@@ -9,9 +9,10 @@ public:
 	static void				InitNormalBtn();
 	static void				InitAutoPartitionButton();
 	static void				InitManualPartitionButton();
+	static void				KeyHandler(WPARAM &wParam);
 
 private:
-	static void				Paint(HWND &hWnd, HBITMAP &hButtonImg, int xBmpPos, int yBmpPos, int drawText, LPCWSTR text, int customTextXY, int textX, int textY);
+	static void				Paint(HWND &hWnd, HBITMAP &hButtonImg, int xBmpPos, int yBmpPos, int drawText, LPCWSTR text, int textX, int textY);
 	static void				ChangeBitmapState(HWND &hWnd, BOOL& ButtonDisabled, HBITMAP &hButtonTmpImg, HBITMAP &hButtonImg, BOOL setState);
 	static LRESULT CALLBACK	BackButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);
 	static LRESULT CALLBACK	CloseButtonProc(HWND, UINT, WPARAM, LPARAM, UINT_PTR, DWORD_PTR);

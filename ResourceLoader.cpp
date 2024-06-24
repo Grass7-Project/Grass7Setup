@@ -65,6 +65,7 @@ void ResourceLoader::LoadStrings()
 
 	std::wstring NextButtonText(MAX_PATH, 0);
 	std::wstring InstallButtonText(MAX_PATH, 0);
+	std::wstring RestartButtonText(MAX_PATH, 0);
 	std::wstring AutoPartButtonText(MAX_PATH, 0);
 	std::wstring ManualPartButtonText(MAX_PATH, 0);
 
@@ -94,6 +95,7 @@ void ResourceLoader::LoadStrings()
 	// Button strings
 	NextButtonText.resize(LoadStringW(MainObjects.hInst, IDS_NEXTBTN, &NextButtonText[0], (int)NextButtonText.size()));
 	InstallButtonText.resize(LoadStringW(MainObjects.hInst, IDS_INSTALLBTN, &InstallButtonText[0], (int)InstallButtonText.size()));
+	RestartButtonText.resize(LoadStringW(MainObjects.hInst, IDS_RESTARTBTN, &RestartButtonText[0], (int)RestartButtonText.size()));
 	AutoPartButtonText.resize(LoadStringW(MainObjects.hInst, IDS_AUTOPARTBTN, &AutoPartButtonText[0], (int)AutoPartButtonText.size()));
 	ManualPartButtonText.resize(LoadStringW(MainObjects.hInst, IDS_MANUALPARTBTN, &ManualPartButtonText[0], (int)ManualPartButtonText.size()));
 
@@ -124,6 +126,7 @@ void ResourceLoader::LoadStrings()
 
 	AppResStringsObjects.NextButtonText = NextButtonText;
 	AppResStringsObjects.InstallButtonText = InstallButtonText;
+	AppResStringsObjects.RestartButtonText = RestartButtonText;
 	AppResStringsObjects.AutoPartButtonText = AutoPartButtonText;
 	AppResStringsObjects.ManualPartButtonText = ManualPartButtonText;
 

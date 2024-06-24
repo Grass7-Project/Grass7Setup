@@ -29,7 +29,8 @@ void ButtonGUI::InitCloseBtn(RECT &rc)
 // Initialize Normal Button
 void ButtonGUI::InitNormalBtn()
 {
-	ButtonObjects.InstallButtonText = FALSE; // Set the install button text to not appear, currently
+	ButtonObjects.InstallButtonText = FALSE;
+	ButtonObjects.RestartButtonText = FALSE;
 	ButtonObjects.NormalButtonDisabled = FALSE;
 	ButtonObjects.NormalButtonState = 1;
 
@@ -81,7 +82,27 @@ void ButtonGUI::InitButtonBitmaps()
 	BtnGUI.hManualPartBtnTmpImg = BitmapObjects.hManualPartBtnImg1;
 }
 
-void ButtonGUI::Paint(HWND &hWnd, HBITMAP &hButtonImg, int xBmpPos = 0, int yBmpPos = 0, int drawText = FALSE, LPCWSTR text = L"", int customTextXY = FALSE, int textX = 0, int textY = 0)
+void ButtonGUI::KeyHandler(WPARAM &wParam)
+{
+	if (wParam == VK_BACK)
+	{
+		::SendMessageW(ButtonObjects.hBackBtn, WM_LBUTTONUP, (WPARAM)(INT)0, 0);
+	}
+	if (wParam == VK_ESCAPE)
+	{
+		::SendMessageW(ButtonObjects.hCloseBtn, WM_LBUTTONUP, (WPARAM)(INT)0, 0);
+	}
+	if (wParam == VK_RETURN)
+	{
+		::SendMessageW(ButtonObjects.hNormalBtn, WM_LBUTTONUP, (WPARAM)(INT)0, 0);
+	}
+	if (wParam == VK_SPACE)
+	{
+		// unset atm
+	}
+}
+
+void ButtonGUI::Paint(HWND &hWnd, HBITMAP &hButtonImg, int xBmpPos = 0, int yBmpPos = 0, int drawText = FALSE, LPCWSTR text = L"", int textX = 0, int textY = 0)
 {
 	InvalidateRect(hWnd, 0, TRUE);
 	BITMAP          bitmap01;
@@ -98,10 +119,16 @@ void ButtonGUI::Paint(HWND &hWnd, HBITMAP &hButtonImg, int xBmpPos = 0, int yBmp
 	Grass7API::Paint::PaintTransparentBitmap(hdc, xBmpPos, yBmpPos, hButtonImg, { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA });
 
 	if (drawText == TRUE) {
-		if (customTextXY == 0) {
+		if (textX == 0 && textY == 0) {
 			Grass7API::Paint::PaintText(hdc, (rc.right - rc.left) / 2 - 12, (rc.bottom - rc.top) / 2 - 7, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
 		}
-		if (customTextXY == 1) {
+		if (textX != 0 && textY == 0) {
+			Grass7API::Paint::PaintText(hdc, textX, (rc.bottom - rc.top) / 2 - 7, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
+		}
+		if (textX == 0 && textY != 0) {
+			Grass7API::Paint::PaintText(hdc, (rc.right - rc.left) / 2 - 12, textY, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
+		}
+		if (textX != 0 && textY != 0) {
 			Grass7API::Paint::PaintText(hdc, textX, textY, L"Segoe UI", RGB(0, 0, 0), text, 9, 1, TRANSPARENT, FW_LIGHT);
 		}
 	}
@@ -172,6 +199,12 @@ LRESULT CALLBACK ButtonGUI::BackButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 			if (!ButtonObjects.BackButtonDisabled) {
 				ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.BackButtonDisabled, BtnGUI.hBackBtnTmpImg, BitmapObjects.hBackBtnImg1);
 			}
+		}
+		break;
+		case WM_KEYDOWN:
+		{
+			SetFocus(MainObjects.hWndMainWindow);
+			return SendMessage(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
 		}
 		break;
 		case BTN_DISABLE:
@@ -247,6 +280,12 @@ LRESULT CALLBACK ButtonGUI::CloseButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 		}
 	}
 	break;
+	case WM_KEYDOWN:
+	{
+		SetFocus(MainObjects.hWndMainWindow);
+		return SendMessage(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
+	}
+	break;
 	case BTN_DISABLE:
 	{
 		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.CloseButtonDisabled, BtnGUI.hCloseBtnTmpImg, BitmapObjects.hCloseBtnImg3, TRUE);
@@ -271,11 +310,14 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 	{
 	case WM_PAINT:
 	{
-		if (ButtonObjects.InstallButtonText == FALSE) {
+		if (ButtonObjects.InstallButtonText == FALSE && ButtonObjects.RestartButtonText == FALSE) {
 			ButtonGUI::Paint(hWnd, BtnGUI.hNormalBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.NextButtonText.c_str());
 		}
 		if (ButtonObjects.InstallButtonText == TRUE) {
-			ButtonGUI::Paint(hWnd, BtnGUI.hNormalBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.InstallButtonText.c_str());
+			ButtonGUI::Paint(hWnd, BtnGUI.hNormalBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.InstallButtonText.c_str(), 22, 0);
+		}
+		if (ButtonObjects.RestartButtonText == TRUE) {
+			ButtonGUI::Paint(hWnd, BtnGUI.hNormalBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.RestartButtonText.c_str(), 20, 0);
 		}
 	}
 	break;
@@ -291,6 +333,10 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 	{
 		if (ButtonObjects.NormalButtonState != 3) {
 			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg1);
+
+			if (ButtonObjects.RestartButtonText) {
+				SendMessageW(MainObjects.hWndMainWindow, WM_CLOSE, (WPARAM)(INT)0, 0);
+			}
 
 			MainObjects.Page = MainObjects.Page + 1;
 			ProgressBarObjects.CollectingInfoPercentage = ProgressBarObjects.CollectingInfoPercentage + 1;
@@ -329,6 +375,12 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 		}
 	}
 	break;
+	case WM_KEYDOWN:
+	{
+		SetFocus(MainObjects.hWndMainWindow);
+		return SendMessage(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
+	}
+	break;
 	case BTN_DISABLE:
 	{
 		ButtonObjects.NormalButtonState = 3;
@@ -347,6 +399,12 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 			ButtonObjects.InstallButtonText = TRUE;
 		} else {
 			ButtonObjects.InstallButtonText = FALSE;
+		}
+		if (MainObjects.Page == 6) {
+			ButtonObjects.RestartButtonText = TRUE;
+		}
+		else {
+			ButtonObjects.RestartButtonText = FALSE;
 		}
 		if (ButtonObjects.NormalButtonState == 1) {
 			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.NormalButtonDisabled, BtnGUI.hNormalBtnTmpImg, BitmapObjects.hNormalBtnImg1, FALSE);
@@ -376,7 +434,7 @@ LRESULT CALLBACK ButtonGUI::AutoPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	{
 	case WM_PAINT:
 	{
-		ButtonGUI::Paint(hWnd, BtnGUI.hAutoPartBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.AutoPartButtonText.c_str(), TRUE, 9, 5);
+		ButtonGUI::Paint(hWnd, BtnGUI.hAutoPartBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.AutoPartButtonText.c_str(), 9, 5);
 	}
 	break;
 	case WM_LBUTTONDOWN:
@@ -425,6 +483,12 @@ LRESULT CALLBACK ButtonGUI::AutoPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		}
 	}
 	break;
+	case WM_KEYDOWN:
+	{
+		SetFocus(MainObjects.hWndMainWindow);
+		return SendMessage(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
+	}
+	break;
 	case BTN_DISABLE:
 	{
 		ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.AutoPartButtonDisabled, BtnGUI.hAutoPartBtnTmpImg, BitmapObjects.hAutoPartBtnImg3, TRUE);
@@ -449,7 +513,7 @@ LRESULT CALLBACK ButtonGUI::ManualPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wP
 	{
 	case WM_PAINT:
 	{
-		ButtonGUI::Paint(hWnd, BtnGUI.hManualPartBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.ManualPartButtonText.c_str(), TRUE, 9, 5);
+		ButtonGUI::Paint(hWnd, BtnGUI.hManualPartBtnTmpImg, 0, 0, TRUE, AppResStringsObjects.ManualPartButtonText.c_str(), 9, 5);
 	}
 	break;
 	case WM_LBUTTONDOWN:
@@ -496,6 +560,12 @@ LRESULT CALLBACK ButtonGUI::ManualPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wP
 		if (!ButtonObjects.ManualPartButtonDisabled) {
 			ButtonGUI::ChangeBitmapState(hWnd, ButtonObjects.ManualPartButtonDisabled, BtnGUI.hManualPartBtnTmpImg, BitmapObjects.hManualPartBtnImg1);
 		}
+	}
+	break;
+	case WM_KEYDOWN:
+	{
+		SetFocus(MainObjects.hWndMainWindow);
+		return SendMessage(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
 	}
 	break;
 	case BTN_DISABLE:

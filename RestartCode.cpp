@@ -11,7 +11,6 @@ void Restart::InitiateRestart()
 	RestartThread.detach();
 }
 
-// Internal restarting now code
 void Restart::MainRestartThread()
 {
 	while (ProgressBarObjects.RestartingPercentage != 100) {

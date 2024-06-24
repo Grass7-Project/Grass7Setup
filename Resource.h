@@ -71,6 +71,7 @@
 #define IDS_MANUALPARTBTN		418
 #define IDS_SETUP_EXIT			419
 #define IDS_SETUP_EXIT_PROGRESS	420
+#define IDS_RESTARTBTN			421
 
 // Buttons
 #define ID_BACKBTN			    500

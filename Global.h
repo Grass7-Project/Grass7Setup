@@ -34,7 +34,8 @@ public:
 		NormalButtonDisabled,
 		AutoPartButtonDisabled,
 		ManualPartButtonDisabled,
-		InstallButtonText;
+		InstallButtonText,
+		RestartButtonText;
 };
 
 // Progress Bars
@@ -57,6 +58,7 @@ public:
 	std::wstring ProgressBarText2;
 	std::wstring NextButtonText;
 	std::wstring InstallButtonText;
+	std::wstring RestartButtonText;
 	std::wstring EulaTitleText;
 	std::wstring ChangelogTitleText;
 	std::wstring PartitionTitleText;

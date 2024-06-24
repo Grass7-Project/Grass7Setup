@@ -118,6 +118,16 @@ LRESULT CALLBACK MainGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
 
 	switch (message)
 	{
+		case WM_KEYDOWN:
+		{
+			ButtonGUI::KeyHandler(wParam);
+		}
+		break;
+		case WM_LBUTTONDOWN:
+		{
+			SetFocus(hWnd);
+		}
+		break;
 		case WM_CLOSE:
 		{
 			if (MainObjects.doNotClose) {

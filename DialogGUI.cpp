@@ -141,6 +141,7 @@ void DialogGUI::Update()
 	if (MainObjects.Page == 6) {
 		::ShowWindow(ButtonObjects.hCloseBtn, FALSE);
 		::ShowWindow(ProgressBarObjects.hProgressCtrlRestarting, TRUE);
+		::ShowWindow(ButtonObjects.hNormalBtn, TRUE);
 		MainObjects.hWndDialogWindow = CreateDialogW(MainObjects.hInst, MAKEINTRESOURCE(IDD_RESTARTINGPAGE), MainObjects.hWndSetupWindow, (DLGPROC)DialogGUI::WndProc);
 	}
 
@@ -223,6 +224,12 @@ LRESULT CALLBACK DialogGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
 
 	switch (message)
 	{
+	case WM_KEYDOWN:
+	{
+		SetFocus(MainObjects.hWndMainWindow);
+		return SendMessage(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
+	}
+	break;
 	case WM_COMMAND:
 		wmId = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
@@ -239,6 +246,7 @@ LRESULT CALLBACK DialogGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
 			if (IsDlgButtonChecked(hWnd, ID_ACCEPT_LICENSE) == BST_UNCHECKED) {
 				::SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 			}
+			SetFocus(MainObjects.hWndMainWindow);
 			break;
 
 		default:
