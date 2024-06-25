@@ -4,6 +4,7 @@
 #include "DialogGUI.h"
 #include "ProgressGUI.h"
 #include "ButtonGUI.h"
+#include "KeyHandler.h"
 #include "ResourceLoader.h"
 
 MainGUI MainGUIObj;
@@ -120,7 +121,7 @@ LRESULT CALLBACK MainGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
 	{
 		case WM_KEYDOWN:
 		{
-			ButtonGUI::KeyHandler(wParam);
+			KeyHandler::InvokeKeyHandler(wParam);
 		}
 		break;
 		case WM_LBUTTONDOWN:

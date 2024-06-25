@@ -82,26 +82,6 @@ void ButtonGUI::InitButtonBitmaps()
 	BtnGUI.hManualPartBtnTmpImg = BitmapObjects.hManualPartBtnImg1;
 }
 
-void ButtonGUI::KeyHandler(WPARAM &wParam)
-{
-	if (wParam == VK_BACK)
-	{
-		::SendMessageW(ButtonObjects.hBackBtn, WM_LBUTTONUP, (WPARAM)(INT)0, 0);
-	}
-	if (wParam == VK_ESCAPE)
-	{
-		::SendMessageW(ButtonObjects.hCloseBtn, WM_LBUTTONUP, (WPARAM)(INT)0, 0);
-	}
-	if (wParam == VK_RETURN)
-	{
-		::SendMessageW(ButtonObjects.hNormalBtn, WM_LBUTTONUP, (WPARAM)(INT)0, 0);
-	}
-	if (wParam == VK_SPACE)
-	{
-		// unset atm
-	}
-}
-
 void ButtonGUI::Paint(HWND &hWnd, HBITMAP &hButtonImg, int xBmpPos = 0, int yBmpPos = 0, int drawText = FALSE, LPCWSTR text = L"", int textX = 0, int textY = 0)
 {
 	InvalidateRect(hWnd, 0, TRUE);
@@ -204,7 +184,7 @@ LRESULT CALLBACK ButtonGUI::BackButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam, 
 		case WM_KEYDOWN:
 		{
 			SetFocus(MainObjects.hWndMainWindow);
-			return SendMessage(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
+			return SendMessageW(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
 		}
 		break;
 		case BTN_DISABLE:
@@ -283,7 +263,7 @@ LRESULT CALLBACK ButtonGUI::CloseButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 	case WM_KEYDOWN:
 	{
 		SetFocus(MainObjects.hWndMainWindow);
-		return SendMessage(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
+		return SendMessageW(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
 	}
 	break;
 	case BTN_DISABLE:
@@ -378,7 +358,7 @@ LRESULT CALLBACK ButtonGUI::NormalButtonProc(HWND hWnd, UINT uMsg, WPARAM wParam
 	case WM_KEYDOWN:
 	{
 		SetFocus(MainObjects.hWndMainWindow);
-		return SendMessage(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
+		return SendMessageW(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
 	}
 	break;
 	case BTN_DISABLE:
@@ -486,7 +466,7 @@ LRESULT CALLBACK ButtonGUI::AutoPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	case WM_KEYDOWN:
 	{
 		SetFocus(MainObjects.hWndMainWindow);
-		return SendMessage(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
+		return SendMessageW(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
 	}
 	break;
 	case BTN_DISABLE:
@@ -565,7 +545,7 @@ LRESULT CALLBACK ButtonGUI::ManualPartButtonProc(HWND hWnd, UINT uMsg, WPARAM wP
 	case WM_KEYDOWN:
 	{
 		SetFocus(MainObjects.hWndMainWindow);
-		return SendMessage(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
+		return SendMessageW(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
 	}
 	break;
 	case BTN_DISABLE:

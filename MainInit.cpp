@@ -11,9 +11,6 @@
 int MainInit::Init(MSG &msg, HINSTANCE &hInstance, HINSTANCE &hPrevInstance, LPTSTR &lpCmdLine, int &nCmdShow)
 {
 	HACCEL hAccelTable;
-	OSVERSIONINFO VersionInfo;
-
-	VersionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 
 	MainObjects.hInst = hInstance;
 	MainObjects.hProcess = GetCurrentProcess();

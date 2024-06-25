@@ -211,11 +211,13 @@ xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionD
     <ClInclude Include="DialogGUI.h" />
     <ClInclude Include="ErrorHandler.h" />
     <ClInclude Include="Global.h" />
+    <ClInclude Include="KeyHandler.h" />
     <ClInclude Include="MainGUI.h" />
     <ClInclude Include="InstallCode.h" />
     <ClInclude Include="MainInit.h" />
     <ClInclude Include="PartitionCode.h" />
     <ClInclude Include="ProgressGUI.h" />
+    <ClInclude Include="RecoveryLauncher.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceLoader.h" />
     <ClInclude Include="RestartCode.h" />
@@ -229,11 +231,13 @@ xcopy "$(SolutionDir)Build\$(Platform)\$(Configuration)\gr7api.dll" "$(SolutionD
     <ClCompile Include="DialogGUI.cpp" />
     <ClCompile Include="ErrorHandler.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="KeyHandler.cpp" />
     <ClCompile Include="MainGUI.cpp" />
     <ClCompile Include="InstallCode.cpp" />
     <ClCompile Include="MainInit.cpp" />
     <ClCompile Include="PartitionCode.cpp" />
     <ClCompile Include="ProgressGUI.cpp" />
+    <ClCompile Include="RecoveryLauncher.cpp" />
     <ClCompile Include="ResourceLoader.cpp" />
     <ClCompile Include="RestartCode.cpp" />
     <ClCompile Include="SetupGUI.cpp" />

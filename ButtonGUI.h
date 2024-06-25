@@ -9,7 +9,6 @@ public:
 	static void				InitNormalBtn();
 	static void				InitAutoPartitionButton();
 	static void				InitManualPartitionButton();
-	static void				KeyHandler(WPARAM &wParam);
 
 private:
 	static void				Paint(HWND &hWnd, HBITMAP &hButtonImg, int xBmpPos, int yBmpPos, int drawText, LPCWSTR text, int textX, int textY);

@@ -227,7 +227,7 @@ LRESULT CALLBACK DialogGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
 	case WM_KEYDOWN:
 	{
 		SetFocus(MainObjects.hWndMainWindow);
-		return SendMessage(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
+		return SendMessageW(MainObjects.hWndMainWindow, WM_KEYDOWN, wParam, lParam);
 	}
 	break;
 	case WM_COMMAND:
@@ -241,10 +241,10 @@ LRESULT CALLBACK DialogGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
 
 		case ID_ACCEPT_LICENSE:
 			if (IsDlgButtonChecked(hWnd, ID_ACCEPT_LICENSE) == BST_CHECKED) {
-				::SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
+				SendMessageW(ButtonObjects.hNormalBtn, BTN_ENABLE, (WPARAM)(INT)0, 0);
 			}
 			if (IsDlgButtonChecked(hWnd, ID_ACCEPT_LICENSE) == BST_UNCHECKED) {
-				::SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
+				SendMessageW(ButtonObjects.hNormalBtn, BTN_DISABLE, (WPARAM)(INT)0, 0);
 			}
 			SetFocus(MainObjects.hWndMainWindow);
 			break;
@@ -274,7 +274,7 @@ LRESULT CALLBACK DialogGUI::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
 	}
 
 	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
+		return DefWindowProcW(hWnd, message, wParam, lParam);
 	}
 	return 0;
 }
