@@ -43,24 +43,23 @@ void MainGUI::Init(HWND &hWnd, HINSTANCE &hInst)
 	if (!hWnd) {
 		ErrorHandler::InvokeErrorHandler(1, 0, L"Failed to create Main Window", AppResStringsObjects.AppTitleText);
 	}
-	else {
-		EnableMenuItem(GetSystemMenu(hWnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
-		SetWindowLongW(hWnd, GWL_STYLE, GetWindowLongW(hWnd, GWL_STYLE) & ~WS_MINIMIZEBOX);
+	EnableMenuItem(GetSystemMenu(hWnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
-		// Change appearence of the Main Window
-		DWORD dwStyle = GetWindowLongW(hWnd, GWL_STYLE);
-		DWORD dwRemove = WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
-		DWORD dwNewStyle = dwStyle & ~dwRemove;
-		HDC hdcMonitor = GetWindowDC(NULL);
-		SetWindowLongW(hWnd, GWL_STYLE, dwNewStyle);
+	SetWindowLongW(hWnd, GWL_STYLE, GetWindowLongW(hWnd, GWL_STYLE) & ~WS_MINIMIZEBOX);
 
-		// Set position of the main window
-		SetWindowPos(hWnd, NULL, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-		SetWindowPos(hWnd, NULL, 0, 0, GetDeviceCaps(hdcMonitor, HORZRES), GetDeviceCaps(hdcMonitor, VERTRES), SWP_FRAMECHANGED);
+	// Change appearence of the Main Window
+	DWORD dwStyle = GetWindowLongW(hWnd, GWL_STYLE);
+	DWORD dwRemove = WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
+	DWORD dwNewStyle = dwStyle & ~dwRemove;
+	HDC hdcMonitor = GetWindowDC(NULL);
+	SetWindowLongW(hWnd, GWL_STYLE, dwNewStyle);
 
-		ReleaseDC(NULL, hdcMonitor);
-	}
+	// Set position of the main window
+	SetWindowPos(hWnd, NULL, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+	SetWindowPos(hWnd, NULL, 0, 0, GetDeviceCaps(hdcMonitor, HORZRES), GetDeviceCaps(hdcMonitor, VERTRES), SWP_FRAMECHANGED);
+
+	ReleaseDC(NULL, hdcMonitor);
 }
 
 void MainGUI::Paint(HWND &hWnd)
