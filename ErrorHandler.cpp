@@ -6,6 +6,6 @@ void ErrorHandler::InvokeErrorHandler(int ErrorValue, int ErrorMustBe, std::wstr
 		MessageBoxW(NULL,
 			DesiredErrorText.c_str(),
 			DesiredErrorTitle.c_str(), MB_ICONERROR | MB_OK);
-		exit(0);
+		exit(1);
 	}
 }
